@@ -10,6 +10,9 @@
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
     <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <link rel="stylesheet" type="text/css" href="css/alertify.bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/alertify.core.css">
+    <link rel="stylesheet" type="text/css" href="css/alertify.default.css">
 </head>
 
 <body>
@@ -24,19 +27,15 @@
 
             <div class="modal-body">
 
-                <form class="form col-md-12 center-block"  method="POST" action="Log.in">
+                <form name = "loginForm" class="form col-md-12 center-block"  method="POST" action="Log.in">
                     <div class="form-group">
-                        <input type="text" class="form-control input-lg" placeholder="Username" name = "Username">
-                        <%
-                            String name = request.getParameter("Username");
-                            System.out.println(name);
-                        %>
+                        <input type="text" class="form-control input-lg" placeholder="Username" name = "Username" onchange="return nameValid()">
                     </div>
                     <div class="form-group">
                         <input type="password" class="form-control input-lg" placeholder="Password" name = "Password">
                     </div>
                     <div class="form-group">
-                        <button class="btn btn-primary btn-lg btn-block" type="submit">Sign In</button>
+                        <button class="btn btn-primary btn-lg btn-block" type="submit" onclick="return formValidator()">Sign In</button>
                     </div>
                 </form>
 
@@ -50,6 +49,27 @@
 </div>
 
 <!-- script references -->
+<script type="text/javascript">
+nameValid = function nameValidator()    {
+
+    var regexAlphaNumeric = /^[0-9a-zA-Z]+$/;
+    var nameField = document.loginForm.Username;
+
+    if(nameField.value.match(regexAlphaNumeric))   {
+        return true;
+    }
+    else
+    {
+        alertify.alert("Only alphanumeric allowed");
+        return false;
+    }
+}
+function formValidator()    {
+    return nameValid();
+}
+
+</script>
+<script src="js/alertify.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/bootstrap.js"></script>

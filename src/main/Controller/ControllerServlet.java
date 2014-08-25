@@ -26,7 +26,7 @@ public class ControllerServlet extends HttpServlet {
         boolean status=login.validate();
 
         if(status){
-            RequestDispatcher rd=request.getRequestDispatcher("login-success.jsp");
+            RequestDispatcher rd=request.getRequestDispatcher("RedisApplication.jsp");
             rd.forward(request, response);
         }
         else{
