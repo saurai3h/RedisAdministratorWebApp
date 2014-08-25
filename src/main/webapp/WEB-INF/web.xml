@@ -8,11 +8,11 @@
 
     <servlet>
         <servlet-name>login</servlet-name>
-        <servlet-class>RedisAdministratorClasses.ControllerServlet</servlet-class>
+        <servlet-class>Controller.ControllerServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
         <servlet-name>login</servlet-name>
-        <url-pattern>/ControllerServlet</url-pattern>
+        <url-pattern>view/Log.in</url-pattern>
     </servlet-mapping>
 </web-app>

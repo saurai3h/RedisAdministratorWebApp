@@ -5,12 +5,12 @@
   Time: 3:59 PM
   To change this template use File | Settings | File Templates.
 --%>
-<%@page import="RedisAdministratorClasses.LoginBean"%>
+<%@page import="Model.Login"%>
 <%@ page import="java.util.Date" %>
 
 <p>You are successfully logged in! at <%= new Date() %></p>
 
 <%
-    LoginBean bean=(LoginBean)request.getAttribute("bean");
-    out.println("Welcome, " + bean.getName());
+    Login login=(Login)request.getAttribute("login");
+    out.println("Welcome, " + login.getName());
 %>

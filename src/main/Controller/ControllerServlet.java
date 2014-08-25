@@ -1,5 +1,4 @@
-package RedisAdministratorClasses;
-
+package Controller;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -7,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import Model.*;
 
 public class ControllerServlet extends HttpServlet {
 
@@ -15,27 +15,22 @@ public class ControllerServlet extends HttpServlet {
         response.setContentType("text/html");
         PrintWriter out=response.getWriter();
 
-        /*
-        Jedis jedis = new Jedis("localhost",7000);
-        jedis.set("foo","bar");
-        */
+        String name=request.getParameter("Username");
+        String password=request.getParameter("Password");
 
-        String name=request.getParameter("name");
-        String password=request.getParameter("password");
+        Login login = new Login();
+        login.setName(name);
+        login.setPassword(password);
+        request.setAttribute("login",login);
 
-        LoginBean bean=new LoginBean();
-        bean.setName(name);
-        bean.setPassword(password);
-        request.setAttribute("bean",bean);
-
-        boolean status=bean.validate();
+        boolean status=login.validate();
 
         if(status){
-            RequestDispatcher rd=request.getRequestDispatcher("login-success.jsp");
+            RequestDispatcher rd=request.getRequestDispatcher("view/login-success.jsp");
             rd.forward(request, response);
         }
         else{
-            RequestDispatcher rd=request.getRequestDispatcher("login-error.jsp");
+            RequestDispatcher rd=request.getRequestDispatcher("view/login-error.jsp");
             rd.forward(request, response);
         }
 
