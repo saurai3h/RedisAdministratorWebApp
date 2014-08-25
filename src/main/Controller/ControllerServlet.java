@@ -26,11 +26,11 @@ public class ControllerServlet extends HttpServlet {
         boolean status=login.validate();
 
         if(status){
-            RequestDispatcher rd=request.getRequestDispatcher("view/login-success.jsp");
+            RequestDispatcher rd=request.getRequestDispatcher("login-success.jsp");
             rd.forward(request, response);
         }
         else{
-            RequestDispatcher rd=request.getRequestDispatcher("view/login-error.jsp");
+            RequestDispatcher rd=request.getRequestDispatcher("login-error.jsp");
             rd.forward(request, response);
         }
 

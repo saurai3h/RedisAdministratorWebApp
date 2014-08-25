@@ -24,7 +24,7 @@
 
             <div class="modal-body">
 
-                <form class="form col-md-12 center-block"  method="POST" action="view/Log.in">
+                <form class="form col-md-12 center-block"  method="POST" action="Log.in">
                     <div class="form-group">
                         <input type="text" class="form-control input-lg" placeholder="Username" name = "Username">
                     </div>
