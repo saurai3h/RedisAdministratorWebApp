@@ -21,13 +21,12 @@ public class ControllerServlet extends HttpServlet {
         Login login = new Login();
         login.setName(name);
         login.setPassword(password);
-
         request.setAttribute("login",login);
 
         boolean status=login.validate();
 
         if(status){
-            RequestDispatcher rd=request.getRequestDispatcher("login-success.jsp");
+            RequestDispatcher rd=request.getRequestDispatcher("RedisApplication.jsp");
             rd.forward(request, response);
         }
         else{
