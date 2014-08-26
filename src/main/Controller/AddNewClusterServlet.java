@@ -40,7 +40,7 @@ public class AddNewClusterServlet extends HttpServlet {
             request.setAttribute("message","Cluster successfully added.");
         else
             request.setAttribute("message","Could not add cluster, maybe the cluster isn't up and running or maybe it already exists in our database!");
-        RequestDispatcher rd=request.getRequestDispatcher("login-success.jsp");
+        RequestDispatcher rd=request.getRequestDispatcher("RedisApplication.jsp");
         rd.forward(request, response);
     }
 

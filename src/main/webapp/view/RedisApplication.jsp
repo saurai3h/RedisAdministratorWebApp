@@ -1,3 +1,5 @@
+<%@ page import="java.util.List" %>
+<%@ page import="Model.ClusterAdder" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -17,7 +19,53 @@
 </head>
 
 <body>
+<div id="newClusterModal" class="modal show" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="position: relative; top: 100px">
 
+            <div class="modal-header">
+                <h1 class="text-center">Add New Cluster Here</h1>
+            </div>
+
+            <div class="modal-body">
+
+                <form class="form col-md-12 center-block"  method="POST" action="addCluster">
+                    <div class="form-group">
+                        <input type="text" class="form-control input-lg" placeholder="Host Address" name = "Host Address">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control input-lg" placeholder="Port" name = "Port">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control input-lg" placeholder="ClusterName"
+                               name = "ClusterName">
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary btn-lg btn-block" type="submit">Click to add this cluster to
+                            your favorite list</button>
+                    </div>
+                    <%
+                        session.setAttribute("hasLoadedLoginSuccessBefore",true);
+                    %>
+                </form>
+
+            </div>
+            <div class="modal-header">
+                <h4 class="text-center">
+                </h4>
+            </div>
+
+            <div class="modal-footer">
+                <div class="col-md-12"></div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+</div>
 <div id="wrapper">
 
     <div id="sidebar-wrapper">
@@ -27,12 +75,18 @@
                     Listing Instances
                 </a>
             </li>
+            <%
+                List<String> listOfClusters = ClusterAdder.getAllStoredClusters();
+                for(String clusterName:listOfClusters){
+            %>
             <li>
-                <a href="#">Instance1</a>;
+                <a href="#"><%
+                    out.println(clusterName);
+                %></a>;
             </li>
-            <li>
-                <a href="#">Instance2</a>
-            </li>
+            <%
+                }
+            %>
         </ul>
     </div>
     <div id="page-content-wrapper">
