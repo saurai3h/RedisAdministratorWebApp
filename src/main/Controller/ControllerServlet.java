@@ -21,6 +21,7 @@ public class ControllerServlet extends HttpServlet {
         Login login = new Login();
         login.setName(name);
         login.setPassword(password);
+
         request.setAttribute("login",login);
 
         boolean status=login.validate();

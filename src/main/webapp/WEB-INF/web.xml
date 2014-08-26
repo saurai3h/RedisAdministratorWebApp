@@ -10,9 +10,17 @@
         <servlet-name>login</servlet-name>
         <servlet-class>Controller.ControllerServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>addRedisCluster</servlet-name>
+        <servlet-class>Controller.AddNewClusterServlet</servlet-class>
+    </servlet>
 
     <servlet-mapping>
         <servlet-name>login</servlet-name>
         <url-pattern>/view/Log.in</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>addRedisCluster</servlet-name>
+        <url-pattern>/view/addCluster</url-pattern>
     </servlet-mapping>
 </web-app>

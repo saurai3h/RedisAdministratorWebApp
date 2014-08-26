@@ -1,3 +1,4 @@
+<%@ page import="Model.Login" %>
 <!DOCTYPE html>
 <html>
 <head lang="en">
@@ -34,6 +35,9 @@
                     <div class="form-group">
                         <button class="btn btn-primary btn-lg btn-block" type="submit">Sign In</button>
                     </div>
+                    <%
+                        session.setAttribute("hasLoadedLoginSuccessBefore",false);
+                    %>
                 </form>
 
             </div>
