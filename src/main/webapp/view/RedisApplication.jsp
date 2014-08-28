@@ -1,3 +1,11 @@
+<%@ page import="Model.Login" %>
+<%@ page import="java.util.List" %>
+<%@ page import="com.google.gson.Gson" %>
+<%@ page import="java.sql.Connection" %>
+<%@ page import="java.sql.DriverManager" %>
+<%@ page import="java.sql.Statement" %>
+<%@ page import="java.sql.ResultSet" %>
+<%@ page import="com.google.gson.JsonArray" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -17,6 +25,16 @@
 </head>
 
 <body>
+<%
+    if(!(Boolean) session.getAttribute("hasLoadedLoginSuccessBefore")) {
+        Login login = (Login) request.getAttribute("login");
+        session.setAttribute("login", login);
+    }
+    else {
+        out.println(request.getAttribute("message"));
+    }
+    Login login = (Login) session.getAttribute("login");
+%>
 
 <div id="wrapper">
 
@@ -27,12 +45,34 @@
                     Listing Instances
                 </a>
             </li>
-            <li>
-                <a href="#">Instance1</a>;
-            </li>
-            <li>
-                <a href="#">Instance2</a>
-            </li>
+                <%
+                    Gson gson = new Gson();
+                    final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+
+                    //Change this according to the database being used.
+                    final String DB_URL = "jdbc:mysql://localhost/testJedis";
+                    final String USER = "root";
+                    final String PASS = "password";
+                    Class.forName(JDBC_DRIVER);
+
+                    Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+                    Statement stmt = conn.createStatement();
+                    String sql = "SELECT HostName,PortNumber FROM INSTANCES";
+                    ResultSet rs = stmt.executeQuery(sql);
+                    JsonArray jsonElements = new JsonArray();
+
+                    while(rs.next())    {
+                        String res = rs.getString("HostName");
+                        res += ":";
+                        res += rs.getString("PortNumber");
+
+                        gson.toJson(res);
+                    }
+                    out.println(gson);
+                %>
+            <script>
+
+            </script>
         </ul>
     </div>
     <div id="page-content-wrapper">
@@ -60,11 +100,6 @@
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
     });
-</script>
-
-<script>
-    var ul = document.getElementsByTagName('ul');
-
 </script>
 </body>
 
