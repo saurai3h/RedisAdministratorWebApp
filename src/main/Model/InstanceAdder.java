@@ -12,7 +12,7 @@ import java.util.Set;
 /**
  * Created by kartik.k on 8/25/2014.
  */
-public class ClusterAdder {
+public class InstanceAdder {
     private HostAndPort hostAndPort;
     private String clusterName;
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
@@ -51,7 +51,7 @@ public class ClusterAdder {
         }
     }
 
-    public ClusterAdder(HostAndPort hostAndPort, String clusterName){
+    public InstanceAdder(HostAndPort hostAndPort, String clusterName){
         this.clusterName = clusterName;
         this.hostAndPort = hostAndPort;
     }
@@ -81,7 +81,6 @@ public class ClusterAdder {
             return listOfClusters;
         } catch (SQLException e) {
             e.printStackTrace();
-
             return null;
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -89,4 +88,3 @@ public class ClusterAdder {
         }
     }
 }
-

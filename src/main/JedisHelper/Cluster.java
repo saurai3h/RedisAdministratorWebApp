@@ -6,25 +6,27 @@ import java.util.HashSet;
 /**
  * Created by kartik.k on 8/21/2014.
  */
-public class ClusterPage extends Page {
-    JedisCluster jedisCluster;
+public class Cluster extends Page {
+    RedisClusterForRedisAdmin jedisCluster;
     String[] hostPortArrayList;
     int curHostPortBeingScannedPointer;
 
-    public ClusterPage(JedisCluster jedisCluster, int pagesize){
+    public Cluster(RedisClusterForRedisAdmin jedisCluster, int pagesize){
         this("0",0,jedisCluster,pagesize);
     }
 
-    private ClusterPage(String cursor, int curHostPortBeingScannedPointer, JedisCluster jedisCluster, int pagesize){
+    private Cluster(String cursor, int curHostPortBeingScannedPointer, RedisClusterForRedisAdmin jedisCluster, int pagesize){
         super(pagesize,cursor);
         this.jedisCluster = jedisCluster;
         hostPortArrayList = jedisCluster.getClusterNodes().keySet().toArray(new String[jedisCluster.getClusterNodes().size()]);
+
+
         this.curHostPortBeingScannedPointer = curHostPortBeingScannedPointer;
-        fillKeyList();
+        fillKeySet();
     }
 
     Page nextPage(){
-        Page nextPage = new ClusterPage(cursorForScan,curHostPortBeingScannedPointer,jedisCluster,pageSize);
+        Page nextPage = new Cluster(cursorForScan,curHostPortBeingScannedPointer,jedisCluster,pageSize);
         return nextPage;
     }
 
@@ -32,9 +34,9 @@ public class ClusterPage extends Page {
         jedisCluster = null;
     }
 
-    private void fillKeyList(){
+    protected void fillKeySet(){
         int remainingSpaceOnPage = pageSize;
-        keyList = new HashSet<String>();
+        keySet = new HashSet<String>();
         String newCursor = cursorForScan;
         while (curHostPortBeingScannedPointer < hostPortArrayList.length && remainingSpaceOnPage > 0) {
             JedisPool curJedisPool = jedisCluster.getClusterNodes().get(hostPortArrayList[curHostPortBeingScannedPointer]);
@@ -47,14 +49,13 @@ public class ClusterPage extends Page {
             } catch (InfoFormatException e) {
                 System.out.println("JedisInfoFormatException");
             }
-            //System.out.println("scanning " + hostPortArrayList[curHostPortBeingScannedPointer] + "....");
             while (remainingSpaceOnPage > 0) {
                 ScanParams scanParams = new ScanParams();
                 scanParams.count(pageSize);
                 ScanResult<String> scanResult = curNodeBeingScanned.scan(newCursor,scanParams);
-                keyList.addAll(scanResult.getResult());
+                keySet.addAll(scanResult.getResult());
                 newCursor = scanResult.getStringCursor();
-                remainingSpaceOnPage -= keyList.size();
+                remainingSpaceOnPage -= keySet.size();
                 if(newCursor.equals("0"))
                     break;
             }
@@ -66,8 +67,7 @@ public class ClusterPage extends Page {
         }
         cursorForScan = newCursor;
 
-        if(keyList.size()<pageSize)
-            System.out.println("returning half filled page of size "+ Integer.toString(keyList.size()));
+        if(keySet.size()<pageSize)
+            System.out.println("returning half filled page of size "+ Integer.toString(keySet.size()));
     }
-
 }

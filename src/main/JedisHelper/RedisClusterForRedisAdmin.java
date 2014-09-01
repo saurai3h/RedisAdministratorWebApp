@@ -6,7 +6,6 @@ import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.exceptions.JedisClusterException;
 import redis.clients.jedis.exceptions.JedisException;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -46,7 +45,7 @@ public class RedisClusterForRedisAdmin extends JedisCluster {
             boolean wasTryAlreadyPresent = exists("try");
             setnx("try", "toSetSomething");
             String getAnswer = get("try");
-            isClusterAliveAndWell = wasTryAlreadyPresent|getAnswer.equals("toSetSomething");
+            isClusterAliveAndWell = wasTryAlreadyPresent||getAnswer.equals("toSetSomething");
             if(!wasTryAlreadyPresent)
                 del("try");
         }
@@ -109,7 +108,31 @@ public class RedisClusterForRedisAdmin extends JedisCluster {
     }
 
     //need to check
+    public static Map<String,Map<String,String>> infoOutputToMap(String infoOutput){
+        String[] sections = infoOutput.split("\n#");
+        Map<String,Map<String,String>> mappedInfo = new HashMap<String, Map<String, String>>();
+        for(String section:sections){
+            String sectionName = "unknown-section";
+            Map<String,String> sectionMap = new HashMap<String, String>();
 
+            String[] keyValuePairsInInfo = section.split("\n");
+            for(String keyValuePair:keyValuePairsInInfo){
+                String[] keyValueArray = keyValuePair.split(":");
+                if(keyValueArray.length > 2){
+                    System.out.println("Bhayankar durghatana!!");
+                    return null;
+                }
+                if(keyValueArray.length == 1){
+                    sectionName = keyValueArray[0];
+                }
+                if(keyValueArray.length == 2){
+                    sectionMap.put(keyValueArray[0],keyValueArray[1]);
+                }
+            }
+            mappedInfo.put(sectionName,sectionMap);
+        }
+        return mappedInfo;
+    }
 
 
 }

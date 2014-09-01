@@ -12,7 +12,7 @@
     </servlet>
     <servlet>
         <servlet-name>addRedisCluster</servlet-name>
-        <servlet-class>Controller.AddNewClusterServlet</servlet-class>
+        <servlet-class>Controller.AddNewInstanceServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>

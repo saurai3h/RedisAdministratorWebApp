@@ -1,5 +1,5 @@
 <%@ page import="java.util.List" %>
-<%@ page import="Model.ClusterAdder" %>
+<%@ page import="Model.InstanceAdder" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -29,20 +29,21 @@
 
             <div class="modal-body">
 
-                <form class="form col-md-12 center-block"  method="POST" action="addCluster">
+                <form class="form col-md-12 center-block" method="POST" action="addCluster">
                     <div class="form-group">
-                        <input type="text" class="form-control input-lg" placeholder="Host Address" name = "Host Address">
+                        <input type="text" class="form-control input-lg" placeholder="Host Address" name="Host Address">
                     </div>
                     <div class="form-group">
-                        <input type="text" class="form-control input-lg" placeholder="Port" name = "Port">
+                        <input type="text" class="form-control input-lg" placeholder="Port" name="Port">
                     </div>
                     <div class="form-group">
                         <input type="text" class="form-control input-lg" placeholder="ClusterName"
-                               name = "ClusterName">
+                               name="ClusterName">
                     </div>
                     <div class="form-group">
                         <button class="btn btn-primary btn-lg btn-block" type="submit">Click to add this cluster to
-                            your favorite list</button>
+                            your favorite list
+                        </button>
                     </div>
                     <%
                         session.setAttribute("hasLoadedLoginSuccessBefore",true);
@@ -76,10 +77,10 @@
                 </a>
             </li>
             <%
-                List<String> listOfClusters = ClusterAdder.getAllStoredClusters();
+                List<String> listOfClusters = InstanceAdder.getAllStoredClusters();
                 for(String clusterName:listOfClusters){
             %>
-            <li>
+            <li id = "172.16.137.228:7000">
                 <a href="#"><%
                     out.println(clusterName);
                 %></a>;
@@ -100,6 +101,14 @@
     </div>
 
 </div>
+
+<script>
+    $(document).ready(function(){
+        $("#driver").click(function(){
+            $("#stage").load("<jsp:include page="/Controller/FetchPageServlet.java" flush="true" />");
+        });
+    });
+</script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>

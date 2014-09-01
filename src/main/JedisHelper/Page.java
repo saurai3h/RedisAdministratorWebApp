@@ -9,10 +9,10 @@ import java.util.Set;
 public abstract class Page {
     protected int pageSize;
     protected String cursorForScan;
-    protected Set<String> keyList;
+    protected Set<String> keySet;
 
-    public Set<String> getKeyList() {
-        return keyList;
+    public Set<String> getKeySet() {
+        return keySet;
     }
 
 
@@ -20,13 +20,13 @@ public abstract class Page {
     public Page(int pageSize, String cursor){
         this.pageSize = pageSize;
         this.cursorForScan = cursor;
-        this.keyList = new HashSet<String>();
+        this.keySet = new HashSet<String>();
     }
-
+    abstract protected void fillKeySet();
     abstract Page nextPage();
     void display(){
-        System.out.println(keyList.size());
-        for(String key: keyList){
+        System.out.println(keySet.size());
+        for(String key: keySet){
             System.out.println(key);
         }
     };

@@ -12,7 +12,7 @@ import JedisHelper.RedisClusterForRedisAdmin;
 import Model.*;
 import redis.clients.jedis.HostAndPort;
 
-public class AddNewClusterServlet extends HttpServlet {
+public class AddNewInstanceServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -35,6 +35,8 @@ public class AddNewClusterServlet extends HttpServlet {
                 break;
             }
         }
+
+
         if(addClusterSuccessful)
             request.setAttribute("message","Cluster successfully added.");
         else
@@ -42,6 +44,8 @@ public class AddNewClusterServlet extends HttpServlet {
         RequestDispatcher rd=request.getRequestDispatcher("RedisApplication.jsp");
         rd.forward(request, response);
     }
+
+
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)

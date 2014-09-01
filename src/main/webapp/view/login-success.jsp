@@ -7,7 +7,7 @@
 --%>
 <%@ page import="Model.Login" %>
 <%@ page import="java.util.Date" %>
-<%@ page import="Model.ClusterAdder" %>
+<%@ page import="Model.InstanceAdder" %>
 <%@ page import="java.util.List" %>
 <!DOCTYPE html>
 <html>
@@ -41,13 +41,9 @@
     out.println("Your password is, " + login.getPassword());
 %>
 
-
-
-<!-- script references -->
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/bootstrap.js"></script>
 <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 </body>
 </html>
