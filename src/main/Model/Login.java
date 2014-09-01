@@ -3,7 +3,10 @@ import java.sql.*;
 
 public class Login {
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    static final String DB_URL = "jdbc:mysql://172.16.137.79/testJedis";
+
+    //Change this according to the database being used.
+    static final String DB_URL = "jdbc:mysql://localhost/testJedis";
+
     static final String USER = "root";
     static final String PASS = "password";
 
@@ -29,7 +32,7 @@ public class Login {
 
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
             Statement stmt = conn.createStatement();
-            String sql = "SELECT PassWord FROM USERS WHERE UserName = \"" + name + "\"";
+            String sql = "SELECT PassWord FROM users WHERE UserName = \"" + name + "\"";
             ResultSet rs = stmt.executeQuery(sql);
 
             if(rs.wasNull())    {

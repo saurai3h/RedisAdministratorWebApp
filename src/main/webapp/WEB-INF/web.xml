@@ -8,11 +8,15 @@
 
     <servlet>
         <servlet-name>login</servlet-name>
-        <servlet-class>Controller.ControllerServlet</servlet-class>
+        <servlet-class>Controller.LoginServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>addRedisCluster</servlet-name>
-        <servlet-class>Controller.AddNewInstanceServlet</servlet-class>
+        <servlet-name>listservers</servlet-name>
+        <servlet-class>Controller.ListInstanceServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>initialpageservlet</servlet-name>
+        <servlet-class>Controller.InitialPageServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
@@ -20,7 +24,13 @@
         <url-pattern>/view/Log.in</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>addRedisCluster</servlet-name>
-        <url-pattern>/view/addCluster</url-pattern>
+        <servlet-name>listservers</servlet-name>
+        <url-pattern>/view/RedisApplication</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>initialpageservlet</servlet-name>
+        <url-pattern>/view/RedisApplication2</url-pattern>
+    </servlet-mapping>
+
+
 </web-app>
