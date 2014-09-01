@@ -2993,10 +2993,8 @@
       <column name="NAME" sqlType="VARCHAR" precision="128" scale="0" nullable="false" jdbcType="12"/>
     </table>
     <table name="instances" schema="" catalog="testJedis" type="TABLE">
-      <column name="InstanceID" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="false" jdbcType="4"/>
       <column name="HostName" sqlType="VARCHAR" precision="50" scale="0" nullable="true" jdbcType="12"/>
       <column name="PortNumber" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
-      <primary-key name="PRIMARY" columns="InstanceID"/>
     </table>
     <table name="users" schema="" catalog="testJedis" type="TABLE">
       <column name="UserName" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
