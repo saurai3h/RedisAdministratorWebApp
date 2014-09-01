@@ -18,6 +18,14 @@
         <servlet-name>initialpageservlet</servlet-name>
         <servlet-class>Controller.InitialPageServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>PreviousPage</servlet-name>
+        <servlet-class>Controller.PreviousPageServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>NextPage</servlet-name>
+        <servlet-class>Controller.NextPageServlet</servlet-class>
+    </servlet>
 
     <servlet-mapping>
         <servlet-name>login</servlet-name>
@@ -31,6 +39,12 @@
         <servlet-name>initialpageservlet</servlet-name>
         <url-pattern>/view/RedisApplication2</url-pattern>
     </servlet-mapping>
-
-
+    <servlet-mapping>
+        <servlet-name>PreviousPage</servlet-name>
+        <url-pattern>/view/Previous</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>NextPage</servlet-name>
+        <url-pattern>/view/Next</url-pattern>
+    </servlet-mapping>
 </web-app>

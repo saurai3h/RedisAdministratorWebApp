@@ -63,8 +63,8 @@
                 </ul>
             </div>
             <ul class="pager">
-                <li class="previous disabled"><a href="#">&larr; Older</a></li>
-                <li class="next"><a href="#">Newer &rarr;</a></li>
+                <li class="previous"><a id="prev" href="#">&larr; Older</a></li>
+                <li class="next"><a id="next" href="#">Newer &rarr;</a></li>
             </ul>
         </div>
     </div>
@@ -78,79 +78,13 @@
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-
+<script src="js/AjaxCalls.js"></script>
 <script>
-
-    var arr = new Array();
-
-    $.ajax(
-            {
-                url: "/view/RedisApplication",
-                type: "POST",
-                success: function( strData ){
-
-                    if(strData !== "false") {
-
-                        var jsonData = jQuery.parseJSON(strData);
-
-                        for (var i = 0; i < jsonData.length; ++i) {
-                            arr[i] = jsonData[i].host + ":" + jsonData[i].port;
-                        }
-                        var counter = 0;
-                        for(var x in arr)   {
-                            var li = document.createElement("li");
-                            var link = document.createElement("a");
-                            $(link).html(arr[x]);
-                            $(link).attr("id",arr[x]);
-                            $(link).attr("href","#");
-                            $(li).append(link);
-                            $("#sidebar-wrapper").find("ul").append(li);
-                        }
-                    }
-                }
-            }
-    );
-
-    $(".sidebar-nav").click(function() {
-
-                $.ajax(
-                        {
-                            url: "/view/RedisApplication2",
-                            type: "POST",
-                            data: "hostport="+event.target.id.toString(),
-                            success: function( strData ){
-                                $("#list-display").find("ul").remove();
-                                $("#list-display").append(document.createElement("ul"));
-                                if(strData !== "false") {
-                                    var counter = 0;
-                                    var jsonData = jQuery.parseJSON(strData);
-                                    for(var x in jsonData)   {
-
-                                        var li = document.createElement("li");
-                                        var link = document.createElement("a");
-                                        $(link).html(jsonData[x]);
-                                        $(link).attr("id",jsonData[x]);
-                                        $(link).attr("href","#");
-                                        $(li).append(link);
-                                        $("#list-display").find("ul").append(li);
-                                    }
-                                }
-                                else {
-                                    console.log("No page to display");
-                                }
-                            }
-                        }
-                );
-
-            }
-    );
-
     $("#menu-toggle").click(function(e) {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
     });
 </script>
-
 </body>
 
 </html>

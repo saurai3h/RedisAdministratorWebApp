@@ -16,7 +16,7 @@ import java.lang.reflect.Type;
 /**
  * Created by Saurabh Paliwal on 28/8/14.
  */
-public class InitialPageServlet extends HttpServlet {
+public class PreviousPageServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
 
@@ -26,13 +26,12 @@ public class InitialPageServlet extends HttpServlet {
         try {
             out = response.getWriter();
 
-
             String rawHostPort = request.getParameter("hostport");
 
             String[] hostPort = rawHostPort.split(":");
             try {
-                Instance clickedInstance = new Instance(hostPort[0],Integer.parseInt(hostPort[1]));
-                request.getSession().setAttribute("instance",clickedInstance);
+                Instance clickedInstance = (Instance)request.getSession().getAttribute("instance");
+                clickedInstance.goToPrevPage();
                 String listOfKeys = new Gson().toJson(clickedInstance.getCurrentPage().getKeyList());
                 out.write(listOfKeys);
             }
