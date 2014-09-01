@@ -6,6 +6,9 @@
 <%@ page import="java.sql.Statement" %>
 <%@ page import="java.sql.ResultSet" %>
 <%@ page import="com.google.gson.JsonArray" %>
+<%@ page import="Model.InstanceHelper" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="redis.clients.jedis.HostAndPort" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -45,34 +48,6 @@
                     Listing Instances
                 </a>
             </li>
-                <%
-                    Gson gson = new Gson();
-                    final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-
-                    //Change this according to the database being used.
-                    final String DB_URL = "jdbc:mysql://localhost/testJedis";
-                    final String USER = "root";
-                    final String PASS = "password";
-                    Class.forName(JDBC_DRIVER);
-
-                    Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-                    Statement stmt = conn.createStatement();
-                    String sql = "SELECT HostName,PortNumber FROM INSTANCES";
-                    ResultSet rs = stmt.executeQuery(sql);
-                    JsonArray jsonElements = new JsonArray();
-
-                    while(rs.next())    {
-                        String res = rs.getString("HostName");
-                        res += ":";
-                        res += rs.getString("PortNumber");
-
-                        gson.toJson(res);
-                    }
-                    out.println(gson);
-                %>
-            <script>
-
-            </script>
         </ul>
     </div>
     <div id="page-content-wrapper">
@@ -81,6 +56,11 @@
                 <div class="col-lg-12">
                     <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle ListView</a>
                 </div>
+            </div>
+            <div id = "list-display">
+                <ul>
+
+                </ul>
             </div>
         </div>
     </div>
@@ -96,11 +76,76 @@
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
 <script>
+
+    var arr = new Array();
+
+    $.ajax(
+            {
+                url: "/view/RedisApplication",
+                type: "POST",
+                success: function( strData ){
+
+                    if(strData !== "false") {
+
+                        var jsonData = jQuery.parseJSON(strData);
+
+                        for (var i = 0; i < jsonData.length; ++i) {
+                            arr[i] = jsonData[i].host + ":" + jsonData[i].port;
+                        }
+                        var counter = 0;
+                        for(var x in arr)   {
+                            var li = document.createElement("li");
+                            var link = document.createElement("a");
+                            $(link).html(arr[x]);
+                            $(link).attr("id",arr[x]);
+                            $(link).attr("href","#");
+                            $(li).append(link);
+                            $("#sidebar-wrapper").find("ul").append(li);
+                        }
+                    }
+                }
+            }
+    );
+
+    $(".sidebar-nav").click(function() {
+
+                $.ajax(
+                        {
+                            url: "/view/RedisApplication2",
+                            type: "POST",
+                            data: "hostport="+event.target.id.toString(),
+                            success: function( strData ){
+                                $("#page-content-wrapper").find("ul").remove();
+                                $("#page-content-wrapper").append(document.createElement("ul"));
+                                if(strData !== "false") {
+                                    var counter = 0;
+                                    var jsonData = jQuery.parseJSON(strData);
+                                    for(var x in jsonData)   {
+
+                                        var li = document.createElement("li");
+                                        var link = document.createElement("a");
+                                        $(link).html(jsonData[x]);
+                                        $(link).attr("id",jsonData[x]);
+                                        $(link).attr("href","#");
+                                        $(li).append(link);
+                                        $("#page-content-wrapper").find("ul").append(li);
+                                    }
+                                }
+                                else
+                                    console.log("No page to display");
+                            }
+                        }
+                );
+
+            }
+    );
+
     $("#menu-toggle").click(function(e) {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
     });
 </script>
+
 </body>
 
 </html>

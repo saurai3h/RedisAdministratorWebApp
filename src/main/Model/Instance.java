@@ -22,13 +22,14 @@ public class Instance {
     String cursor;
     int expectedPageSize;
 
-    Instance(String host, int port)  {
-        expectedPageSize = 50;
+    public Instance(String host, int port)  {
+        expectedPageSize = 30;
         hostAndPort = new HostAndPort(host,port);
         jedis = new Jedis(host,port);
         pages = new LinkedList<Page>();
         searchPage = new Page();
         currentPageIndex = -1;
+        cursor = "";
         goToNextPage();
 
     }
@@ -105,6 +106,9 @@ public class Instance {
            }
            else {
                Page nextPage = new Page();
+               if(cursor.equals("")){
+                   cursor = "0";
+               }
                ArrayList<String> newPageKeyList = (ArrayList<String>)scan(expectedPageSize);
                nextPage.setKeyList(newPageKeyList);
                pages.addLast(nextPage);
@@ -138,6 +142,19 @@ public class Instance {
         ScanResult<String> scanResult = jedis.scan(cursor,scanParams);
         this.cursor = scanResult.getStringCursor();
         return (scanResult.getResult());
+    }
+
+    public boolean isAlive()    {
+        String pong = jedis.ping();
+        return pong.equals("PONG");
+    }
+
+    public Page getCurrentPage()    {
+        return pages.get(currentPageIndex);
+    }
+
+    public Page getSearchPage()     {
+        return searchPage;
     }
 }
 

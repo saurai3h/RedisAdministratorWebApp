@@ -32,7 +32,7 @@ public class Login {
 
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
             Statement stmt = conn.createStatement();
-            String sql = "SELECT PassWord FROM USERS WHERE UserName = \"" + name + "\"";
+            String sql = "SELECT PassWord FROM users WHERE UserName = \"" + name + "\"";
             ResultSet rs = stmt.executeQuery(sql);
 
             if(rs.wasNull())    {
