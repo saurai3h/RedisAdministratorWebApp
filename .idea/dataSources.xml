@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DataSourceManagerImpl" format="xml" hash="1183552824">
-    <data-source source="LOCAL" name="MySQL - @localhost" uuid="5c3ae270-4775-4348-9f9a-cb91daf73940">
+  <component name="DataSourceManagerImpl" format="xml" hash="627678116">
+    <data-source source="LOCAL" name="MySQL - @172.16.137.79" uuid="5c3ae270-4775-4348-9f9a-cb91daf73940">
+      <driver-ref>mysql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://172.16.137.79:3306</jdbc-url>
+      <user-name>root</user-name>
+      <user-password>dfdadfcbdfd9dfd9dfdddfc5dfd8dfce</user-password>
+      <driver-properties>
+        <property name="zeroDateTimeBehavior" value="convertToNull" />
+        <property name="tinyInt1isBit" value="false" />
+      </driver-properties>
+      <libraries />
+    </data-source>
+    <data-source source="LOCAL" name="MySQL - @localhost" uuid="046e42c3-6783-4aa4-be6e-cd8f41b42af3">
       <driver-ref>mysql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
@@ -14,25 +27,13 @@
       </driver-properties>
       <libraries />
     </data-source>
-    <data-source source="LOCAL" name="MySQL - @172.16.137.70" uuid="0fa609ec-c363-46b7-8d4b-53fcfeda7ba3">
+    <data-source source="LOCAL" name="MySQL - @172.16.153.219" uuid="0c8a5913-c822-4c8b-a22c-0164abe8663f">
       <driver-ref>mysql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://172.16.137.70:3306</jdbc-url>
-      <driver-properties>
-        <property name="zeroDateTimeBehavior" value="convertToNull" />
-        <property name="tinyInt1isBit" value="false" />
-      </driver-properties>
-      <libraries />
-    </data-source>
-    <data-source source="LOCAL" name="MySQL - @172.16.137.79" uuid="a15d0973-2ff1-4bef-aa6b-27be87831cee">
-      <driver-ref>mysql</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://172.16.137.79:3306</jdbc-url>
+      <jdbc-url>jdbc:mysql://172.16.153.219:3306</jdbc-url>
       <user-name>root</user-name>
       <user-password>dfdadfcbdfd9dfd9dfdddfc5dfd8dfce</user-password>
-      <schema-pattern>information_schema.* mysql.* performance_schema.* testjedis.*</schema-pattern>
       <driver-properties>
         <property name="zeroDateTimeBehavior" value="convertToNull" />
         <property name="tinyInt1isBit" value="false" />

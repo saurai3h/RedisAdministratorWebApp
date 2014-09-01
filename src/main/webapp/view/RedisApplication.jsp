@@ -62,6 +62,10 @@
 
                 </ul>
             </div>
+            <ul class="pager">
+                <li class="previous disabled"><a href="#">&larr; Older</a></li>
+                <li class="next"><a href="#">Newer &rarr;</a></li>
+            </ul>
         </div>
     </div>
 
@@ -115,8 +119,8 @@
                             type: "POST",
                             data: "hostport="+event.target.id.toString(),
                             success: function( strData ){
-                                $("#page-content-wrapper").find("ul").remove();
-                                $("#page-content-wrapper").append(document.createElement("ul"));
+                                $("#list-display").find("ul").remove();
+                                $("#list-display").append(document.createElement("ul"));
                                 if(strData !== "false") {
                                     var counter = 0;
                                     var jsonData = jQuery.parseJSON(strData);
@@ -128,11 +132,12 @@
                                         $(link).attr("id",jsonData[x]);
                                         $(link).attr("href","#");
                                         $(li).append(link);
-                                        $("#page-content-wrapper").find("ul").append(li);
+                                        $("#list-display").find("ul").append(li);
                                     }
                                 }
-                                else
+                                else {
                                     console.log("No page to display");
+                                }
                             }
                         }
                 );

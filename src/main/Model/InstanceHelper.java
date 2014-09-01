@@ -10,7 +10,7 @@ import java.util.*;
  */
 public class InstanceHelper {
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    static final String DB_URL = "jdbc:mysql://localhost/testJedis";
+    static final String DB_URL = "jdbc:mysql://172.16.137.79/testJedis";
     static final String USER = "root";
     static final String PASS = "password";
 
