@@ -17,8 +17,7 @@ public class ListInstanceServlet extends HttpServlet {
 
         try {
             out = response.getWriter();
-            Gson gson = new Gson();
-            String listOfInstances = gson.toJson(InstanceHelper.getAllStoredInstances());
+            String listOfInstances = new Gson().toJson(InstanceHelper.getAllStoredInstances());
             out.write(listOfInstances);
         }
         catch (IOException e) {

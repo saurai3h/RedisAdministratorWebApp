@@ -18,6 +18,11 @@ public class Instance {
     Jedis jedis;
     LinkedList<Page> pages;
     Page searchPage;
+
+    public int getCurrentPageIndex() {
+        return currentPageIndex;
+    }
+
     int currentPageIndex;
     String cursor;
     int expectedPageSize;
@@ -34,7 +39,7 @@ public class Instance {
 
     }
 
-    void addKey(String key,String type, String value)   {
+    public void addKey(String key,String type, String value)   {
         if (type.equals("string")) {
             jedis.set(key, value);
 
@@ -49,7 +54,7 @@ public class Instance {
         }
     }
 
-    void addKey(String key, String type, String value1, String value2)  {
+    public void addKey(String key, String type, String value1, String value2)  {
         if (type.equals("sortedSet")) {
             jedis.zadd(key, Double.parseDouble(value1), value2);
 
@@ -61,7 +66,7 @@ public class Instance {
         }
     }
 
-    void deleteKey(String key) {
+    public void deleteKey(String key) {
         jedis.del(key);
 //        (pages.get(currentPageIndex).getKeyList().remove(key));
         Page currentPage = pages.get(currentPageIndex);
@@ -97,7 +102,7 @@ public class Instance {
         pages.add(currentPageIndex,currentPage);
     }
 
-   void goToNextPage(){
+   public void goToNextPage(){
 
        currentPageIndex++;
        if(currentPageIndex>=pages.size()){
@@ -117,7 +122,7 @@ public class Instance {
        }
    }
 
-    void goToPrevPage(){
+    public void goToPrevPage(){
         if(currentPageIndex<= 0){
 //            this was the first page, so invalid operation
         }
@@ -126,7 +131,7 @@ public class Instance {
         }
     }
 
-    void search(String key){
+    public void search(String key){
         if(jedis.exists(key)){
             ArrayList<String> searchPageList = new ArrayList<String>();
             searchPageList.add(jedis.get(key));
