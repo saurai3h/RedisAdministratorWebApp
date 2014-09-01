@@ -41,8 +41,9 @@ $(".sidebar-nav").click(function() {
                 type: "POST",
                 data: "hostport=" + hostPort,
                 success: function (strData) {
-                    $("#list-display").find("ul").remove();
-                    $("#list-display").append(document.createElement("ul"));
+                    $("#list-content").remove();
+                    var ul = document.createElement("ul");
+                    $(ul).attr("id","list-content");
                     if (strData !== "false") {
                         var jsonData = jQuery.parseJSON(strData);
                         for (var x in jsonData) {
@@ -53,8 +54,9 @@ $(".sidebar-nav").click(function() {
                             $(link).attr("id", jsonData[x]);
                             $(link).attr("href", "#");
                             $(li).append(link);
-                            $("#list-display").find("ul").append(li);
+                            $(ul).append(li);
                         }
+                        $("#list-display").append(ul);
                     }
                     else {
                         console.log("No page to display");
@@ -71,8 +73,9 @@ $(".sidebar-nav").click(function() {
                         type: "POST",
                         data: "hostport=" + hostPort,
                         success: function (strData) {
-                            $("#list-display").find("ul").remove();
-                            $("#list-display").append(document.createElement("ul"));
+                            $("#list-content").remove();
+                            var ul = document.createElement("ul");
+                            $(ul).attr("id","list-content");
                             if (strData !== "false") {
                                 var jsonData = jQuery.parseJSON(strData);
                                 for (var x in jsonData) {
@@ -83,8 +86,9 @@ $(".sidebar-nav").click(function() {
                                     $(link).attr("id", jsonData[x]);
                                     $(link).attr("href", "#");
                                     $(li).append(link);
-                                    $("#list-display").find("ul").append(li);
+                                    $(ul).append(li);
                                 }
+                                $("#list-display").append(ul);
                             }
                             else {
                                 console.log("No page to display");
@@ -104,8 +108,9 @@ $(".sidebar-nav").click(function() {
                         type: "POST",
                         data: "hostport=" + hostPort,
                         success: function (strData) {
-                            $("#list-display").find("ul").remove();
-                            $("#list-display").append(document.createElement("ul"));
+                            $("#list-content").remove();
+                            var ul = document.createElement("ul");
+                            $(ul).attr("id","list-content");
                             if (strData !== "false") {
                                 var jsonData = jQuery.parseJSON(strData);
                                 for (var x in jsonData) {
@@ -116,8 +121,9 @@ $(".sidebar-nav").click(function() {
                                     $(link).attr("id", jsonData[x]);
                                     $(link).attr("href", "#");
                                     $(li).append(link);
-                                    $("#list-display").find("ul").append(li);
+                                    $(ul).append(li);
                                 }
+                                $("#list-display").append(ul);
                             }
                             else {
                                 console.log("No page to display");

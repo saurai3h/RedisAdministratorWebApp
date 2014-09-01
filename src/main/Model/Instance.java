@@ -39,6 +39,10 @@ public class Instance {
 
     }
 
+    public void renameKey(String oldKeyName, String newKeyName){
+        jedis.rename(oldKeyName,newKeyName);
+    }
+
     public void addKey(String key,String type, String value)   {
         if (type.equals("string")) {
             jedis.set(key, value);
@@ -108,8 +112,10 @@ public class Instance {
        if(currentPageIndex>=pages.size()){
            if(cursor.equals("0")){
                //this was the last page, invalid operation
+               currentPageIndex--;
            }
            else {
+
                Page nextPage = new Page();
                if(cursor.equals("")){
                    cursor = "0";
