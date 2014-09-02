@@ -12,6 +12,7 @@ import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Created by kartik.k on 8/22/2014.
@@ -21,7 +22,7 @@ public class JedisHelperTests {
     Jedis jedis;
     @Before
     public void setupInstance(){
-        jedis = new Jedis("172.16.137.70",7005);
+        jedis = new Jedis("172.16.137.228",6379);
     }
 
     public void setupCluster(){
@@ -98,11 +99,29 @@ public class JedisHelperTests {
     @Test
     public void shouldAllowAddingIntegersToRedisInstance(){
         int noOfValues = 1000;
-        int offset = 109;
+        int noOfDataStructsOfEachType = 3;
         for(int i = 0;i<noOfValues;i++){
-            jedis.set(Integer.toString(i), Integer.toString(i + offset));
-            if(i%1000 == 0){
-                System.out.println(Integer.toString(i / 1000) + "k writes completed..");
+            String value = "value" + Integer.toString(i);
+            String key = "key" + Integer.toString(i);
+            String dataStructSuffix = Integer.toString(noOfDataStructsOfEachType);
+            switch (i%5){
+                case 0:
+                    jedis.set(key, value);
+                    break;
+                case 1:
+                    jedis.lpush("l"+dataStructSuffix,value);
+                    break;
+                case 2:
+                    jedis.hset("hash"+dataStructSuffix,key,value);
+                    break;
+                case 3:
+                    jedis.sadd("set"+dataStructSuffix,value);
+                    break;
+                case 4:
+                    jedis.zadd("zset"+dataStructSuffix,i%11,value);
+                    break;
+                default:
+                    fail();
             }
         }
 

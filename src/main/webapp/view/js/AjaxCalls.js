@@ -137,5 +137,72 @@ $(".sidebar-nav").click(function() {
     }
 );
 
+$("#list-content").click(function() {
 
+        var clickedKey = event.target.id.toString();
+        $.ajax(
+            {
+
+                url: "/view/getValueForAKey",
+                type: "POST",
+                dataType : "json",
+                data: "key=" + clickedKey,
+                success: function (jsonData) {
+                    var type = jsonData["type"];
+                    $("#value-container").remove();
+                    var json = jQuery.parseJSON(jsonData["json"]);
+                    var container;
+                    var appendToContainer;
+                    if(type ==="zset" || type ==="hash"){
+                        container = document.createElement("table");
+                        container.setAttribute("border","1");
+                        container.setAttribute("style","width:100%");
+                        var tr = document.createElement("tr");
+                        var keyHead = document.createElement("th");
+                        var valueHead = document.createElement("th");
+                        if(type==="zset"){
+                            $(keyHead).html("Member");
+                            $(valueHead).html("Score");
+                        }
+                        else{
+                            $(keyHead).html("Key");
+                            $(valueHead).html("Value");
+                        }
+                        $(tr).append(keyHead);
+                        $(tr).append(valueHead);
+                        $(container).append(tr);
+
+                        appendToContainer = function(key,value){
+                            var tr = document.createElement("tr");
+                            var keyCell = document.createElement("td");
+                            var valueCell = document.createElement("td");
+                            $(keyCell).html(key);
+                            $(valueCell).html(value);
+                            $(tr).append(keyCell);
+                            $(tr).append(valueCell);
+                            $(container).append(tr);
+                        }
+                    }
+                    else{
+                        container = document.createElement("ul");
+                        appendToContainer = function(key,value){
+                           var li = document.createElement("li");
+                            $(li).html(value);
+                            $(li).attr("id", value);
+                            $(container).append(li);
+                        }
+                    }
+                    container.setAttribute("id","value-container");
+                    for (var x in json) {
+                        appendToContainer(x,json[x]);
+                    }
+
+                    $("#keys-details").append(container);
+                }
+            }
+        );
+
+
+    }
+);
 
