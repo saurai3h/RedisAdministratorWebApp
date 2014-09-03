@@ -23,11 +23,6 @@
     <link rel="stylesheet" type="text/css" href="css/alertify.core.css">
     <link rel="stylesheet" type="text/css" href="css/alertify.bootstrap.css">
     <link rel="stylesheet" type="text/css" href="css/styles.css">
-    <style>
-        #listOfDataStructures li{
-            display: inline;
-        }
-    </style>
 
 </head>
 
@@ -44,7 +39,7 @@
 %>
 
 <div id="wrapper">
-    <div id="sidebar-wrapper" style="height: 70%">
+    <div id="sidebar-wrapper" style="background-color:wheat; height: 70%">
         <ul class="sidebar-nav">
             <li class="sidebar-brand">
                 <a href="#">
@@ -71,7 +66,7 @@
     </div>
     <div id="page-content-wrapper"  style="height: 70%">
         <div class="container-fluid">
-            <div id = "list-display" class="col-lg-6">
+            <div id = "list-display" class="col-lg-6" style="height: 100%">
                 <ul id="list-header" class="pager">
                     <li class="previous"><a id="prev" href="#">&larr; Older</a></li>
                     <li class="next"><a id="next" href="#">Newer &rarr;</a></li>
@@ -82,7 +77,7 @@
                 </ul>
             </div>
 
-            <div id ="keys-details" class="col-lg-6">
+            <div id ="keys-details" class="col-lg-6" style="height: 100%">
 
             </div>
         </div>

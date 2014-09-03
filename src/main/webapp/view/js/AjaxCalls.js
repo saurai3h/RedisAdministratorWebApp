@@ -23,6 +23,7 @@ $.ajax(
                     $(link).html(arr[x]);
                     $(link).attr("id",arr[x]);
                     $(link).attr("href","#");
+                    $(link).css("color","#3B5999");
                     $(li).append(link);
                     $("#sidebar-wrapper").find("ul").append(li);
                 }
@@ -72,7 +73,11 @@ $(document).off('click', '#deleteInstance').on('click', '#deleteInstance', funct
 });
 $(document).off('click', '.sidebar-nav').on('click', '.sidebar-nav', function() {
 
-        var hostPort = event.target.id.toString();
+        var clicked = event.target;
+        var hostPort = clicked.id.toString();
+
+        $(".sidebar-nav li a").css("color","#3B5999");
+        $(clicked).css("color","green");
 
         $.ajax(
             {
