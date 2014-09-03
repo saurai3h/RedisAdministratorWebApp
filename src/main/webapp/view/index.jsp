@@ -51,13 +51,6 @@
 
 
 
-        <script>
-            $(document).ready(function(){
-                $("#driver").click(function(){
-                    $("#stage").load("<jsp:include page="/Controller/FetchPageServlet.java" flush="true" />");
-                });
-            });
-        </script>
 
     </div>
 

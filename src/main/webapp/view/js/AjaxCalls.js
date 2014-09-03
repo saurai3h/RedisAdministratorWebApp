@@ -31,7 +31,7 @@ $.ajax(
     }
 );
 
-$(".sidebar-nav").click(function() {
+$(".sidebar-nav").click(function(event) {
 
         var hostPort = event.target.id.toString();
 
@@ -137,9 +137,10 @@ $(".sidebar-nav").click(function() {
     }
 );
 
-$("#list-content").click(function() {
-
+$("#list-content").click(function(event) {
+        Console.log("herr");
         var clickedKey = event.target.id.toString();
+        alertify.alert("are you sure?");
         $.ajax(
             {
 
@@ -204,5 +205,28 @@ $("#list-content").click(function() {
 
 
     }
+
 );
 
+$("#start-monitor").click()(function(){
+    alertify.alert("starting");
+    $.ajax(
+        {
+            url: "/view/monitor",
+            type: "POST",
+            data: "shouldStartMonitor="+true
+
+        }
+    );
+});
+
+$("#stop-monitor").click()(function(){
+    alertify.alert("stopping");
+    $.ajax(
+        {
+            url: "/view/monitor",
+            type: "POST",
+            data: "shouldStartMonitor="+false
+        }
+    );
+});

@@ -78,6 +78,8 @@
 
             </div>
         </div>
+        <button class="btn btn-default" type="button" id="start-monitor">Start Monitor</button>
+        <button class="btn btn-default" type="button" id="stop-monitor">Stop Monitor</button>
     </div>
 
 </div>

@@ -35,34 +35,5 @@ public class InstancePage extends Page {
         return new InstancePage(cursorForScan,jedis,pageSize);
     }
 
-    public Map<String,Map<String,String>> getInfoAsMap(){
-        String infoOutput = jedis.info();
-        String[] sections = infoOutput.split("\n#");
-        Map<String,Map<String,String>> mappedInfo = new HashMap<String, Map<String, String>>();
-        for(String section:sections){
-            Map<String,String> sectionMap = new HashMap<String, String>();
-            String[] keyValuePairsInInfo = section.split("\n");
-            String sectionName = keyValuePairsInInfo[0];
-            for(String keyValuePair:keyValuePairsInInfo){
-                String[] keyValueArray = keyValuePair.split(":");
-                if(keyValueArray.length > 2){
-                    System.out.println("key-value pair expected, got more than 2 things");
-                    return null;
-                }
-                if(keyValueArray.length == 1){
-                    if(!sectionName.equals(keyValueArray[0])){
-                        System.out.println("key-value pair expected, got only one thing");
-                    };
-                }
-                if(keyValueArray.length == 2){
-                    sectionMap.put(keyValueArray[0],keyValueArray[1]);
-                }
-                if(keyValueArray.length < 1){
-                    System.out.println("key-value pair expected, got an empty array");
-                }
-            }
-            mappedInfo.put(sectionName,sectionMap);
-        }
-        return mappedInfo;
-    }
+
 }
