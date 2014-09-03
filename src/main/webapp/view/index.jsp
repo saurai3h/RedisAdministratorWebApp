@@ -10,6 +10,8 @@
     <link rel="stylesheet" type="text/css" href="css/alertify.default.css">
     <link rel="stylesheet" type="text/css" href="css/alertify.core.css">
     <link rel="stylesheet" type="text/css" href="css/alertify.bootstrap.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
 </head>
 
 <body>
@@ -45,7 +47,25 @@
                 <div class="col-md-12"></div>
             </div>
         </div>
+
+
+
+
+        <script>
+            $(document).ready(function(){
+                $("#driver").click(function(){
+                    $("#stage").load("<jsp:include page="/Controller/FetchPageServlet.java" flush="true" />");
+                });
+            });
+        </script>
+
     </div>
+
+    <p>Enter your name and click on the button:</p>
+    <div id="stage">
+        STAGE
+    </div>
+    <input type="button" id="driver" value="Show Result" />
 </div>
 
 <!-- script references -->
@@ -76,6 +96,7 @@ function formValidator()    {
 }
 
 </script>
+<!-- script references -->
 <script src="js/alertify.js"></script>
 <script src="js/alertify.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
