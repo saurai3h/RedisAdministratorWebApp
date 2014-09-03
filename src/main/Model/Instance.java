@@ -1,5 +1,6 @@
 package Model;
 
+import JedisHelper.Monitor;
 import com.google.gson.Gson;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.Jedis;
@@ -20,6 +21,7 @@ public class Instance {
     Jedis jedis;
     LinkedList<Page> pages;
     Page searchPage;
+    Monitor monitor;
 
     public int getCurrentPageIndex() {
         return currentPageIndex;
@@ -214,6 +216,16 @@ public class Instance {
         map.put("json",JsonOfValue);
         map.put("type",type);
         return map;
+    }
+
+    public void startMonitor(){
+        monitor = new Monitor(new HostAndPort("172.16.137.228",7000),this.hostAndPort);
+        Thread t = new Thread(monitor);
+        t.start();
+    }
+
+    public void stopMonitor(){
+        monitor.terminate();
     }
 }
 

@@ -31,6 +31,10 @@
         <servlet-class>Controller.GetValueServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>MonitorStartAndStop</servlet-name>
+        <servlet-class>Controller.MonitorServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>AddInstance</servlet-name>
         <servlet-class>Controller.AddInstanceServlet</servlet-class>
     </servlet>
@@ -94,5 +98,9 @@
     <servlet-mapping>
         <servlet-name>getValueForAKey</servlet-name>
         <url-pattern>/view/getValueForAKey</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MonitorStartAndStop</servlet-name>
+        <url-pattern>/view/monitor</url-pattern>
     </servlet-mapping>
 </web-app>

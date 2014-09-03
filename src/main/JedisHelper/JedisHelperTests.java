@@ -82,17 +82,19 @@ public class JedisHelperTests {
     }
 
     @Test
-    public void shouldHaveCorrectInfo(){
-        InstancePage instancePage = new InstancePage(jedis,12);
-        Map<String,Map<String,String>> mappedInfo = instancePage.getInfoAsMap();
-        System.out.println(mappedInfo.size());
-        for(String key : mappedInfo.keySet()){
-            System.out.println(mappedInfo.get(key).size());
-            System.out.println(key);
-            for(String innerKey:mappedInfo.get(key).keySet()){
-                System.out.println(innerKey);
-            }
-        }
+    public void shouldAllowMuultiThreading(){
+        ThreadingTester threadingTester = new ThreadingTester("testing",1000);
+        Thread t = new Thread(threadingTester);
+        t.run();
+    }
+
+    @Test
+    public void shouldStoreInfo() {
+        HostAndPort instance = new HostAndPort("172.16.137.228",6379);
+        HostAndPort infoStore = new HostAndPort("172.16.137.228",7000);
+        Monitor monitor = new Monitor(infoStore,instance);
+        Thread t = new Thread(monitor);
+        t.run();
 
     }
 
