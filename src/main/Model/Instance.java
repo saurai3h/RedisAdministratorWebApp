@@ -28,15 +28,18 @@ public class Instance {
     int expectedPageSize;
 
     public Instance(String host, int port)  {
-        expectedPageSize = 30;
+        searchPage = new Page();
+        expectedPageSize = 15;
         hostAndPort = new HostAndPort(host,port);
         jedis = new Jedis(host,port);
         pages = new LinkedList<Page>();
-        searchPage = new Page();
         currentPageIndex = -1;
         cursor = "";
         goToNextPage();
+    }
 
+    public boolean keyExists(String key)  {
+        return jedis.exists(key);
     }
 
     public void renameKey(String oldKeyName, String newKeyName){
@@ -137,14 +140,15 @@ public class Instance {
         }
     }
 
-    public void search(String key){
+    public boolean search(String key){
         if(jedis.exists(key)){
             ArrayList<String> searchPageList = new ArrayList<String>();
-            searchPageList.add(jedis.get(key));
+            searchPageList.add(key);
             searchPage.setKeyList(searchPageList);
+            return true;
         }
         else
-            ;
+            return false;
     }
 
     private List<String> scan(int count){

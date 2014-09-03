@@ -22,8 +22,16 @@
 
     <title>Redis Application</title>
     <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
-
     <link href="css/simple-sidebar.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/alertify.default.css">
+    <link rel="stylesheet" type="text/css" href="css/alertify.core.css">
+    <link rel="stylesheet" type="text/css" href="css/alertify.bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <style>
+        #listOfDataStructures li{
+            display: inline;
+        }
+    </style>
 
 </head>
 
@@ -40,8 +48,7 @@
 %>
 
 <div id="wrapper">
-
-    <div id="sidebar-wrapper">
+    <div id="sidebar-wrapper" style="height: 70%">
         <ul class="sidebar-nav">
             <li class="sidebar-brand">
                 <a href="#">
@@ -51,35 +58,113 @@
         </ul>
     </div>
     <div class="sidebar-footer">
-        <div class="input-group">
-            <input type="text" class="form-control" id="host" onchange="return hostValid()">
-            <span class="input-group-btn">
-            <button class="btn btn-default" type="button">Add host</button>
-            </span>
-        </div>
+            <div class="input-group">
+                <input type="text" class="form-control" id="host" placeholder="hostname" onchange="return hostValid()">
+                <input type="text" class="form-control" id="port" placeholder="portnumber" onchange="return portValid()">
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" style="width : 120px;top : 10px; left:70px;" data-toggle="dropdown">
+                    Add or Delete <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu" style="width : 250px">
+                    <li><a id = "addInstance" href="#" onclick="return validator()">Add</a></li>
+                    <li class="divider"></li>
+                    <li><a id = "deleteInstance" href="#" onclick="return validator()">Delete</a></li>
+                </ul>
+            </div>
     </div>
-    <div id="page-content-wrapper">
+    <div id="page-content-wrapper"  style="height: 70%">
         <div class="container-fluid">
             <div id = "list-display" class="col-lg-6">
-
-                <div class="row">
-                    <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle ListView</a>
-                </div>
+                <ul id="list-header" class="pager">
+                    <li class="previous"><a id="prev" href="#">&larr; Older</a></li>
+                    <li class="next"><a id="next" href="#">Newer &rarr;</a></li>
+                </ul>
 
                 <ul id="list-content">
 
                 </ul>
-                <ul id="list-footer" class="pager">
-                    <li class="previous"><a id="prev" href="#">&larr; Older</a></li>
-                    <li class="next"><a id="next" href="#">Newer &rarr;</a></li>
-                </ul>
             </div>
+
             <div id ="keys-details" class="col-lg-6">
 
             </div>
         </div>
     </div>
+    <div class="list-footer">
+        <div id="secondPanel" class="col-lg-6">
+            <div id="addKey" class="col-lg-8">
+                <ul id = "listOfDataStructures" class="nav nav-tabs" role="tablist">
+                    <li><a style = "font-size: 20px;" href="#tab1" data-toggle="tab">String</a></li>
+                    <li><a style = "font-size: 20px;" href="#tab2" data-toggle="tab">List</a></li>
+                    <li><a style = "font-size: 20px;" href="#tab3" data-toggle="tab">Set</a></li>
+                    <li><a style = "font-size: 20px;" href="#tab4" data-toggle="tab">Hash</a></li>
+                    <li><a style = "font-size: 20px;" href="#tab5" data-toggle="tab">Sorted-Set</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane" id="tab1">
+                        <div style="width: 480px;" class="input-group">
+                            <input type="text" class="form-control" id="keyAdd1" placeholder="key">
+                            <input type="text" class="form-control" id="valueAdd1" placeholder="value">
+                        </div>
+                        <div class="btn-group">
+                            <button  style = "width : 100px;left:200px" id="Add1" type="button" class="btn btn-primary">Add</button>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab2">
+                        <div style="width: 480px;" class="input-group">
+                            <input type="text" class="form-control" id="keyAdd2" placeholder="key">
+                            <input type="text" class="form-control" id="valueAdd2" placeholder="value">
+                        </div>
+                        <div class="btn-group">
+                            <button style = "width : 100px;left:200px" id="Add2" type="button" class="btn btn-primary">Add</button>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab3">
+                        <div style="width: 480px;"  class="input-group">
+                            <input type="text" class="form-control" id="keyAdd3" placeholder="key">
+                            <input type="text" class="form-control" id="valueAdd3" placeholder="value">
+                        </div>
+                        <div class="btn-group">
+                            <button style = "width : 100px;left:200px" id="Add3" type="button" class="btn btn-primary">Add</button>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab4">
+                        <div style="width: 480px;" class="input-group">
+                            <input type="text" class="form-control" id="keyAdd4" placeholder="key">
+                            <input type="text" class="form-control" id="fieldAdd4" placeholder="field">
+                            <input type="text" class="form-control" id="valueAdd4" placeholder="value">
+                        </div>
+                        <div class="btn-group">
+                            <button style = "width : 100px;left:200px" id="Add4" type="button" class="btn btn-primary">Add</button>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab5">
+                        <div style="width: 480px;" class="input-group">
+                            <input type="text" class="form-control" id="keyAdd5" placeholder="key">
+                            <input type="text" class="form-control" id="scoreAdd5" placeholder="score">
+                            <input type="text" class="form-control" id="valueAdd5" placeholder="value">
+                        </div>
+                        <div class="btn-group">
+                            <button style = "width : 100px;left:200px" id="Add5" type="button" class="btn btn-primary">Add</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="searchOrDeleteKey" class="col-lg-4">
+                <div class="input-group" style="width: 100%">
+                    <input type="text" class="form-control" id="keyDeleteSearch6" placeholder="key">
+                </div>
+                <div class="btn-group">
+                    <button style = "width : 114px;top : 10px;" id="Delete6" type="button" class="btn btn-primary">Delete</button>
 
+                    <button style = "width : 113px;top : 10px;" id="Search6" type="button" class="btn btn-primary">Search</button>
+                </div>
+            </div>
+        </div>
+        <div id="thirdPanel" class="col-lg-6">
+        </div>
+    </div>
 </div>
 
 <!--[if lt IE 9]>
@@ -87,14 +172,54 @@
 <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
 
+<script src="js/alertify.js"></script>
+<script src="js/alertify.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <script src="js/AjaxCalls.js"></script>
-<script>
-    $("#menu-toggle").click(function(e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
-    });
+<script type="text/javascript">
+    hostValid = function hostValidator()    {
+
+        var validHostNameRegex = /^(?=.{1,255}$)[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?(?:\.[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?)*\.?$/;
+
+        var hostEntered = document.getElementById("host");
+
+        if(hostEntered.value.match(validHostNameRegex))   {
+            alertify.success("Allowed input");
+            return true;
+        }
+        else
+        {
+            alertify.error("Invalid Hostname");
+            return false;
+        }
+    };
+
+    portValid = function portValidator()    {
+        var validPortNumber = /^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$/;
+
+        var portEntered = document.getElementById("port");
+
+        if(portEntered.value.match(validPortNumber))   {
+            alertify.success("Allowed input");
+            return true;
+        }
+        else
+        {
+            alertify.error("Invalid Portnumber");
+            return false;
+        }
+    };
+
+    function validator()    {
+        if(hostValid() && portValid())
+            return true;
+        else {
+            alertify.alert("Invalid Server instance added or deleted.");
+            return false;
+        }
+    }
+
 </script>
 </body>
 

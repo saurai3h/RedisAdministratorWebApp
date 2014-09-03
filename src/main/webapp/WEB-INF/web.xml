@@ -26,6 +26,26 @@
         <servlet-name>NextPage</servlet-name>
         <servlet-class>Controller.NextPageServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AddInstance</servlet-name>
+        <servlet-class>Controller.AddInstanceServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteInstance</servlet-name>
+        <servlet-class>Controller.DeleteInstanceServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddKeys</servlet-name>
+        <servlet-class>Controller.AddKeyServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteKeys</servlet-name>
+        <servlet-class>Controller.DeleteKeyServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SearchKeys</servlet-name>
+        <servlet-class>Controller.SearchKeyServlet</servlet-class>
+    </servlet>
 
     <servlet-mapping>
         <servlet-name>login</servlet-name>
@@ -46,5 +66,25 @@
     <servlet-mapping>
         <servlet-name>NextPage</servlet-name>
         <url-pattern>/view/Next</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddInstance</servlet-name>
+        <url-pattern>/view/Add</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteInstance</servlet-name>
+        <url-pattern>/view/Delete</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddKeys</servlet-name>
+        <url-pattern>/view/AddKey</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteKeys</servlet-name>
+        <url-pattern>/view/DeleteKey</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SearchKeys</servlet-name>
+        <url-pattern>/view/SearchKey</url-pattern>
     </servlet-mapping>
 </web-app>
