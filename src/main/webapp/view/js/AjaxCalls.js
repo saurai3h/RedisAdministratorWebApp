@@ -30,7 +30,7 @@ $.ajax(
         }
     }
 );
-$("#addInstance").click(function () {
+$(document).off('click', '#addInstance').on('click', '#addInstance', function(){
     var host = document.getElementById("host").value.toString();
     var port = document.getElementById("port").value.toString();
     $.ajax(
@@ -51,7 +51,7 @@ $("#addInstance").click(function () {
         }
     );
 });
-$("#deleteInstance").click(function () {
+$(document).off('click', '#deleteInstance').on('click', '#deleteInstance', function() {
     var host = document.getElementById("host").value.toString();
     var port = document.getElementById("port").value.toString();
     $.ajax(
@@ -70,7 +70,7 @@ $("#deleteInstance").click(function () {
         }
     );
 });
-$(".sidebar-nav").click(function() {
+$(document).off('click', '.sidebar-nav').on('click', '.sidebar-nav', function() {
 
         var hostPort = event.target.id.toString();
 
@@ -442,7 +442,7 @@ $(".sidebar-nav").click(function() {
             }
         );
 
-        $("#prev").click(function () {
+        $(document).off('click', '#prev').on('click', '#prev', function(){
 
                 $.ajax(
                     {
@@ -477,7 +477,7 @@ $(".sidebar-nav").click(function() {
             }
         );
 
-        $("#next").click(function () {
+        $(document).off('click', '#next').on('click', '#next', function() {
 
                 $.ajax(
                     {
@@ -511,75 +511,77 @@ $(".sidebar-nav").click(function() {
 
             }
         );
-    }
-);
 
-$("#list-content").click(function() {
+        $(document).off('click', '#list-content').on('click', '#list-content', function() {
 
-        var clickedKey = event.target.id.toString();
-        $.ajax(
-            {
+                var clickedKey = event.target.id.toString();
+                $.ajax(
+                    {
 
-                url: "/view/getValueForAKey",
-                type: "POST",
-                dataType : "json",
-                data: "key=" + clickedKey,
-                success: function (jsonData) {
-                    var type = jsonData["type"];
-                    $("#value-container").remove();
-                    var json = jQuery.parseJSON(jsonData["json"]);
-                    var container;
-                    var appendToContainer;
-                    if(type ==="zset" || type ==="hash"){
-                        container = document.createElement("table");
-                        container.setAttribute("border","1");
-                        container.setAttribute("style","width:100%");
-                        var tr = document.createElement("tr");
-                        var keyHead = document.createElement("th");
-                        var valueHead = document.createElement("th");
-                        if(type==="zset"){
-                            $(keyHead).html("Member");
-                            $(valueHead).html("Score");
-                        }
-                        else{
-                            $(keyHead).html("Key");
-                            $(valueHead).html("Value");
-                        }
-                        $(tr).append(keyHead);
-                        $(tr).append(valueHead);
-                        $(container).append(tr);
+                        url: "/view/getValueForAKey",
+                        type: "POST",
+                        dataType : "json",
+                        data: "key=" + clickedKey,
+                        success: function (jsonData) {
+                            var type = jsonData["type"];
+                            $("#value-container").remove();
+                            var json = jQuery.parseJSON(jsonData["json"]);
+                            var container;
+                            var appendToContainer;
+                            if(type ==="zset" || type ==="hash"){
+                                container = document.createElement("table");
+                                container.setAttribute("border","1");
+                                container.setAttribute("style","width:100%");
+                                var tr = document.createElement("tr");
+                                var keyHead = document.createElement("th");
+                                var valueHead = document.createElement("th");
+                                if(type==="zset"){
+                                    $(keyHead).html("Member");
+                                    $(valueHead).html("Score");
+                                }
+                                else{
+                                    $(keyHead).html("Key");
+                                    $(valueHead).html("Value");
+                                }
+                                $(tr).append(keyHead);
+                                $(tr).append(valueHead);
+                                $(container).append(tr);
 
-                        appendToContainer = function(key,value){
-                            var tr = document.createElement("tr");
-                            var keyCell = document.createElement("td");
-                            var valueCell = document.createElement("td");
-                            $(keyCell).html(key);
-                            $(valueCell).html(value);
-                            $(tr).append(keyCell);
-                            $(tr).append(valueCell);
-                            $(container).append(tr);
+                                appendToContainer = function(key,value){
+                                    var tr = document.createElement("tr");
+                                    var keyCell = document.createElement("td");
+                                    var valueCell = document.createElement("td");
+                                    $(keyCell).html(key);
+                                    $(valueCell).html(value);
+                                    $(tr).append(keyCell);
+                                    $(tr).append(valueCell);
+                                    $(container).append(tr);
+                                }
+                            }
+                            else{
+                                container = document.createElement("ul");
+                                appendToContainer = function(key,value){
+                                    var li = document.createElement("li");
+                                    $(li).html(value);
+                                    $(li).attr("id", value);
+                                    $(container).append(li);
+                                }
+                            }
+                            container.setAttribute("id","value-container");
+                            for (var x in json) {
+                                appendToContainer(x,json[x]);
+                            }
+
+                            $("#keys-details").append(container);
                         }
                     }
-                    else{
-                        container = document.createElement("ul");
-                        appendToContainer = function(key,value){
-                           var li = document.createElement("li");
-                            $(li).html(value);
-                            $(li).attr("id", value);
-                            $(container).append(li);
-                        }
-                    }
-                    container.setAttribute("id","value-container");
-                    for (var x in json) {
-                        appendToContainer(x,json[x]);
-                    }
+                );
 
-                    $("#keys-details").append(container);
-                }
+
             }
         );
-
-
     }
 );
+
+
 
