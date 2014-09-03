@@ -1,14 +1,10 @@
 <%@ page import="Model.Login" %>
-<%@ page import="java.util.List" %>
-<%@ page import="com.google.gson.Gson" %>
 <%@ page import="java.sql.Connection" %>
 <%@ page import="java.sql.DriverManager" %>
-<%@ page import="java.sql.Statement" %>
 <%@ page import="java.sql.ResultSet" %>
-<%@ page import="com.google.gson.JsonArray" %>
-<%@ page import="Model.InstanceHelper" %>
+<%@ page import="java.sql.Statement" %>
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="redis.clients.jedis.HostAndPort" %>
+<%@ page import="java.util.List" %>
 <!DOCTYPE html>
 <html lang="en">
 

@@ -48,24 +48,7 @@
             </div>
         </div>
 
-
-
-
-        <script>
-            $(document).ready(function(){
-                $("#driver").click(function(){
-                    $("#stage").load("<jsp:include page="/Controller/FetchPageServlet.java" flush="true" />");
-                });
-            });
-        </script>
-
     </div>
-
-    <p>Enter your name and click on the button:</p>
-    <div id="stage">
-        STAGE
-    </div>
-    <input type="button" id="driver" value="Show Result" />
 </div>
 
 <!-- script references -->
