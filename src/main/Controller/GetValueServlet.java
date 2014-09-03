@@ -25,6 +25,7 @@ public class GetValueServlet extends HttpServlet{
                 String key  = request.getParameter("key");
                 Instance clickedInstance = (Instance)request.getSession().getAttribute("instance");
                 Map<String,String> map = clickedInstance.getJsonValueOfAKey(key);
+                System.out.println(new Gson().toJson(map));
                 out.write(new Gson().toJson(map));
             }
             catch (IOException e) {

@@ -26,17 +26,14 @@ public class AddInstanceServlet extends HttpServlet {
 
         try {
             out = response.getWriter();
-            String host = request.getParameter("addThisHost");
-            String port = request.getParameter("addThisPort");
+            String host = (String)request.getParameter("addThisHost");
+            String port = (String)request.getParameter("addThisPort");
 
-            InstanceHelper.add(new HostAndPort(host,Integer.parseInt(port)));
-
-            RequestDispatcher rd = request.getRequestDispatcher("RedisApplication.jsp");
-            try {
-                rd.forward(request,response);
-            } catch (ServletException e) {
-                e.printStackTrace();
-            }
+            boolean didAdd = InstanceHelper.add(new HostAndPort(host,Integer.parseInt(port)));
+            if(didAdd)
+                out.write("true");
+            else
+                out.write("false");
         }
         catch (IOException e) {
             out.write("false");

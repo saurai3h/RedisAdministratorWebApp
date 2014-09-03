@@ -14,7 +14,7 @@ public class InstanceHelper {
     static final String USER = "root";
     static final String PASS = "password";
 
-    public static void add(HostAndPort hostAndPort) {
+    public static boolean add(HostAndPort hostAndPort) {
 
         try {
             Class.forName(JDBC_DRIVER);
@@ -24,17 +24,39 @@ public class InstanceHelper {
             String sql = "insert into instances (HostName,PortNumber) VALUES" +
                     "(\"" + hostAndPort.getHost() + "\", \"" +
                     Integer.toString(hostAndPort.getPort()) + "\");" ;
-
+            stmt.executeUpdate(sql);
             conn.close();
             stmt.close();
+            return true;
 
        } catch (SQLException e) {
-            e.printStackTrace();
+            return false;
+
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            return false;
         }
     }
 
+    public static boolean delete(HostAndPort hostAndPort) {
+
+        try {
+            Class.forName(JDBC_DRIVER);
+
+            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            Statement stmt = conn.createStatement();
+            String sql = "delete from instances where HostName = " +
+                    "\"" + hostAndPort.getHost() + "\"" + "and PortNumber = " +
+                    "\"" + Integer.toString(hostAndPort.getPort()) + "\";";
+            stmt.executeUpdate(sql);
+            conn.close();
+            stmt.close();
+            return true;
+        } catch (SQLException e) {
+            return false;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
 
     public static ArrayList<HostAndPort> getAllStoredInstances(){
         try {

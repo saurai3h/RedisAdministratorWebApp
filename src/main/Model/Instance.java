@@ -8,6 +8,13 @@ import redis.clients.jedis.ScanParams;
 import redis.clients.jedis.ScanResult;
 import java.util.*;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+/**
+ * Created by Saurabh Paliwal on 27/8/14.
+ */
 public class Instance {
 
     HostAndPort hostAndPort;
@@ -25,15 +32,17 @@ public class Instance {
     int expectedPageSize;
 
     public Instance(String host, int port)  {
-        expectedPageSize = 30;
+        searchPage = new Page();
+        expectedPageSize = 15;
         hostAndPort = new HostAndPort(host,port);
         jedis = new Jedis(host,port);
         pages = new LinkedList<Page>();
-        searchPage = new Page();
         currentPageIndex = -1;
         cursor = "";
         goToNextPage();
-
+    }    
+    public boolean keyExists(String key) {
+        return jedis.exists(key);
     }
 
     public void renameKey(String oldKeyName, String newKeyName){
@@ -103,6 +112,7 @@ public class Instance {
     }
 
    public void goToNextPage(){
+
        currentPageIndex++;
        if(currentPageIndex>=pages.size()){
            if(cursor.equals("0")){
@@ -110,6 +120,7 @@ public class Instance {
                currentPageIndex--;
            }
            else {
+
                Page nextPage = new Page();
                if(cursor.equals("")){
                    cursor = "0";
@@ -120,7 +131,6 @@ public class Instance {
 
            }
        }
-       System.out.println(currentPageIndex);
    }
 
     public void goToPrevPage(){
@@ -130,15 +140,17 @@ public class Instance {
         else {
             currentPageIndex--;
         }
-        System.out.println(currentPageIndex);
     }
 
-    public void search(String key){
+    public boolean search(String key){
         if(jedis.exists(key)){
             ArrayList<String> searchPageList = new ArrayList<String>();
-            searchPageList.add(jedis.get(key));
+            searchPageList.add(key);
             searchPage.setKeyList(searchPageList);
+            return true;
         }
+        else
+            return false;
     }
 
     private List<String> scan(int count){
