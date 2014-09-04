@@ -1974,13 +1974,21 @@
     <table name="instances" schema="" catalog="testjedis" type="TABLE">
       <column name="HostName" sqlType="VARCHAR" precision="50" scale="0" nullable="false" jdbcType="12" def="Jyc="/>
       <column name="PortNumber" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" def="MA=="/>
+      <column name="IsMonitored" sqlType="BIT" precision="1" scale="0" nullable="false" jdbcType="-7"/>
       <primary-key name="PRIMARY" columns="HostName,PortNumber"/>
     </table>
     <table name="users" schema="" catalog="testjedis" type="TABLE">
-      <column name="UserName" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="UserName" sqlType="VARCHAR" precision="255" scale="0" nullable="false" jdbcType="12" def="Jyc="/>
       <column name="PassWord" sqlType="VARBINARY" precision="60" scale="0" nullable="true" jdbcType="-3"/>
-      <column name="UserID" sqlType="INT UNSIGNED" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
-      <primary-key name="PRIMARY" columns="UserID"/>
+      <primary-key name="PRIMARY" columns="UserName"/>
+      <exported-key name="visibleinstances_ibfk_1" table="visibleinstances" schema="" catalog="testjedis" columns="UserName"/>
+    </table>
+    <table name="visibleinstances" schema="" catalog="testjedis" type="TABLE">
+      <column name="UserName" sqlType="VARCHAR" precision="255" scale="0" nullable="false" jdbcType="12" def="Jyc="/>
+      <column name="HostName" sqlType="VARCHAR" precision="50" scale="0" nullable="false" jdbcType="12"/>
+      <column name="PortNumber" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="UserName,HostName,PortNumber"/>
+      <foreign-key name="visibleinstances_ibfk_1" columns="UserName" ref-table="users" ref-schema="" ref-catalog="testjedis" ref-columns="UserName" update-rule="3" delete-rule="3" deferrability="2"/>
     </table>
   </data-source>
   <data-source source="LOCAL" name="MySQL - @localhost" uuid="046e42c3-6783-4aa4-be6e-cd8f41b42af3">

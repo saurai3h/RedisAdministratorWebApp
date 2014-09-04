@@ -1,6 +1,6 @@
 package Model;
 
-import JedisHelper.RedisClusterForRedisAdmin;
+import JedisClusterHelper.RedisClusterForRedisAdmin;
 import redis.clients.jedis.HostAndPort;
 
 import java.sql.*;

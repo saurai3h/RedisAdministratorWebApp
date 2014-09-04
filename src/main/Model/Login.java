@@ -5,7 +5,7 @@ public class Login {
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 
     //Change this according to the database being used.
-    static final String DB_URL = "jdbc:mysql://172.16.137.79/testJedis";
+    static final String DB_URL = "jdbc:mysql://172.16.137.79/testjedis";
 
     static final String USER = "root";
     static final String PASS = "password";

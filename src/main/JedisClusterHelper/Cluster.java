@@ -1,4 +1,4 @@
-package JedisHelper;
+package JedisClusterHelper;
 import redis.clients.jedis.*;
 
 import java.util.HashSet;

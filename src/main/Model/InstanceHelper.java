@@ -21,9 +21,10 @@ public class InstanceHelper {
 
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
             Statement stmt = conn.createStatement();
-            String sql = "insert into instances (HostName,PortNumber) VALUES" +
+            String sql = "insert into instances (HostName,PortNumber,IsMonitored) VALUES" +
                     "(\"" + hostAndPort.getHost() + "\", \"" +
-                    Integer.toString(hostAndPort.getPort()) + "\");" ;
+                    Integer.toString(hostAndPort.getPort()) + "\"," +
+                    Integer.toString(0) + ");" ;
             stmt.executeUpdate(sql);
             conn.close();
             stmt.close();

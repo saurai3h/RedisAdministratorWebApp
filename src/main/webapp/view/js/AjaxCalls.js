@@ -513,9 +513,7 @@ $(document).off('click', '.sidebar-nav').on('click', '.sidebar-nav', function() 
         );
     }
 );
-
-$("#list-content").click(function() {
-
+$(document).off('click', '#list-content').on('click', '#list-content', function(){
         var clickedKey = event.target.id.toString();
         $.ajax(
             {
@@ -581,8 +579,7 @@ $("#list-content").click(function() {
     }
 
 );
-
-$("#start-monitor").click()(function(){
+$(document).off('click', '#start-monitor').on('click', '#start-monitor', function(){
     alertify.alert("starting");
     $.ajax(
         {
@@ -594,7 +591,7 @@ $("#start-monitor").click()(function(){
     );
 });
 
-$("#stop-monitor").click()(function(){
+$(document).off('click', '#stop-monitor').on('click', '#stop-monitor', function(){
     alertify.alert("stopping");
     $.ajax(
         {

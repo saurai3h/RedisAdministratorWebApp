@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import JedisHelper.RedisClusterForRedisAdmin;
+import JedisClusterHelper.RedisClusterForRedisAdmin;
 import Model.*;
 import redis.clients.jedis.HostAndPort;
 

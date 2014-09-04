@@ -1,4 +1,4 @@
-package JedisHelper;
+package JedisClusterHelper;
 
 import java.util.HashSet;
 import java.util.Set;

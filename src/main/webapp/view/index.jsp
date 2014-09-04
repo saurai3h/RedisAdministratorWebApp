@@ -36,13 +36,13 @@
                     <div class="form-group">
                         <button class="btn btn-primary btn-lg btn-block" type="submit" onclick="return formValidator()">Sign In</button>
                     </div>
-                    <%
-                        session.setAttribute("hasLoadedLoginSuccessBefore",false);
-                    %>
                 </form>
 
             </div>
 
+            <%
+                session.setAttribute("hasLoadedLoginSuccessBefore",false);
+            %>
             <div class="modal-footer">
                 <div class="col-md-12"></div>
             </div>

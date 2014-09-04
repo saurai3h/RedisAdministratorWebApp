@@ -1,5 +1,6 @@
-package JedisHelper;
+package JedisClusterHelper;
 
+import Model.Monitor;
 import org.junit.Before;
 import org.junit.Test;
 import redis.clients.jedis.HostAndPort;
@@ -7,7 +8,6 @@ import redis.clients.jedis.Jedis;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -81,18 +81,12 @@ public class JedisHelperTests {
         assertEquals("not all/more than all keys were returned",1000,setOfAllKeys.size());
     }
 
-    @Test
-    public void shouldAllowMuultiThreading(){
-        ThreadingTester threadingTester = new ThreadingTester("testing",1000);
-        Thread t = new Thread(threadingTester);
-        t.run();
-    }
 
     @Test
     public void shouldStoreInfo() {
         HostAndPort instance = new HostAndPort("172.16.137.228",6379);
         HostAndPort infoStore = new HostAndPort("172.16.137.228",7000);
-        Monitor monitor = new Monitor(infoStore,instance);
+        Monitor monitor = new Monitor(infoStore,instance,10000);
         Thread t = new Thread(monitor);
         t.run();
 
