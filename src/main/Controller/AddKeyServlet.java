@@ -1,9 +1,7 @@
 package Controller;
 
 import Model.Instance;
-import Model.InstanceHelper;
 import com.google.gson.Gson;
-import redis.clients.jedis.HostAndPort;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +18,7 @@ public class AddKeyServlet extends HttpServlet {
 
         response.setContentType("text/html");
         PrintWriter out= null;
-
+        System.out.println("adding keys..");
         try {
             out = response.getWriter();
             String type = (String)request.getParameter("typeOfKey");
@@ -28,26 +26,37 @@ public class AddKeyServlet extends HttpServlet {
             String value = (String)request.getParameter("valueOfKey");
             String optionalValue = (String)request.getParameter("optionalValueOfKey");
 
+            System.out.println("type,key,val,optval = "+
+            type+"," +key+","+value+","+optionalValue+",");
             Instance instance = (Instance)request.getSession().getAttribute("instance");
 
             if(key != null && value != null && type != null && optionalValue != null && !key.isEmpty() && !value.isEmpty() && !type.isEmpty()&& !optionalValue.isEmpty() ) {
+                System.out.println("valid");
                 if (instance.keyExists(key)) {
+                    System.out.println("exists");
                     out.write("existsAlready");
                 } else if (type.equals("string") || type.equals("set") || type.equals("list")) {
+                    System.out.println("good");
                     instance.addKey(key, type, value);
-                    String listOfKeys = new Gson().toJson(instance.getCurrentPage().getKeyList());
-                    out.write(listOfKeys);
-                } else if (type.equals("sortedSet") || type.equals("hashMap")) {
+                    out.write("success");
+                } else if (type.equals("zset") || type.equals("hash")) {
+                    System.out.println("goodie");
                     instance.addKey(key, type, value, optionalValue);
-                    String listOfKeys = new Gson().toJson(instance.getCurrentPage().getKeyList());
-                    out.write(listOfKeys);
-                } else
+                    out.write("success");
+                } else{
+                    System.out.println(type + "invalid");
                     out.write("invalidDataStructure");
+                }
+
             }
-            else
+            else{
+                System.out.println("null");
                 out.write("KeyNull");
+            }
+
         }
         catch (IOException e) {
+            System.out.println("exception");
             out.write("false");
             e.printStackTrace();
         }

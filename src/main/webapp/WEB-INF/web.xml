@@ -19,6 +19,11 @@
         <servlet-class>Controller.InitialPageServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>IntializationServlet</servlet-name>
+        <servlet-class>Controller.InitializationServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet>
         <servlet-name>PreviousPage</servlet-name>
         <servlet-class>Controller.PreviousPageServlet</servlet-class>
     </servlet>
@@ -102,5 +107,9 @@
     <servlet-mapping>
         <servlet-name>MonitorStartAndStop</servlet-name>
         <url-pattern>/view/monitor</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>IntializationServlet</servlet-name>
+        <url-pattern>/view/init</url-pattern>
     </servlet-mapping>
 </web-app>

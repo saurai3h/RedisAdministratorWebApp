@@ -22,18 +22,22 @@ import java.util.List;
 public class Instance {
 
 
-    HostAndPort hostAndPort;
-    Jedis jedis;
-    LinkedList<Page> pages;
-    Page searchPage;
-    Monitor monitor;
-    public int getCurrentPageIndex() {
-        return currentPageIndex;
+    public HostAndPort getHostAndPort() {
+        return hostAndPort;
     }
 
-    int currentPageIndex;
-    String cursor;
-    int expectedPageSize;
+    private HostAndPort hostAndPort;
+    private Jedis jedis;
+    private LinkedList<Page> pages;
+    private Page searchPage;
+    private Monitor monitor;
+//    public int getCurrentPageIndex() {
+//        return currentPageIndex;
+//    }
+
+//    int currentPageIndex;
+    private String cursor;
+    private int expectedPageSize;
 
     public Instance(String host, int port)  {
         searchPage = new Page();
@@ -41,9 +45,7 @@ public class Instance {
         hostAndPort = new HostAndPort(host,port);
         jedis = new Jedis(host,port);
         pages = new LinkedList<Page>();
-        currentPageIndex = -1;
         cursor = "";
-        goToNextPage();
     }    
     public boolean keyExists(String key) {
         return jedis.exists(key);
@@ -61,17 +63,16 @@ public class Instance {
 
         } else if (type.equals("list")) {
             jedis.lpush(key, value);
-
         } else {
             System.out.println("Invalid Data Structure");
         }
     }
 
     public void addKey(String key, String type, String value1, String value2)  {
-        if (type.equals("sortedSet")) {
+        if (type.equals("zset")) {
             jedis.zadd(key, Double.parseDouble(value1), value2);
 
-        } else if (type.equals("hashMap")) {
+        } else if (type.equals("hash")) {
             jedis.hset(key, value1, value2);
 
         } else {
@@ -81,76 +82,43 @@ public class Instance {
 
     public void deleteKey(String key) {
         jedis.del(key);
-//        (pages.get(currentPageIndex).getKeyList().remove(key));
-        Page currentPage = pages.get(currentPageIndex);
-        ArrayList<String> currentPageKeyList = currentPage.getKeyList();
-        int spaceRemainingOnPage = expectedPageSize - currentPageKeyList.size();
-        if (spaceRemainingOnPage > 0 && !cursor.equals("0")) {
-            currentPageKeyList.addAll(scan(spaceRemainingOnPage));
-        }
-        if(cursor.equals("0")) {
-            String lastKey = pages.getLast().removeLast();
-            currentPageKeyList.add(lastKey);
-        }
-
-        currentPageKeyList.remove(key);
-
-        if (currentPageKeyList.isEmpty()) {
-            pages.remove(currentPage);
-            currentPageIndex -= 1;
-        }
-        if (currentPageIndex < 0) {
-//            this means database is empty: otherwise scan would have got some keys, and they
-// would have been added to currentPageKeyList. Since Scan is unreliable, we add the following check
-            if (!pages.isEmpty()) {
-                currentPageIndex = 0;
-            } else {
-                //database is really empty
-                pages.add(new Page());
-                currentPageIndex = 0;
-            }
-        }
-        currentPage.setKeyList(currentPageKeyList);
-        pages.remove(currentPageIndex);
-        pages.add(currentPageIndex,currentPage);
     }
 
-   public void goToNextPage(){
 
-       currentPageIndex++;
-       if(currentPageIndex>=pages.size()){
-           if(cursor.equals("0")){
-               //this was the last page, invalid operation
-               currentPageIndex--;
-           }
-           else {
-
-               Page nextPage = new Page();
-               if(cursor.equals("")){
-                   cursor = "0";
-               }
-               ArrayList<String> newPageKeyList = (ArrayList<String>)scan(expectedPageSize);
-               nextPage.setKeyList(newPageKeyList);
-               pages.addLast(nextPage);
-
-           }
-       }
-   }
-
-    public void goToPrevPage(){
-        if(currentPageIndex<= 0){
-//            this was the first page, so invalid operation
+    private boolean fetchOneMorePage() {
+        if(cursor.equals("0")){
+            //this was the last page, invalid operation
+            return false;
         }
         else {
-            currentPageIndex--;
+
+            Page nextPage = new Page();
+            if(cursor.equals("")){
+                cursor = "0";
+            }
+            ArrayList<String> keyList = (ArrayList<String>)scan(expectedPageSize);
+            ArrayList<Key> newPageKeyList = getKeysArrayFromKeyNameArray(keyList);
+            nextPage.setKeyList(newPageKeyList);
+            pages.addLast(nextPage);
+            return true;
         }
+
+
+    }
+
+    private ArrayList<Key> getKeysArrayFromKeyNameArray(ArrayList<String> keyList) {
+        ArrayList<Key> newPageKeyList = new ArrayList<Key>();
+        for (String keyName:keyList){
+            newPageKeyList.add(getNewKeyByName(keyName));
+        }
+        return newPageKeyList;
     }
 
     public boolean search(String key){
         if(jedis.exists(key)){
             ArrayList<String> searchPageList = new ArrayList<String>();
             searchPageList.add(key);
-            searchPage.setKeyList(searchPageList);
+            searchPage.setKeyList(getKeysArrayFromKeyNameArray(searchPageList));
             return true;
         }
         else
@@ -170,28 +138,46 @@ public class Instance {
         return pong.equals("PONG");
     }
 
-    public Page getCurrentPage()    {
-        return pages.get(currentPageIndex);
+    public Page getPageAtIndex(int zeroBasedIndex)    {
+        while(pages.size()<=zeroBasedIndex && fetchOneMorePage()){
+        }
+        if(pages.size()<=zeroBasedIndex){
+            return null;
+        }
+        else if(zeroBasedIndex<0){
+            return null;
+        }
+        else {
+            return pages.get(zeroBasedIndex);
+        }
+    }
+
+    public Key getNewKeyByName(String keyName){
+        return new Key(jedis,keyName);
     }
 
     public Page getSearchPage()     {
         return searchPage;
     }
 
-    public String getType(String key) {
+    public String getTypeOfKey(String key){
         return jedis.type(key);
     }
 
     public Map<String,String> getJsonValueOfAKey(String key){
-        String type = jedis.type(key);
+        String type = getTypeOfKey(key);
         String JsonOfValue = "";
         Object value;
+
+        System.out.println(key + " " + type);
+
         if (type.equals("zset")) {
             value = jedis.zrange(key, 0, -1);
             HashMap<String,Double> map = new HashMap<String, Double>();
             for (String element:(Set<String>)value){
                 Double score = jedis.zscore(key,element);
                 map.put(element,score);
+
             }
             value = map;
         } else if (type.equals("hash")) {
@@ -215,7 +201,6 @@ public class Instance {
         if(!type.equals("string")) {
             JsonOfValue = new Gson().toJson(value);
         }
-        System.out.println(JsonOfValue);
         Map<String,String> map = new HashMap<String, String>();
         map.put("json",JsonOfValue);
         map.put("type",type);

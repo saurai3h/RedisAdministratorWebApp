@@ -3,6 +3,7 @@
  */
 var arr = new Array();
 
+
 $.ajax(
     {
         url: "/view/RedisApplication",
@@ -71,7 +72,91 @@ $(document).off('click', '#deleteInstance').on('click', '#deleteInstance', funct
     );
 });
 $(document).off('click', '.sidebar-nav').on('click', '.sidebar-nav', function() {
+        var ajaxCallForAddKey = function(buttonNo){
 
+            var key = document.getElementById("keyAdd"+buttonNo.toString()).value.toString();
+            var value = document.getElementById("valueAdd"+buttonNo.toString()).value.toString();
+            var optionalInputBox = document.getElementById("optionalValueAdd"+buttonNo.toString());
+            var optionalValue;
+            if(optionalInputBox === null){
+                optionalValue = "dummy";
+            }
+            else{
+                optionalValue= optionalInputBox.value.toString();
+            }
+            var type;
+            if(buttonNo === 1){
+                type = "string";
+            }
+            else if(buttonNo === 2){
+                type = "list";
+            }
+            else if(buttonNo === 3){
+                type = "set";
+            }else if(buttonNo === 4){
+                type = "hash";
+            }
+            else if(buttonNo === 5){
+                type = "zset";
+            }
+
+
+            alertify.alert(key + " " + value + " " + optionalValue);
+            $.ajax(
+                {
+                    url: "/view/AddKey",
+                    type: "POST",
+                    data: "typeOfKey="+ type +"&nameOfKey="+key+
+                        "&valueOfKey="+value+"&optionalValueOfKey="+optionalValue,
+                    success: function (strData) {
+
+                        if(strData === "existsAlready") {
+                            alertify.alert("This key already exists.");
+                        }
+                        else if(strData === "invalidDataStructure") {
+                            alertify.alert("Redis doesn't support this data structure");
+                        }
+                        else if(strData === "KeyNull")  {
+                            alertify.alert("Redis entries not filled." + buttonNo);
+                        }
+                        else if(strData === "false")   {
+                            alertify.alert("Sorry! Couldn't add. The server must be down.");
+                        }
+                        else if(strData === "success"){
+                            alertify.alert("Success!!");
+                        }
+                        else{
+                            alertify.alert("Some strange error!");
+                        }
+                    }
+                }
+            );
+            document.getElementById("keyAdd3").value = "";
+            document.getElementById("valueAdd3").value = "";
+        };
+        var populateKeyListFromJson = function(strData){
+            $("#list-content").remove();
+            var ul = document.createElement("ul");
+            $(ul).attr("id","list-content");
+            if (strData !== "false") {
+                var jsonData = jQuery.parseJSON(strData);
+                for (var x in jsonData) {
+
+                    var li = document.createElement("li");
+                    var link = document.createElement("a");
+                    $(link).html("name: " + jsonData[x]["keyName"] + "; type: "
+                        +jsonData[x]["type"]+ "; expiry date: "+jsonData[x]["expiryTime"]);
+                    $(link).attr("id", jsonData[x]["keyName"]);
+                    $(link).attr("href", "#");
+                    $(li).append(link);
+                    $(ul).append(li);
+                }
+                $("#list-display").append(ul);
+            }
+            else {
+                console.log("No page to display");
+            }
+        }
         var hostPort = event.target.id.toString();
 
         $.ajax(
@@ -80,284 +165,39 @@ $(document).off('click', '.sidebar-nav').on('click', '.sidebar-nav', function() 
                 type: "POST",
                 data: "hostport=" + hostPort,
                 success: function (strData) {
-                    $("#list-content").remove();
-                    var ul = document.createElement("ul");
-                    $(ul).attr("id","list-content");
-                    if (strData !== "false") {
-                        var jsonData = jQuery.parseJSON(strData);
-                        for (var x in jsonData) {
-
-                            var li = document.createElement("li");
-                            var link = document.createElement("a");
-                            $(link).html(jsonData[x]);
-                            $(link).attr("id", jsonData[x]);
-                            $(link).attr("href", "#");
-                            $(li).append(link);
-                            $(ul).append(li);
-                        }
-                        $("#list-display").append(ul);
-                    }
-                    else {
-                        console.log("No page to display");
-                    }
+                    populateKeyListFromJson(strData);
                 }
             }
         );
 
         $(document).off('click', '#Add1').on('click', '#Add1', function(){
-
-                var key = document.getElementById("keyAdd1").value.toString();
-                var value = document.getElementById("valueAdd1").value.toString();
-
-                $.ajax(
-                    {
-                        url: "/view/AddKey",
-                        type: "POST",
-                        data: "typeOfKey=string"+"&nameOfKey="+key+"&valueOfKey="+value+"&optionalValueOfKey=dummy",
-
-                        success: function (strData) {
-
-                            if (strData === "existsAlready") {
-                                alertify.alert("This key already exists.");
-                            }
-                            else if (strData === "invalidDataStructure") {
-                                alertify.alert("Redis doesn't support this data structure");
-                            }
-                            else if (strData === "KeyNull") {
-                                alertify.alert("Redis entries not filled.");
-                            }
-                            else if (strData === "false") {
-                                alertify.alert("Sorry! Couldn't add. The server must be down.");
-                            }
-                            else    {
-                                $("#list-content").remove();
-                                var ul = document.createElement("ul");
-                                $(ul).attr("id","list-content");
-                                var jsonData = jQuery.parseJSON(strData);
-                                for (var x in jsonData) {
-
-                                    var li = document.createElement("li");
-                                    var link = document.createElement("a");
-                                    $(link).html(jsonData[x]);
-                                    $(link).attr("id", jsonData[x]);
-                                    $(link).attr("href", "#");
-                                    $(li).append(link);
-                                    $(ul).append(li);
-                                }
-                                $("#list-display").append(ul);
-                            }
-                        }
-                    }
-                );
-                document.getElementById("keyAdd1").value = "";
-                document.getElementById("valueAdd1").value = "";
+                ajaxCallForAddKey(1);
             }
         );
 
         $(document).off('click', '#Add2').on('click', '#Add2', function(){
-
-                var key = document.getElementById("keyAdd2").value.toString();
-                var value = document.getElementById("valueAdd2").value.toString();
-
-                $.ajax(
-                    {
-                        url: "/view/AddKey",
-                        type: "POST",
-                        data: "typeOfKey=list"+"&nameOfKey="+key+"&valueOfKey="+value+"&optionalValueOfKey=dummy",
-                        success: function (strData) {
-
-                            if(strData === "existsAlready") {
-                                alertify.alert("This key already exists.");
-                            }
-                            else if(strData === "invalidDataStructure") {
-                                alertify.alert("Redis doesn't support this data structure");
-                            }
-                            else if(strData === "KeyNull")  {
-                                alertify.alert("Redis entries not filled.");
-                            }
-                            else if(strData === "false")   {
-                                alertify.alert("Sorry! Couldn't add. The server must be down.");
-                            }
-                            else    {
-                                $("#list-content").remove();
-                                var ul = document.createElement("ul");
-                                $(ul).attr("id","list-content");
-                                var jsonData = jQuery.parseJSON(strData);
-                                for (var x in jsonData) {
-
-                                    var li = document.createElement("li");
-                                    var link = document.createElement("a");
-                                    $(link).html(jsonData[x]);
-                                    $(link).attr("id", jsonData[x]);
-                                    $(link).attr("href", "#");
-                                    $(li).append(link);
-                                    $(ul).append(li);
-                                }
-                                $("#list-display").append(ul);
-                            }
-                        }
-                    }
-                );
-                document.getElementById("keyAdd2").value = "";
-                document.getElementById("valueAdd2").value = "";
+                ajaxCallForAddKey(2);
             }
         );
 
-        $(document).off('click', '#Add3').on('click', '#Add3', function() {
-
-                var key = document.getElementById("keyAdd3").value.toString();
-                var value = document.getElementById("valueAdd3").value.toString();
-
-                $.ajax(
-                    {
-                        url: "/view/AddKey",
-                        type: "POST",
-                        data: "typeOfKey=set"+"&nameOfKey="+key+"&valueOfKey="+value+"&optionalValueOfKey=dummy",
-                        success: function (strData) {
-
-                            if(strData === "existsAlready") {
-                                alertify.alert("This key already exists.");
-                            }
-                            else if(strData === "invalidDataStructure") {
-                                alertify.alert("Redis doesn't support this data structure");
-                            }
-                            else if(strData === "KeyNull")  {
-                                alertify.alert("Redis entries not filled.");
-                            }
-                            else if(strData === "false")   {
-                                alertify.alert("Sorry! Couldn't add. The server must be down.");
-                            }
-                            else    {
-                                $("#list-content").remove();
-                                var ul = document.createElement("ul");
-                                $(ul).attr("id","list-content");
-                                var jsonData = jQuery.parseJSON(strData);
-                                for (var x in jsonData) {
-
-                                    var li = document.createElement("li");
-                                    var link = document.createElement("a");
-                                    $(link).html(jsonData[x]);
-                                    $(link).attr("id", jsonData[x]);
-                                    $(link).attr("href", "#");
-                                    $(li).append(link);
-                                    $(ul).append(li);
-                                }
-                                $("#list-display").append(ul);
-                            }
-                        }
-                    }
-                );
-                document.getElementById("keyAdd3").value = "";
-                document.getElementById("valueAdd3").value = "";
+        $(document).off('click', '#Add3').on('click', '#Add3', function(){
+                ajaxCallForAddKey(3);
             }
         );
 
-        $(document).off('click', '#Add4').on('click', '#Add4', function(){
-
-                var key = document.getElementById("keyAdd4").value.toString();
-                var value = document.getElementById("valueAdd4").value.toString();
-                var field = document.getElementById("fieldAdd4").value.toString();
-
-                $.ajax(
-                    {
-                        url: "/view/AddKey",
-                        type: "POST",
-                        data: "typeOfKey=hashMap"+"&nameOfKey="+key+"&valueOfKey="+field+"&optionalValueOfKey="+value,
-                        success: function (strData) {
-
-                            if(strData === "existsAlready") {
-                                alertify.alert("This key already exists.");
-                            }
-                            else if(strData === "invalidDataStructure") {
-                                alertify.alert("Redis doesn't support this data structure");
-                            }
-                            else if(strData === "KeyNull")  {
-                                alertify.alert("Redis entries not filled.");
-                            }
-                            else if(strData === "false")   {
-                                alertify.alert("Sorry! Couldn't add. The server must be down.");
-                            }
-                            else    {
-                                $("#list-content").remove();
-                                var ul = document.createElement("ul");
-                                $(ul).attr("id","list-content");
-                                var jsonData = jQuery.parseJSON(strData);
-                                for (var x in jsonData) {
-
-                                    var li = document.createElement("li");
-                                    var link = document.createElement("a");
-                                    $(link).html(jsonData[x]);
-                                    $(link).attr("id", jsonData[x]);
-                                    $(link).attr("href", "#");
-                                    $(li).append(link);
-                                    $(ul).append(li);
-                                }
-                                $("#list-display").append(ul);
-                            }
-                        }
-                    }
-                );
-                document.getElementById("keyAdd4").value = "";
-                document.getElementById("valueAdd4").value = "";
-                document.getElementById("fieldAdd4").value = "";
-            }
-        );
+        $(document).off('click', '#Add4').on('click', '#Add4',function(){
+            ajaxCallForAddKey(4);
+        } );
 
         $(document).off('click', '#Add5').on('click', '#Add5', function() {
+                ajaxCallForAddKey(5);
+            });
 
-                var key = document.getElementById("keyAdd5").value.toString();
-                var value = document.getElementById("valueAdd5").value.toString();
-                var score = document.getElementById("scoreAdd5").value.toString();
 
-                $.ajax(
-                    {
-                        url: "/view/AddKey",
-                        type: "POST",
-                        data: "typeOfKey=sortedSet"+"&nameOfKey="+key+"&valueOfKey="+score+"&optionalValueOfKey="+value,
-                        success: function (strData) {
-
-                            if(strData === "existsAlready") {
-                                alertify.alert("This key already exists.");
-                            }
-                            else if(strData === "invalidDataStructure") {
-                                alertify.alert("Redis doesn't support this data structure");
-                            }
-                            else if(strData === "KeyNull")  {
-                                alertify.alert("Redis entries not filled.");
-                            }
-                            else if(strData === "false")   {
-                                alertify.alert("Sorry! Couldn't add. The server must be down.");
-                            }
-                            else    {
-                                $("#list-content").remove();
-                                var ul = document.createElement("ul");
-                                $(ul).attr("id","list-content");
-                                var jsonData = jQuery.parseJSON(strData);
-                                for (var x in jsonData) {
-
-                                    var li = document.createElement("li");
-                                    var link = document.createElement("a");
-                                    $(link).html(jsonData[x]);
-                                    $(link).attr("id", jsonData[x]);
-                                    $(link).attr("href", "#");
-                                    $(li).append(link);
-                                    $(ul).append(li);
-                                }
-                                $("#list-display").append(ul);
-                            }
-                        }
-                    }
-                );
-                document.getElementById("keyAdd5").value = "";
-                document.getElementById("valueAdd5").value = "";
-                document.getElementById("scoreAdd5").value = "";
-            }
-        );
 
         $(document).off('click', '#Delete6').on('click', '#Delete6', function() {
 
                 var key = document.getElementById("keyDeleteSearch6").value.toString();
-
                 $.ajax(
                     {
                         url: "/view/DeleteKey",
@@ -374,22 +214,11 @@ $(document).off('click', '.sidebar-nav').on('click', '.sidebar-nav', function() 
                             else if(strData === "false")    {
                                 alertify.alert("Sorry! Couldn't add. The server must be down.");
                             }
-                            else    {
-                                $("#list-content").remove();
-                                var ul = document.createElement("ul");
-                                $(ul).attr("id","list-content");
-                                var jsonData = jQuery.parseJSON(strData);
-                                for (var x in jsonData) {
-
-                                    var li = document.createElement("li");
-                                    var link = document.createElement("a");
-                                    $(link).html(jsonData[x]);
-                                    $(link).attr("id", jsonData[x]);
-                                    $(link).attr("href", "#");
-                                    $(li).append(link);
-                                    $(ul).append(li);
-                                }
-                                $("#list-display").append(ul);
+                            else  if(strData === "doesNotExist")  {
+                                alertify.alert("Success!!");
+                            }
+                            else{
+                                alertify.alert("Strange Error!! Aliens hacked into your DB!");
                             }
                         }
                     }
@@ -419,21 +248,7 @@ $(document).off('click', '.sidebar-nav').on('click', '.sidebar-nav', function() 
                                 alertify.alert("Sorry! Couldn't add. The server must be down.");
                             }
                             else    {
-                                $("#list-content").remove();
-                                var ul = document.createElement("ul");
-                                $(ul).attr("id","list-content");
-                                var jsonData = jQuery.parseJSON(strData);
-                                for (var x in jsonData) {
-
-                                    var li = document.createElement("li");
-                                    var link = document.createElement("a");
-                                    $(link).html(jsonData[x]);
-                                    $(link).attr("id", jsonData[x]);
-                                    $(link).attr("href", "#");
-                                    $(li).append(link);
-                                    $(ul).append(li);
-                                }
-                                $("#list-display").append(ul);
+                                populateKeyListFromJson(strData);
                             }
                         }
                     }
@@ -443,33 +258,12 @@ $(document).off('click', '.sidebar-nav').on('click', '.sidebar-nav', function() 
         );
 
         $(document).off('click', '#prev').on('click', '#prev', function(){
-
                 $.ajax(
                     {
                         url: "/view/Previous",
                         type: "POST",
                         data: "hostport=" + hostPort,
-                        success: function (strData) {
-                            $("#list-content").remove();
-                            var ul = document.createElement("ul");
-                            $(ul).attr("id","list-content");
-                            if (strData !== "false") {
-                                var jsonData = jQuery.parseJSON(strData);
-                                for (var x in jsonData) {
-
-                                    var li = document.createElement("li");
-                                    var link = document.createElement("a");
-                                    $(link).html(jsonData[x]);
-                                    $(link).attr("id", jsonData[x]);
-                                    $(link).attr("href", "#");
-                                    $(li).append(link);
-                                    $(ul).append(li);
-                                }
-                                $("#list-display").append(ul);
-                            }
-                            else {
-                                console.log("No page to display");
-                            }
+                        success: function (strData) {populateKeyListFromJson(strData);
                         }
                     }
                 );
@@ -478,33 +272,13 @@ $(document).off('click', '.sidebar-nav').on('click', '.sidebar-nav', function() 
         );
 
         $(document).off('click', '#next').on('click', '#next', function() {
-
                 $.ajax(
                     {
                         url: "/view/Next",
                         type: "POST",
                         data: "hostport=" + hostPort,
-                        success: function (strData) {
-                            $("#list-content").remove();
-                            var ul = document.createElement("ul");
-                            $(ul).attr("id","list-content");
-                            if (strData !== "false") {
-                                var jsonData = jQuery.parseJSON(strData);
-                                for (var x in jsonData) {
-
-                                    var li = document.createElement("li");
-                                    var link = document.createElement("a");
-                                    $(link).html(jsonData[x]);
-                                    $(link).attr("id", jsonData[x]);
-                                    $(link).attr("href", "#");
-                                    $(li).append(link);
-                                    $(ul).append(li);
-                                }
-                                $("#list-display").append(ul);
-                            }
-                            else {
-                                console.log("No page to display");
-                            }
+                        success: function(strData) {
+                            populateKeyListFromJson(strData);
                         }
                     }
                 );
@@ -524,6 +298,7 @@ $(document).off('click', '#list-content').on('click', '#list-content', function(
                 data: "key=" + clickedKey,
                 success: function (jsonData) {
                     var type = jsonData["type"];
+
                     $("#value-container").remove();
                     var json = jQuery.parseJSON(jsonData["json"]);
                     var container;

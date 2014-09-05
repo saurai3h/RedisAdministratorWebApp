@@ -1,6 +1,7 @@
 package Controller;
 
 import Model.Instance;
+import Model.Key;
 import com.google.gson.Gson;
 import redis.clients.jedis.exceptions.JedisException;
 
@@ -19,11 +20,13 @@ public class GetValueServlet extends HttpServlet{
         protected void doPost(HttpServletRequest request, HttpServletResponse response) {
             response.setContentType("text/html");
             PrintWriter out= null;
-
+            System.out.println("servletting");
             try {
                 out = response.getWriter();
-                String key  = request.getParameter("key");
+                String key  = (String) request.getParameter("key");
+                System.out.println(key + "is our key");
                 Instance clickedInstance = (Instance)request.getSession().getAttribute("instance");
+                System.out.println(clickedInstance.getHostAndPort().toString());
                 Map<String,String> map = clickedInstance.getJsonValueOfAKey(key);
                 System.out.println(new Gson().toJson(map));
                 out.write(new Gson().toJson(map));

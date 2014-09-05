@@ -12,6 +12,7 @@ public class LoginServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        System.out.println (getServletContext().getAttribute("msg"));
         response.setContentType("text/html");
         PrintWriter out=response.getWriter();
 

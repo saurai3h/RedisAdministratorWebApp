@@ -31,8 +31,7 @@ public class DeleteKeyServlet extends HttpServlet {
                     out.write("doesNotExist");
                 } else {
                     instance.deleteKey(key);
-                    String listOfKeys = new Gson().toJson(instance.getCurrentPage().getKeyList());
-                    out.write(listOfKeys);;
+                    out.write("success");;
                 }
             }
             else
