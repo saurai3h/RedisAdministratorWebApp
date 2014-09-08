@@ -20,7 +20,6 @@ public class GetValueServlet extends HttpServlet{
         protected void doPost(HttpServletRequest request, HttpServletResponse response) {
             response.setContentType("text/html");
             PrintWriter out= null;
-            System.out.println("servletting");
             try {
                 out = response.getWriter();
                 String key  = request.getParameter("key");

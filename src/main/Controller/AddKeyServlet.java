@@ -36,14 +36,14 @@ public class AddKeyServlet extends HttpServlet {
                     && !key.isEmpty() && !value.isEmpty() && !type.isEmpty()&& !optionalValue.isEmpty() ) {
                 System.out.println("valid");
                 if (clickedInstance.keyExists(key)) {
-                    System.out.println("exists");
+                    //System.out.println("exists");
                     out.write("existsAlready");
                 } else if (type.equals("string") || type.equals("set") || type.equals("list")) {
-                    System.out.println("good");
+                    //System.out.println("good");
                     clickedInstance.addKey(key, type, value);
                     out.write("success");
                 } else if (type.equals("zset") || type.equals("hash")) {
-                    System.out.println("goodie");
+                    //System.out.println("goodie");
                     clickedInstance.addKey(key, type, value, optionalValue);
                     out.write("success");
                 } else{

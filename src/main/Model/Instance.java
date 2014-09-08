@@ -1,6 +1,5 @@
 package Model;
 
-import JedisHelper.Monitor;
 import com.google.gson.Gson;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.Jedis;
