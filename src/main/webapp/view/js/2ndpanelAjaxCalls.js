@@ -1,8 +1,130 @@
 var typeOfKeys = [];
 
+var populateKeyListFromJson = function(strData){
+
+    $("#list-content").remove();
+    var ul = document.createElement("ul");
+    $(ul).attr("id","list-content");
+    if (strData !== "false") {
+        var jsonData = jQuery.parseJSON(strData);
+        for (var x in jsonData) {
+
+            var li = document.createElement("li");
+            var link = document.createElement("a");
+            var deleteLink = document.createElement("button");
+            var editLink = document.createElement("button");
+            var editInputBox = document.createElement("input");
+            var typeOfKey = document.createElement("span");
+
+            $(link).html(jsonData[x]["keyName"]);
+            $(link).attr("id", jsonData[x]["keyName"]);
+            $(link).attr("href", "#");
+            $(link).css("display","inline-block");
+            $(link).css("width","40%");
+            $(li).append(link);
+
+            $(deleteLink).addClass("btn btn-danger deletingKeys");
+            $(deleteLink).html("Delete");
+            $(deleteLink).css("margin-left","1%");
+            $(deleteLink).attr("id","deleteButton"+":"+jsonData[x]["keyName"]);
+            $(li).append(deleteLink);
+
+            $(editLink).addClass("btn btn-info");
+            $(editLink).html("Edit");
+            $(editLink).css("margin-left","1%");
+            $(editLink).attr("id","editButton"+":"+jsonData[x]["keyName"]);
+            $(editLink).attr("onclick","editOuter()");
+            $(li).append(editLink);
+
+
+            $(editInputBox).css("display","none");
+            $(editInputBox).css("width","15%");
+            $(editInputBox).attr("id","optionalInput:"+jsonData[x]["keyName"]);
+            $(editInputBox).attr("placeholder",jsonData[x]["keyName"]);
+            $(editInputBox).attr("type","text");
+//                                                $(editInputBox).attr("onchange",function(value){this.value = value;});
+            $(li).append(editInputBox);
+
+            $(typeOfKey).html(jsonData[x]["type"]);
+            $(typeOfKey).css("margin-left","1%");
+            $(typeOfKey).css("font-style","italic");
+            $(typeOfKey).css("font-family","cursive");
+            $(typeOfKey).css("text-transform","uppercase");
+            $(typeOfKey).attr("id","typeSpan:"+jsonData[x]["keyName"]);
+            $(li).append(typeOfKey);
+
+            $(ul).append(li);
+        }
+        $("#list-display").append(ul);
+    }
+    else {
+        console.log("No page to display");
+    }
+};
+var ajaxCallForAddKey = function(buttonNo){
+
+    var key = document.getElementById("keyAdd"+buttonNo.toString()).value.toString();
+    var value = document.getElementById("valueAdd"+buttonNo.toString()).value.toString();
+    var optionalInputBox = document.getElementById("optionalValueAdd"+buttonNo.toString());
+    var optionalValue;
+    if(optionalInputBox === null){
+        optionalValue = "dummy";
+    }
+    else{
+        optionalValue= optionalInputBox.value.toString();
+    }
+    var type;
+    if(buttonNo === 1){
+        type = "string";
+    }
+    else if(buttonNo === 2){
+        type = "list";
+    }
+    else if(buttonNo === 3){
+        type = "set";
+    }
+    else if(buttonNo === 4){
+        type = "hash";
+    }
+    else if(buttonNo === 5){
+        type = "zset";
+    }
+
+    $.ajax(
+        {
+            url: "/view/AddKey",
+            type: "POST",
+            data: "typeOfKey="+ type +"&nameOfKey="+key+
+                "&valueOfKey="+value+"&optionalValueOfKey="+optionalValue,
+            success: function (strData) {
+
+                if(strData === "existsAlready") {
+                    alertify.alert("This key already exists.");
+                }
+                else if(strData === "invalidDataStructure") {
+                    alertify.alert("Redis doesn't support this data structure");
+                }
+                else if(strData === "KeyNull")  {
+                    alertify.alert("Redis entries not filled." + buttonNo);
+                }
+                else if(strData === "false")   {
+                    alertify.alert("Sorry! Couldn't add. The server must be down.");
+                }
+                else if(strData === "success"){
+                    alertify.alert("Success!!");
+                }
+                else{
+                    alertify.alert("Some strange error!");
+                }
+            }
+        }
+    );
+    document.getElementById("keyAdd3").value = "";
+    document.getElementById("valueAdd3").value = "";
+};
 editOuter = function() {
 
-    var key = event.target.id.split(":")[1];
+    var key = event.target.id.substring(11);
     var inputBoxID = "optionalInput:" + key;
 
     var box = document.getElementById(inputBoxID);
@@ -70,7 +192,7 @@ $(document).off('click', '.sidebar-nav a').on('click', '.sidebar-nav a', functio
 
         $(document).off('click','.btn.btn-danger.deletingKeys').on('click', '.btn.btn-danger.deletingKeys',function(){
 
-            var key = event.target.id.split(":")[1];
+            var key = event.target.id.substring(13);
 
             var prompt = confirm("Sure you want to delete this key?");
             if(prompt == true) {
@@ -80,12 +202,21 @@ $(document).off('click', '.sidebar-nav a').on('click', '.sidebar-nav a', functio
                         type: "POST",
                         data: "keyToDelete=" + key,
                         success: function (strData) {
-                            if(strData === "true") {
-                                var link = document.getElementById(key);
-                                $(link).parent().remove();
+
+                            if(strData === "doesNotExist") {
+                                alertify.alert("The key does not exist!");
                             }
-                            else    {
-                                alertify.alert("Sorry, could not delete! Server may be down.")
+                            else if(strData === "keyNull")  {
+                                alertify.alert("Redis entries not filled.")
+                            }
+                            else if(strData === "false")    {
+                                alertify.alert("Sorry! Couldn't add. The server must be down.");
+                            }
+                            else  if(strData === "success")  {
+                                alertify.alert("Success!!");
+                            }
+                            else{
+                                alertify.alert("Strange Error!! Aliens hacked into your DB!");
                             }
                         }
                     }
@@ -116,7 +247,7 @@ $(document).off('click', '.sidebar-nav a').on('click', '.sidebar-nav a', functio
                                 alertify.alert("Success!!");
                             }
                             else{
-                                alertify.alert("Strange Error!! Aliens hacked into your DB!");
+                                alertify.alert("Strange Error!! Probably aliens hacked into your DB!");
                             }
                         }
                     }
@@ -155,67 +286,6 @@ $(document).off('click', '.sidebar-nav a').on('click', '.sidebar-nav a', functio
             }
         );
 
-        var populateKeyListFromJson = function(strData){
-
-            $("#list-content").remove();
-            var ul = document.createElement("ul");
-            $(ul).attr("id","list-content");
-            if (strData !== "false") {
-                var jsonData = jQuery.parseJSON(strData);
-                for (var x in jsonData) {
-
-                    var li = document.createElement("li");
-                    var link = document.createElement("a");
-                    var deleteLink = document.createElement("button");
-                    var editLink = document.createElement("button");
-                    var editInputBox = document.createElement("input");
-                    var typeOfKey = document.createElement("span");
-
-                    $(link).html(jsonData[x]["keyName"]);
-                    $(link).attr("id", jsonData[x]["keyName"]);
-                    $(link).attr("href", "#");
-                    $(link).css("display","inline-block");
-                    $(link).css("width","40%");
-                    $(li).append(link);
-
-                    $(deleteLink).addClass("btn btn-danger deletingKeys");
-                    $(deleteLink).html("Delete");
-                    $(deleteLink).css("margin-left","1%");
-                    $(deleteLink).attr("id","deleteButton"+":"+jsonData[x]["keyName"]);
-                    $(li).append(deleteLink);
-
-                    $(editLink).addClass("btn btn-info");
-                    $(editLink).html("Edit");
-                    $(editLink).css("margin-left","1%");
-                    $(editLink).attr("id","editButton"+":"+jsonData[x]["keyName"]);
-                    $(editLink).attr("onclick","editOuter()");
-                    $(li).append(editLink);
-
-
-                    $(editInputBox).css("display","none");
-                    $(editInputBox).css("width","15%");
-                    $(editInputBox).attr("id","optionalInput:"+jsonData[x]["keyName"]);
-                    $(editInputBox).attr("placeholder",jsonData[x]["keyName"]);
-                    $(editInputBox).attr("type","text");
-//                                                $(editInputBox).attr("onchange",function(value){this.value = value;});
-                    $(li).append(editInputBox);
-
-                    $(typeOfKey).html(jsonData[x]["type"]);
-                    $(typeOfKey).css("margin-left","1%");
-                    $(typeOfKey).css("font-style","italic");
-                    $(typeOfKey).css("font-family","cursive");
-                    $(typeOfKey).css("text-transform","uppercase");
-                    $(typeOfKey).attr("id","typeSpan:"+jsonData[x]["keyName"]);
-                    $(li).append(typeOfKey);
-
-                    $(ul).append(li);
-                }
-                $("#list-display").append(ul);
-            }
-            else {
-                console.log("No page to display");
-            }
-        };
 
         $(document).off('click', '#prev').on('click', '#prev', function(){
 
@@ -223,7 +293,6 @@ $(document).off('click', '.sidebar-nav a').on('click', '.sidebar-nav a', functio
                     {
                         url: "/view/Previous",
                         type: "POST",
-                        data: "hostport=" + hostPort,
                         success: function (strData) {
                             populateKeyListFromJson(strData);}
                     }
@@ -238,7 +307,6 @@ $(document).off('click', '.sidebar-nav a').on('click', '.sidebar-nav a', functio
                     {
                         url: "/view/Next",
                         type: "POST",
-                        data: "hostport=" + hostPort,
                         success: function (strData) {
                             populateKeyListFromJson(strData);
                         }
@@ -341,11 +409,14 @@ $(document).off('click', '#stop-monitor').on('click', '#stop-monitor', function(
     );
 });
 
-$(document).off('click', '#reset-page-list').on('click', '#start-monitor', function(){
+$(document).off('click', '#reset-page-list').on('click', '#reset-page-list', function(){
+
     $.ajax(
         {
             url: "/view/resetPageList",
-            type: "POST"
+            type: "POST",
+            success: function (strData) {
+                populateKeyListFromJson(strData);}
         }
     );
 });
@@ -373,65 +444,3 @@ $(document).off('click', '#Add4').on('click', '#Add4',function(){
 $(document).off('click', '#Add5').on('click', '#Add5', function() {
     ajaxCallForAddKey(5);
 });
-
-var ajaxCallForAddKey = function(buttonNo){
-
-    var key = document.getElementById("keyAdd"+buttonNo.toString()).value.toString();
-    var value = document.getElementById("valueAdd"+buttonNo.toString()).value.toString();
-    var optionalInputBox = document.getElementById("optionalValueAdd"+buttonNo.toString());
-    var optionalValue;
-    if(optionalInputBox === null){
-        optionalValue = "dummy";
-    }
-    else{
-        optionalValue= optionalInputBox.value.toString();
-    }
-    var type;
-    if(buttonNo === 1){
-        type = "string";
-    }
-    else if(buttonNo === 2){
-        type = "list";
-    }
-    else if(buttonNo === 3){
-        type = "set";
-    }
-    else if(buttonNo === 4){
-        type = "hash";
-    }
-    else if(buttonNo === 5){
-        type = "zset";
-    }
-
-    $.ajax(
-        {
-            url: "/view/AddKey",
-            type: "POST",
-            data: "typeOfKey="+ type +"&nameOfKey="+key+
-                "&valueOfKey="+value+"&optionalValueOfKey="+optionalValue,
-            success: function (strData) {
-
-                if(strData === "existsAlready") {
-                    alertify.alert("This key already exists.");
-                }
-                else if(strData === "invalidDataStructure") {
-                    alertify.alert("Redis doesn't support this data structure");
-                }
-                else if(strData === "KeyNull")  {
-                    alertify.alert("Redis entries not filled." + buttonNo);
-                }
-                else if(strData === "false")   {
-                    alertify.alert("Sorry! Couldn't add. The server must be down.");
-                }
-                else if(strData === "success"){
-                    alertify.alert("Success!!");
-                }
-                else{
-                    alertify.alert("Some strange error!");
-                }
-            }
-        }
-    );
-    document.getElementById("keyAdd3").value = "";
-    document.getElementById("valueAdd3").value = "";
-};

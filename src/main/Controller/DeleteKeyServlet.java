@@ -23,7 +23,7 @@ public class DeleteKeyServlet extends HttpServlet {
         try {
             out = response.getWriter();
             String key = request.getParameter("keyToDelete");
-
+            System.out.println(key);
             Instance clickedInstance =ServletHelper.getInstanceFromServletContext(getServletContext(),
                     (String) request.getSession().getAttribute("clickedInstanceHostPort"));
             if(clickedInstance==null){

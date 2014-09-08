@@ -28,7 +28,6 @@ public class GetValueServlet extends HttpServlet{
                 if(clickedInstance==null){
                     System.out.println("instance not found!!");
                 }
-                System.out.println(clickedInstance.getHostAndPort().toString());
                 Map<String,String> map = clickedInstance.getJsonValueOfAKey(key);
                 out.write(new Gson().toJson(map));
             }

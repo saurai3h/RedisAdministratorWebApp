@@ -1,6 +1,8 @@
 package Controller;
 
 import Model.Instance;
+import Model.Page;
+import com.google.gson.Gson;
 import redis.clients.jedis.exceptions.JedisException;
 
 import javax.servlet.Servlet;
@@ -28,7 +30,9 @@ public class ResetInstanceServlet extends HttpServlet {
             Instance instanceToBeReset = instanceMap.get(clickedInstanceHostPort);
             instanceToBeReset.resetPageList();
             instanceMap.put(clickedInstanceHostPort,instanceToBeReset);
-
+            Page curPage  = instanceToBeReset.getPageAtIndex((Integer) request.getSession().getAttribute("CurPageIndex"));
+            String listOfKeys = new Gson().toJson(curPage.getKeyList());
+            out.write(listOfKeys);
         }
         catch (JedisException e)   {
             e.printStackTrace();

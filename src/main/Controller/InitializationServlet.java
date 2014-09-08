@@ -22,14 +22,15 @@ public class InitializationServlet extends HttpServlet{
         Map<String, Instance> instanceMap = new HashMap<String, Instance>();
         Connection conn = SqlInterface.getConnection();
         Statement stmt = null;
-        List<String> hostAndPortList = new ArrayList<String>();
+        Map<String,Boolean> hostAndPortMonitorMap = new HashMap<String, Boolean>();
         try {
             stmt = conn.createStatement();
-            String sql = "SELECT HostName,PortNumber  FROM instances;";
+            String sql = "SELECT HostName,PortNumber,IsMonitored  FROM instances;";
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next())    {
-                hostAndPortList.add(rs.getString("HostName") +":" + rs.getString("PortNumber"));
+                hostAndPortMonitorMap.put(rs.getString("HostName") + ":"
+                        + rs.getString("PortNumber"),rs.getBoolean("IsMonitored"));
             }
 
             conn.close();
@@ -39,10 +40,10 @@ public class InitializationServlet extends HttpServlet{
             e.printStackTrace();
         }
 
-        for(String hostAndPort:hostAndPortList){
+        for(String hostAndPort:hostAndPortMonitorMap.keySet()){
             String host = hostAndPort.split(":")[0];
             int port = Integer.parseInt(hostAndPort.split(":")[1]);
-            Instance instance = new Instance(host,port);
+            Instance instance = new Instance(host,port,hostAndPortMonitorMap.get(hostAndPort));
             instanceMap.put(hostAndPort,instance);
         }
         getServletContext().setAttribute("instanceMap",instanceMap);

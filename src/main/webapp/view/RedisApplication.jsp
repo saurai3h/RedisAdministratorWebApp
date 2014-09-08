@@ -71,7 +71,9 @@
                 <ul id="list-header" class="pager">
                     <li class="previous"><a id="prev" href="#">&larr; Older</a></li>
                     <li class="next"><a id="next" href="#">Newer &rarr;</a></li>
-                    <li class="next"><a id="reset-page-list" href="#">Reset &rarr;</a></li>
+                    <li><a id="reset-page-list" href="#">Reset &olarr;</a></li>
+                    <li><a id="start-monitor" href="#">Start Monitor</a></li>
+                    <li><a id="stop-monitor" href="#">Stop Monitor</a></li>
                 </ul>
 
                 <ul id="list-content">
@@ -176,7 +178,6 @@
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <script src="js/1stpanelAjaxCalls.js"></script>
 <script src="js/2ndpanelAjaxCalls.js"></script>
-<script src="js/3rdpanelAjaxCalls.js"></script>
 <script type="text/javascript">
     hostValid = function hostValidator()    {
 
