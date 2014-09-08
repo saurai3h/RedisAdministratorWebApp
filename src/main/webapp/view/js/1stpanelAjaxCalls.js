@@ -91,7 +91,7 @@ $(document).off('click', '#addInstance').on('click', '#addInstance', function(){
                     $(link).css("display","inline-block");
                     $(link).css("width","65%");
 
-                    $(deleteLink).addClass("btn btn-danger");
+                    $(deleteLink).addClass("btn btn-danger deletingInstances");
                     $(deleteLink).html("Delete");
                     $(deleteLink).attr("id",host + ":" + port +":button");
                     $(deleteLink).css("margin-left","5%");

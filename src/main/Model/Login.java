@@ -2,13 +2,7 @@ package Model;
 import java.sql.*;
 
 public class Login {
-    static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 
-    //Change this according to the database being used.
-    static final String DB_URL = "jdbc:mysql://172.16.137.79/testjedis";
-
-    static final String USER = "root";
-    static final String PASS = "password";
 
     private String name,password;
 
@@ -27,10 +21,7 @@ public class Login {
 
     public boolean validate(){
         try {
-
-            Class.forName(JDBC_DRIVER);
-
-            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            Connection conn = SqlInterface.getConnection();
             Statement stmt = conn.createStatement();
             String sql = "SELECT PassWord FROM users WHERE UserName = \"" + name + "\"";
             ResultSet rs = stmt.executeQuery(sql);
@@ -50,9 +41,6 @@ public class Login {
             return false;
 
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        } catch (ClassNotFoundException e) {
             e.printStackTrace();
             return false;
         }

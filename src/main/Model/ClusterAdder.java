@@ -15,10 +15,6 @@ import java.util.Set;
 public class ClusterAdder {
     private HostAndPort hostAndPort;
     private String clusterName;
-    static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    static final String DB_URL = "jdbc:mysql://172.16.137.79/testJedis";
-    static final String USER = "root";
-    static final String PASS = "password";
 
     public boolean add() {
         Set<HostAndPort> instanceSet = new HashSet<HostAndPort>();
@@ -27,9 +23,8 @@ public class ClusterAdder {
         instanceSet = cluster.getSetOfAllInstances();
         try {
             boolean wasQueryExecutedSuccessfully = (instanceSet.size() > 0);
-            Class.forName(JDBC_DRIVER);
             for(HostAndPort instance:instanceSet) {
-                Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+                Connection conn = SqlInterface.getConnection();
                 Statement stmt = conn.createStatement();
                 String sql = "INSERT INTO INSTANCES (HostName,PortNumber,ClusterName) VALUES" +
                         "(\"" + instance.getHost() + "\", \"" +
@@ -45,9 +40,6 @@ public class ClusterAdder {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            return false;
         }
     }
 
@@ -60,9 +52,7 @@ public class ClusterAdder {
         try {
             List<String> listOfClusters = new LinkedList<String>();
 
-            Class.forName(JDBC_DRIVER);
-
-            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            Connection conn = SqlInterface.getConnection();
             Statement stmt = conn.createStatement();
             String sql = "SELECT ClusterName  FROM instances GROUP by ClusterName;";
             ResultSet rs = stmt.executeQuery(sql);
@@ -82,9 +72,6 @@ public class ClusterAdder {
         } catch (SQLException e) {
             e.printStackTrace();
 
-            return null;
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
             return null;
         }
     }
