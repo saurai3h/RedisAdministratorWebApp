@@ -1,76 +1,7 @@
 /**
  * Created by saurabh on 1/9/14.
  */
-var arr = new Array();
 
-
-$.ajax(
-    {
-        url: "/view/RedisApplication",
-        type: "POST",
-        success: function( strData ){
-
-            if(strData !== "false") {
-
-                var jsonData = jQuery.parseJSON(strData);
-
-                for (var i = 0; i < jsonData.length; ++i) {
-                    arr[i] = jsonData[i].host + ":" + jsonData[i].port;
-                }
-
-                for(var x in arr)   {
-                    var li = document.createElement("li");
-                    var link = document.createElement("a");
-                    $(link).html(arr[x]);
-                    $(link).attr("id",arr[x]);
-                    $(link).attr("href","#");
-                    $(li).append(link);
-                    $("#sidebar-wrapper").find("ul").append(li);
-                }
-            }
-        }
-    }
-);
-$(document).off('click', '#addInstance').on('click', '#addInstance', function(){
-    var host = document.getElementById("host").value.toString();
-    var port = document.getElementById("port").value.toString();
-    $.ajax(
-        {
-            url: "/view/Add",
-            type: "POST",
-            data: "addThisHost="+host+"&addThisPort="+port,
-            success: function (strData)    {
-                if(strData === "true")
-                var li = document.createElement("li");
-                var link = document.createElement("a");
-                $(link).html(host+":"+port);
-                $(link).attr("id", host+":"+port);
-                $(link).attr("href", "#");
-                $(li).append(link);
-                $("#sidebar-wrapper").find("ul").append(li);
-            }
-        }
-    );
-});
-$(document).off('click', '#deleteInstance').on('click', '#deleteInstance', function() {
-    var host = document.getElementById("host").value.toString();
-    var port = document.getElementById("port").value.toString();
-    $.ajax(
-        {
-            url: "/view/Delete",
-            type: "POST",
-            data: "deleteThisHost="+host+"&deleteThisPort="+port,
-            success: function (strData)    {
-                if(strData === "true")
-
-                var id = host + ":" + port;
-                var toRemove = document.getElementById(id);
-
-                $(toRemove).parent().remove();
-            }
-        }
-    );
-});
 $(document).off('click', '.sidebar-nav').on('click', '.sidebar-nav', function() {
         var ajaxCallForAddKey = function(buttonNo){
 
@@ -135,6 +66,7 @@ $(document).off('click', '.sidebar-nav').on('click', '.sidebar-nav', function() 
             document.getElementById("valueAdd3").value = "";
         };
         var populateKeyListFromJson = function(strData){
+
             $("#list-content").remove();
             var ul = document.createElement("ul");
             $(ul).attr("id","list-content");
@@ -144,11 +76,48 @@ $(document).off('click', '.sidebar-nav').on('click', '.sidebar-nav', function() 
 
                     var li = document.createElement("li");
                     var link = document.createElement("a");
-                    $(link).html("name: " + jsonData[x]["keyName"] + "; type: "
-                        +jsonData[x]["type"]+ "; expiry date: "+jsonData[x]["expiryTime"]);
+                    var deleteLink = document.createElement("button");
+                    var editLink = document.createElement("button");
+                    var editInputBox = document.createElement("input");
+                    var typeOfKey = document.createElement("span");
+
+                    $(link).html(jsonData[x]["keyName"]);
                     $(link).attr("id", jsonData[x]["keyName"]);
                     $(link).attr("href", "#");
+                    $(link).css("display","inline-block");
+                    $(link).css("width","40%");
                     $(li).append(link);
+
+                    $(deleteLink).addClass("btn btn-danger deletingKeys");
+                    $(deleteLink).html("Delete");
+                    $(deleteLink).css("margin-left","1%");
+                    $(deleteLink).attr("id","deleteButton"+":"+jsonData[x]["keyName"]);
+                    $(li).append(deleteLink);
+
+                    $(editLink).addClass("btn btn-info");
+                    $(editLink).html("Edit");
+                    $(editLink).css("margin-left","1%");
+                    $(editLink).attr("id","editButton"+":"+jsonData[x]["keyName"]);
+                    $(editLink).attr("onclick","editOuter()");
+                    $(li).append(editLink);
+
+
+                    $(editInputBox).css("display","none");
+                    $(editInputBox).css("width","15%");
+                    $(editInputBox).attr("id","optionalInput:"+jsonData[x]["keyName"]);
+                    $(editInputBox).attr("placeholder",jsonData[x]["keyName"]);
+                    $(editInputBox).attr("type","text");
+//                                                $(editInputBox).attr("onchange",function(value){this.value = value;});
+                    $(li).append(editInputBox);
+
+                    $(typeOfKey).html(jsonData[x]["type"]);
+                    $(typeOfKey).css("margin-left","1%");
+                    $(typeOfKey).css("font-style","italic");
+                    $(typeOfKey).css("font-family","cursive");
+                    $(typeOfKey).css("text-transform","uppercase");
+                    $(typeOfKey).attr("id","typeSpan:"+jsonData[x]["keyName"]);
+                    $(li).append(typeOfKey);
+
                     $(ul).append(li);
                 }
                 $("#list-display").append(ul);
