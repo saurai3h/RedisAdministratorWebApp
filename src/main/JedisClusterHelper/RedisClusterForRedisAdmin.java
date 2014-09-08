@@ -1,4 +1,4 @@
-package JedisHelper;
+package JedisClusterHelper;
 
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.Jedis;

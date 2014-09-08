@@ -1,12 +1,8 @@
-package JedisHelper;
+package JedisClusterHelper;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.ScanParams;
 import redis.clients.jedis.ScanResult;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by kartik.k on 8/27/2014.

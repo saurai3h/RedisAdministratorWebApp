@@ -22,17 +22,19 @@ public class DeleteKeyServlet extends HttpServlet {
 
         try {
             out = response.getWriter();
-            String key = (String)request.getParameter("keyToDelete");
+            String key = request.getParameter("keyToDelete");
 
-            Instance instance = (Instance)request.getSession().getAttribute("instance");
-
+            Instance clickedInstance =ServletHelper.getInstanceFromServletContext(getServletContext(),
+                    (String) request.getSession().getAttribute("clickedInstanceHostPort"));
+            if(clickedInstance==null){
+                System.out.println("instance not found!!");
+            }
             if(key != null && !key.isEmpty()) {
-                if (!instance.keyExists(key)) {
+                if (!clickedInstance.keyExists(key)) {
                     out.write("doesNotExist");
                 } else {
-                    instance.deleteKey(key);
-                    String listOfKeys = new Gson().toJson(instance.getCurrentPage().getKeyList());
-                    out.write(listOfKeys);
+                    clickedInstance.deleteKey(key);
+                    out.write("success");
                 }
             }
             else

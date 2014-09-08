@@ -1,4 +1,4 @@
-package JedisHelper;
+package JedisClusterHelper;
 
 /**
  * Created by kartik.k on 9/1/2014.

@@ -71,6 +71,7 @@
                 <ul id="list-header" class="pager">
                     <li class="previous"><a id="prev" href="#">&larr; Older</a></li>
                     <li class="next"><a id="next" href="#">Newer &rarr;</a></li>
+                    <li class="next"><a id="reset-page-list" href="#">Reset &rarr;</a></li>
                 </ul>
 
                 <ul id="list-content">
@@ -129,7 +130,7 @@
                     <div class="tab-pane" id="tab4">
                         <div class="input-group">
                             <input type="text" class="form-control" id="keyAdd4" placeholder="key">
-                            <input type="text" class="form-control" id="fieldAdd4" placeholder="field">
+                            <input type="text" class="form-control" id="optionalValueAdd4" placeholder="field">
                             <input type="text" class="form-control" id="valueAdd4" placeholder="value">
                         </div>
                         <div class="btn-group">
@@ -139,7 +140,7 @@
                     <div class="tab-pane" id="tab5">
                         <div class="input-group">
                             <input type="text" class="form-control" id="keyAdd5" placeholder="key">
-                            <input type="text" class="form-control" id="scoreAdd5" placeholder="score">
+                            <input type="text" class="form-control" id="optionalValueAdd5" placeholder="score">
                             <input type="text" class="form-control" id="valueAdd5" placeholder="value">
                         </div>
                         <div class="btn-group">

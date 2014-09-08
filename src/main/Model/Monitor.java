@@ -1,4 +1,4 @@
-package JedisHelper;
+package Model;
 
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.Jedis;
@@ -12,21 +12,31 @@ import java.util.Map;
  */
 public class Monitor extends Thread {
     private volatile boolean terminateSignalNotReceived;
-    private Jedis monitoredInstance;
-    private Jedis infoStorage;
+    HostAndPort monnitoredInstanceHostPort;
+    HostAndPort infoStorageHostPort;
+    private double interval;
+    Jedis monitoredInstance;
+    Jedis infoStorage;
+    public Monitor(HostAndPort infoStorageHostPort,HostAndPort monnitoredInstanceHostPort,
+                   double snapshottingIntervalInSeconds){
+        this.infoStorageHostPort = infoStorageHostPort;
+        this.monnitoredInstanceHostPort = monnitoredInstanceHostPort;
 
-    public Monitor(HostAndPort infoStorage,HostAndPort monitoredInstance){
+        monitoredInstance = new Jedis(monnitoredInstanceHostPort.getHost(),
+                monnitoredInstanceHostPort.getPort());
+        infoStorage = new Jedis(infoStorageHostPort.getHost(),infoStorageHostPort.getPort());
+
         terminateSignalNotReceived = true;
-        this.monitoredInstance = new Jedis(monitoredInstance.getHost(),monitoredInstance.getPort());
-        this.infoStorage = new Jedis(infoStorage.getHost(),infoStorage.getPort());
+        this.interval = snapshottingIntervalInSeconds;
     }
     public void run() {
-
+        System.out.println("starting to run..");
 
         while (terminateSignalNotReceived) {
+            System.out.println("running..");
             storeOneInfoSnapshot(monitoredInstance, infoStorage);
             try {
-                Thread.sleep(5000);
+                Thread.sleep((long) interval*1000);
             } catch (InterruptedException e) {
                 System.out.println("what creature woke me up??");
             }
@@ -38,8 +48,9 @@ public class Monitor extends Thread {
         Map<String, String> map = getInfoAsMap(monitoredInstance);
         Date date = new Date();
         System.out.println(infoStorage.ping());
-        infoStorage.hmset(Long.toString(date.getTime()), map);
-
+        infoStorage.hmset(monnitoredInstanceHostPort.getHost()+":" +
+                Integer.toString(monnitoredInstanceHostPort.getPort()) +":" +
+                Long.toString(date.getTime()), map);
     }
 
     public void terminate(){
@@ -60,13 +71,9 @@ public class Monitor extends Thread {
                     System.out.println("key-value pair expected, got more than 2 things");
                     return null;
                 }
-                if(keyValueArray.length == 1){
-                    if(!sectionName.equals(keyValueArray[0])){
-                        //System.out.println("key-value pair expected, got only one thing");
-                    };
-                }
                 if(keyValueArray.length == 2){
-                    sectionMap.put(sectionName +":" +keyValueArray[0],keyValueArray[1].trim());
+                    sectionMap.put(
+                            keyValueArray[0],keyValueArray[1].trim());
 //                    System.out.println(sectionName.trim() +":" +keyValueArray[0] + " == " + keyValueArray[1]);
                 }
                 if(keyValueArray.length < 1){
