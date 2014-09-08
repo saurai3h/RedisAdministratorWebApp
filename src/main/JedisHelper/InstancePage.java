@@ -12,7 +12,7 @@ import java.util.Map;
  * Created by kartik.k on 8/27/2014.
  */
 public class InstancePage extends Page {
-    Jedis jedis;
+    private Jedis jedis;
     protected InstancePage(String cursor, Jedis jedis,int pageSize){
         super(pageSize,cursor);
         this.jedis = jedis;

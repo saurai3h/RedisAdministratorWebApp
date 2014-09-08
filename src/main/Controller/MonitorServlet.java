@@ -19,10 +19,9 @@ public class MonitorServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         response.setContentType("text/html");
         PrintWriter out= null;
-        boolean shouldStartMonitor = true;
         System.out.println("monitor mode..");
         try {
-//            shouldStartMonitor = Boolean.parseBoolean(request.getParameter("shouldStartMonitor"));
+            boolean shouldStartMonitor = Boolean.parseBoolean(request.getParameter("shouldStartMonitor"));
             Instance clickedInstance = (Instance)request.getSession().getAttribute("instance");
             System.out.println(shouldStartMonitor);
             if(shouldStartMonitor)

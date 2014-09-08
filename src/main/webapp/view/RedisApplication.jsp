@@ -6,7 +6,7 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="width: 100%;height: 100%">
 
 <head>
 
@@ -19,6 +19,7 @@
     <title>Redis Application</title>
     <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/simple-sidebar.css" rel="stylesheet">
+    <link href="css/simple-footer.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/alertify.default.css">
     <link rel="stylesheet" type="text/css" href="css/alertify.core.css">
     <link rel="stylesheet" type="text/css" href="css/alertify.bootstrap.css">
@@ -26,7 +27,7 @@
 
 </head>
 
-<body>
+<body  style="width: 100%; height:100%">
 <%
     if(!(Boolean) session.getAttribute("hasLoadedLoginSuccessBefore")) {
         Login login = (Login) request.getAttribute("login");
@@ -39,7 +40,7 @@
 %>
 
 <div id="wrapper">
-    <div id="sidebar-wrapper" style="background-color:wheat; height: 70%">
+    <div id="sidebar-wrapper">
         <ul class="sidebar-nav">
             <li class="sidebar-brand">
                 <a href="#">
@@ -53,20 +54,20 @@
                 <input type="text" class="form-control" id="host" placeholder="hostname" onchange="return hostValid()">
                 <input type="text" class="form-control" id="port" placeholder="portnumber" onchange="return portValid()">
             </div>
-            <div class="btn-group">
-                <button type="button" class="btn btn-primary dropdown-toggle" style="width : 120px;top : 10px; left:70px;" data-toggle="dropdown">
+            <div class="btn-group" style="left:25%">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                     Add or Delete <span class="caret"></span>
                 </button>
-                <ul class="dropdown-menu" role="menu" style="width : 250px">
+                <ul class="dropdown-menu" role="menu">
                     <li><a id = "addInstance" href="#" onclick="return validator()">Add</a></li>
                     <li class="divider"></li>
                     <li><a id = "deleteInstance" href="#" onclick="return validator()">Delete</a></li>
                 </ul>
             </div>
     </div>
-    <div id="page-content-wrapper"  style="height: 70%">
-        <div class="container-fluid">
-            <div id = "list-display" class="col-lg-6" style="height: 100%">
+    <div id="page-content-wrapper">
+        <div class="container-fluid" style="width:100%;height:100%">
+            <div id = "list-display" class="col-lg-7" style="height:100%;overflow-y:auto">
                 <ul id="list-header" class="pager">
                     <li class="previous"><a id="prev" href="#">&larr; Older</a></li>
                     <li class="next"><a id="next" href="#">Newer &rarr;</a></li>
@@ -77,85 +78,88 @@
                 </ul>
             </div>
 
-            <div id ="keys-details" class="col-lg-6" style="height: 100%">
+            <div id ="keys-details" class="col-lg-5" style="height: 100%;overflow-y: auto">
 
             </div>
         </div>
-        <button class="btn btn-default" type="button" id="start-monitor">Start Monitor</button>
-        <button class="btn btn-default" type="button" id="stop-monitor">Stop Monitor</button>
+
+        <%--To be later uncommented--%>
+        <%--<button class="btn btn-default" type="button" id="start-monitor">Start Monitor</button>--%>
+        <%--<button class="btn btn-default" type="button" id="stop-monitor">Stop Monitor</button>--%>
+
     </div>
     <div class="list-footer">
-        <div id="secondPanel" class="col-lg-6">
-            <div id="addKey" class="col-lg-8">
+        <div id="secondPanel" class="col-lg-7">
+            <div style="width:65%" id="addKey" class="col-lg-10">
                 <ul id = "listOfDataStructures" class="nav nav-tabs" role="tablist">
-                    <li><a style = "font-size: 20px;" href="#tab1" data-toggle="tab">String</a></li>
-                    <li><a style = "font-size: 20px;" href="#tab2" data-toggle="tab">List</a></li>
-                    <li><a style = "font-size: 20px;" href="#tab3" data-toggle="tab">Set</a></li>
-                    <li><a style = "font-size: 20px;" href="#tab4" data-toggle="tab">Hash</a></li>
-                    <li><a style = "font-size: 20px;" href="#tab5" data-toggle="tab">Sorted-Set</a></li>
+                    <li><a style = "font-size: 12px;" href="#tab1" data-toggle="tab">String</a></li>
+                    <li><a style = "font-size: 12px;" href="#tab2" data-toggle="tab">List</a></li>
+                    <li><a style = "font-size: 12px;" href="#tab3" data-toggle="tab">Set</a></li>
+                    <li><a style = "font-size: 12px;" href="#tab4" data-toggle="tab">Hash</a></li>
+                    <li><a style = "font-size: 12px;" href="#tab5" data-toggle="tab">SortSet</a></li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane" id="tab1">
-                        <div style="width: 480px;" class="input-group">
+                        <div class="input-group">
                             <input type="text" class="form-control" id="keyAdd1" placeholder="key">
                             <input type="text" class="form-control" id="valueAdd1" placeholder="value">
                         </div>
                         <div class="btn-group">
-                            <button  style = "width : 100px;left:200px" id="Add1" type="button" class="btn btn-primary">Add</button>
+                            <button style="font-size: 12px" id="Add1" type="button" class="btn btn-primary">Add</button>
                         </div>
                     </div>
                     <div class="tab-pane" id="tab2">
-                        <div style="width: 480px;" class="input-group">
+                        <div class="input-group">
                             <input type="text" class="form-control" id="keyAdd2" placeholder="key">
                             <input type="text" class="form-control" id="valueAdd2" placeholder="value">
                         </div>
                         <div class="btn-group">
-                            <button style = "width : 100px;left:200px" id="Add2" type="button" class="btn btn-primary">Add</button>
+                            <button style="font-size: 12px" id="Add2" type="button" class="btn btn-primary">Add</button>
                         </div>
                     </div>
                     <div class="tab-pane" id="tab3">
-                        <div style="width: 480px;"  class="input-group">
+                        <div class="input-group">
                             <input type="text" class="form-control" id="keyAdd3" placeholder="key">
                             <input type="text" class="form-control" id="valueAdd3" placeholder="value">
                         </div>
                         <div class="btn-group">
-                            <button style = "width : 100px;left:200px" id="Add3" type="button" class="btn btn-primary">Add</button>
+                            <button style="font-size: 12px" id="Add3" type="button" class="btn btn-primary">Add</button>
                         </div>
                     </div>
                     <div class="tab-pane" id="tab4">
-                        <div style="width: 480px;" class="input-group">
+                        <div class="input-group">
                             <input type="text" class="form-control" id="keyAdd4" placeholder="key">
                             <input type="text" class="form-control" id="fieldAdd4" placeholder="field">
                             <input type="text" class="form-control" id="valueAdd4" placeholder="value">
                         </div>
                         <div class="btn-group">
-                            <button style = "width : 100px;left:200px" id="Add4" type="button" class="btn btn-primary">Add</button>
+                            <button style="font-size: 12px" id="Add4" type="button" class="btn btn-primary">Add</button>
                         </div>
                     </div>
                     <div class="tab-pane" id="tab5">
-                        <div style="width: 480px;" class="input-group">
+                        <div class="input-group">
                             <input type="text" class="form-control" id="keyAdd5" placeholder="key">
                             <input type="text" class="form-control" id="scoreAdd5" placeholder="score">
                             <input type="text" class="form-control" id="valueAdd5" placeholder="value">
                         </div>
                         <div class="btn-group">
-                            <button style = "width : 100px;left:200px" id="Add5" type="button" class="btn btn-primary">Add</button>
+                            <button style="font-size: 12px" id="Add5" type="button" class="btn btn-primary">Add</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div id="searchOrDeleteKey" class="col-lg-4">
-                <div class="input-group" style="width: 100%">
+            <div style="width:30%" id="searchOrDeleteKey" class="col-lg-2">
+                <div class="input-group" style="width:100%">
                     <input type="text" class="form-control" id="keyDeleteSearch6" placeholder="key">
                 </div>
                 <div class="btn-group">
-                    <button style = "width : 114px;top : 10px;" id="Delete6" type="button" class="btn btn-primary">Delete</button>
+                    <button style="width: 50%;font-size: 12px;" id="Delete6" type="button" class="btn btn-primary">Delete</button>
 
-                    <button style = "width : 113px;top : 10px;" id="Search6" type="button" class="btn btn-primary">Search</button>
+                    <button style="width: 50%;font-size: 12px;" id="Search6" type="button" class="btn btn-primary">Search</button>
                 </div>
             </div>
         </div>
-        <div id="thirdPanel" class="col-lg-6">
+        <div id="thirdPanel" class="col-lg-5">
         </div>
     </div>
 </div>
@@ -169,7 +173,9 @@
 <script src="js/alertify.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-<script src="js/AjaxCalls.js"></script>
+<script src="js/1stpanelAjaxCalls.js"></script>
+<script src="js/2ndpanelAjaxCalls.js"></script>
+<script src="js/3rdpanelAjaxCalls.js"></script>
 <script type="text/javascript">
     hostValid = function hostValidator()    {
 

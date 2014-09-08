@@ -36,7 +36,7 @@ public class SearchKeyServlet extends HttpServlet{
                 }
             }
             else
-                out.write("KeyNull");
+                out.write("keyNull");
         }
         catch (IOException e) {
             out.write("false");

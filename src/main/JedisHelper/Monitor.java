@@ -26,7 +26,7 @@ public class Monitor extends Thread {
         while (terminateSignalNotReceived) {
             storeOneInfoSnapshot(monitoredInstance, infoStorage);
             try {
-                Thread.sleep(1000);
+                Thread.sleep(5000);
             } catch (InterruptedException e) {
                 System.out.println("what creature woke me up??");
             }

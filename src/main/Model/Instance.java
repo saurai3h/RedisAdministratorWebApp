@@ -17,11 +17,11 @@ import java.util.List;
  */
 public class Instance {
 
-    HostAndPort hostAndPort;
-    Jedis jedis;
-    LinkedList<Page> pages;
-    Page searchPage;
-    Monitor monitor;
+    private HostAndPort hostAndPort;
+    private Jedis jedis;
+    private LinkedList<Page> pages;
+    private Page searchPage;
+    private Monitor monitor;
 
     public int getCurrentPageIndex() {
         return currentPageIndex;
@@ -211,7 +211,7 @@ public class Instance {
         if(!type.equals("string")) {
             JsonOfValue = new Gson().toJson(value);
         }
-        System.out.println(JsonOfValue);
+        //System.out.println(JsonOfValue);
         Map<String,String> map = new HashMap<String, String>();
         map.put("json",JsonOfValue);
         map.put("type",type);

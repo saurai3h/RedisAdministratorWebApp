@@ -22,7 +22,7 @@ public class JedisHelperTests {
     Jedis jedis;
     @Before
     public void setupInstance(){
-        jedis = new Jedis("172.16.137.228",6379);
+        jedis = new Jedis("localhost",7002);
     }
 
     public void setupCluster(){
@@ -79,13 +79,6 @@ public class JedisHelperTests {
 
         }
         assertEquals("not all/more than all keys were returned",1000,setOfAllKeys.size());
-    }
-
-    @Test
-    public void shouldAllowMuultiThreading(){
-        ThreadingTester threadingTester = new ThreadingTester("testing",1000);
-        Thread t = new Thread(threadingTester);
-        t.run();
     }
 
     @Test

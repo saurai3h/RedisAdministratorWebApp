@@ -7,9 +7,9 @@ import java.util.HashSet;
  * Created by kartik.k on 8/21/2014.
  */
 public class Cluster extends Page {
-    RedisClusterForRedisAdmin jedisCluster;
-    String[] hostPortArrayList;
-    int curHostPortBeingScannedPointer;
+    private RedisClusterForRedisAdmin jedisCluster;
+    private String[] hostPortArrayList;
+    private int curHostPortBeingScannedPointer;
 
     public Cluster(RedisClusterForRedisAdmin jedisCluster, int pagesize){
         this("0",0,jedisCluster,pagesize);

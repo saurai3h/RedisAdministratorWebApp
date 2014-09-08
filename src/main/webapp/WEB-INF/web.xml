@@ -51,8 +51,20 @@
         <servlet-class>Controller.DeleteKeyServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>EditKeys</servlet-name>
+        <servlet-class>Controller.EditKeyServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>SearchKeys</servlet-name>
         <servlet-class>Controller.SearchKeyServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>TypeofKeys</servlet-name>
+        <servlet-class>Controller.keyTypeServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>deleteThatPageKey</servlet-name>
+        <servlet-class>Controller.DeleteKeyCurrentPageServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
@@ -92,6 +104,10 @@
         <url-pattern>/view/DeleteKey</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>EditKeys</servlet-name>
+        <url-pattern>/view/EditKey</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>SearchKeys</servlet-name>
         <url-pattern>/view/SearchKey</url-pattern>
     </servlet-mapping>
@@ -102,5 +118,13 @@
     <servlet-mapping>
         <servlet-name>MonitorStartAndStop</servlet-name>
         <url-pattern>/view/monitor</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TypeofKeys</servlet-name>
+        <url-pattern>/view/RedisApplication3</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>deleteThatPageKey</servlet-name>
+        <url-pattern>/view/DeleteKeyThatPage</url-pattern>
     </servlet-mapping>
 </web-app>

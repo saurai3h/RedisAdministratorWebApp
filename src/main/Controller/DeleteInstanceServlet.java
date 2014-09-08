@@ -29,7 +29,9 @@ public class DeleteInstanceServlet extends HttpServlet {
             String host = (String)request.getParameter("deleteThisHost");
             String port = (String)request.getParameter("deleteThisPort");
 
+
             boolean didDelete = InstanceHelper.delete(new HostAndPort(host,Integer.parseInt(port)));
+
             if(didDelete)
                 out.write("true");
             else

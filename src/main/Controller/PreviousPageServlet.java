@@ -25,10 +25,6 @@ public class PreviousPageServlet extends HttpServlet {
 
         try {
             out = response.getWriter();
-
-            String rawHostPort = request.getParameter("hostport");
-
-            String[] hostPort = rawHostPort.split(":");
             try {
                 Instance clickedInstance = (Instance)request.getSession().getAttribute("instance");
                 clickedInstance.goToPrevPage();

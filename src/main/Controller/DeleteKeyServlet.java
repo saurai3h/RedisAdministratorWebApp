@@ -32,11 +32,11 @@ public class DeleteKeyServlet extends HttpServlet {
                 } else {
                     instance.deleteKey(key);
                     String listOfKeys = new Gson().toJson(instance.getCurrentPage().getKeyList());
-                    out.write(listOfKeys);;
+                    out.write(listOfKeys);
                 }
             }
             else
-                out.write("KeyNull");
+                out.write("keyNull");
         }
         catch (IOException e) {
             out.write("false");

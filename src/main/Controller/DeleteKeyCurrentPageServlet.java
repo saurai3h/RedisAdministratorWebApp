@@ -1,22 +1,19 @@
 package Controller;
 
 import Model.Instance;
-import Model.InstanceHelper;
 import com.google.gson.Gson;
-import redis.clients.jedis.HostAndPort;
-import redis.clients.jedis.exceptions.JedisException;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Type;
 
 /**
- * Created by Saurabh Paliwal on 28/8/14.
+ * Created by Saurabh Paliwal on 5/9/14.
  */
-public class NextPageServlet extends HttpServlet {
+public class DeleteKeyCurrentPageServlet extends HttpServlet{
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
 
@@ -25,18 +22,15 @@ public class NextPageServlet extends HttpServlet {
 
         try {
             out = response.getWriter();
-            try {
-                Instance clickedInstance = (Instance)request.getSession().getAttribute("instance");
-                clickedInstance.goToNextPage();
-                String listOfKeys = new Gson().toJson(clickedInstance.getCurrentPage().getKeyList());
-                out.write(listOfKeys);
-            }
-            catch (JedisException e)   {
-                out.write("false");
-            }
+            String key = (String)request.getParameter("keyToDelete");
+
+            Instance instance = (Instance)request.getSession().getAttribute("instance");
+            instance.deleteKey(key);
+            out.write("true");
         }
         catch (IOException e) {
             out.write("false");
+            e.printStackTrace();
         }
     }
 

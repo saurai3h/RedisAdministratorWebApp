@@ -45,7 +45,7 @@ public class AddKeyServlet extends HttpServlet {
                     out.write("invalidDataStructure");
             }
             else
-                out.write("KeyNull");
+                out.write("keyNull");
         }
         catch (IOException e) {
             out.write("false");

@@ -32,6 +32,7 @@ public class InitialPageServlet extends HttpServlet {
             String[] hostPort = rawHostPort.split(":");
             try {
                 Instance clickedInstance = new Instance(hostPort[0],Integer.parseInt(hostPort[1]));
+                //if(request.getSession().getAttribute("instance") == null)
                 request.getSession().setAttribute("instance",clickedInstance);
                 String listOfKeys = new Gson().toJson(clickedInstance.getCurrentPage().getKeyList());
                 out.write(listOfKeys);
