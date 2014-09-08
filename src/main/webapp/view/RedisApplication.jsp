@@ -75,6 +75,7 @@
                 <ul id="list-header" class="pager">
                     <li class="previous"><a id="prev" href="#">&larr; Older</a></li>
                     <li class="next"><a id="next" href="#">Newer &rarr;</a></li>
+                    <li class="next"><a id="reset-page-list" href="#">Reset &rarr;</a></li>
                 </ul>
 
                 <ul id="list-content">

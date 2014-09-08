@@ -26,7 +26,8 @@ public class NextPageServlet extends HttpServlet {
             String rawHostPort = request.getParameter("hostport");
             String[] hostPort = rawHostPort.split(":");
             try {
-                Instance clickedInstance = (Instance)request.getSession().getAttribute("instance");
+                Instance clickedInstance =ServletHelper.getInstanceFromServletContext(getServletContext(),
+                        (String) request.getSession().getAttribute("clickedInstanceHostPort"));
                 Integer curPageIndex = (Integer) request.getSession().getAttribute("CurPageIndex");
                 curPageIndex++;
 

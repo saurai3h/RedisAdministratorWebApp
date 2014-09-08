@@ -23,9 +23,12 @@ public class GetValueServlet extends HttpServlet{
             System.out.println("servletting");
             try {
                 out = response.getWriter();
-                String key  = (String) request.getParameter("key");
-                System.out.println(key + "is our key");
-                Instance clickedInstance = (Instance)request.getSession().getAttribute("instance");
+                String key  = request.getParameter("key");
+                Instance clickedInstance =ServletHelper.getInstanceFromServletContext(getServletContext(),
+                        (String) request.getSession().getAttribute("clickedInstanceHostPort"));
+                if(clickedInstance==null){
+                    System.out.println("instance not found!!");
+                }
                 System.out.println(clickedInstance.getHostAndPort().toString());
                 Map<String,String> map = clickedInstance.getJsonValueOfAKey(key);
                 System.out.println(new Gson().toJson(map));

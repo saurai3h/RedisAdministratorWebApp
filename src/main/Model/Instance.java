@@ -31,14 +31,14 @@ public class Instance {
     private LinkedList<Page> pages;
     private Page searchPage;
     private Monitor monitor;
-//    public int getCurrentPageIndex() {
-//        return currentPageIndex;
-//    }
-
-//    int currentPageIndex;
     private String cursor;
     private int expectedPageSize;
 
+    public void resetPageList(){
+        cursor = "";
+        pages = new LinkedList<Page>();
+        searchPage = new Page();
+    }
     public Instance(String host, int port)  {
         searchPage = new Page();
         expectedPageSize = 15;

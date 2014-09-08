@@ -26,8 +26,8 @@ public class AddInstanceServlet extends HttpServlet {
 
         try {
             out = response.getWriter();
-            String host = (String)request.getParameter("addThisHost");
-            String port = (String)request.getParameter("addThisPort");
+            String host = request.getParameter("addThisHost");
+            String port = request.getParameter("addThisPort");
 
             boolean didAdd = InstanceHelper.add(new HostAndPort(host,Integer.parseInt(port)));
             if(didAdd)

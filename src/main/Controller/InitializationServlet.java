@@ -19,17 +19,17 @@ public class InitializationServlet extends HttpServlet{
     @Override
     public void init() throws ServletException {
         super.init();
-        Map<HostAndPort, Instance> instanceMap = new HashMap<HostAndPort, Instance>();
+        Map<String, Instance> instanceMap = new HashMap<String, Instance>();
         Connection conn = SqlInterface.getConnection();
         Statement stmt = null;
-        List<HostAndPort> hostAndPortList = new ArrayList<HostAndPort>();
+        List<String> hostAndPortList = new ArrayList<String>();
         try {
             stmt = conn.createStatement();
             String sql = "SELECT HostName,PortNumber  FROM instances;";
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next())    {
-                hostAndPortList.add(new HostAndPort(rs.getString("HostName"), Integer.parseInt(rs.getString("PortNumber"))));
+                hostAndPortList.add(rs.getString("HostName") +":" + rs.getString("PortNumber"));
             }
 
             conn.close();
@@ -39,10 +39,15 @@ public class InitializationServlet extends HttpServlet{
             e.printStackTrace();
         }
 
-        for(HostAndPort hostAndPort:hostAndPortList){
-            Instance instance = new Instance(hostAndPort.getHost(),hostAndPort.getPort());
+        for(String hostAndPort:hostAndPortList){
+            String host = hostAndPort.split(":")[0];
+            int port = Integer.parseInt(hostAndPort.split(":")[1]);
+            Instance instance = new Instance(host,port);
             instanceMap.put(hostAndPort,instance);
         }
         getServletContext().setAttribute("instanceMap",instanceMap);
+        System.out.println("initialization completed.");
     }
+
+
 }

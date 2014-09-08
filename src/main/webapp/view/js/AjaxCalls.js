@@ -366,6 +366,15 @@ $(document).off('click', '#start-monitor').on('click', '#start-monitor', functio
     );
 });
 
+$(document).off('click', '#reset-page-list').on('click', '#start-monitor', function(){
+    $.ajax(
+        {
+            url: "/view/resetPageList",
+            type: "POST"
+        }
+    );
+});
+
 $(document).off('click', '#stop-monitor').on('click', '#stop-monitor', function(){
     alertify.alert("stopping");
     $.ajax(

@@ -2,12 +2,14 @@ package Controller;
 
 import Model.Instance;
 import com.google.gson.Gson;
+import redis.clients.jedis.HostAndPort;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Map;
 
 /**
  * Created by Saurabh Paliwal on 1/9/14.
@@ -21,27 +23,28 @@ public class AddKeyServlet extends HttpServlet {
         System.out.println("adding keys..");
         try {
             out = response.getWriter();
-            String type = (String)request.getParameter("typeOfKey");
-            String key = (String)request.getParameter("nameOfKey");
-            String value = (String)request.getParameter("valueOfKey");
-            String optionalValue = (String)request.getParameter("optionalValueOfKey");
-
-            System.out.println("type,key,val,optval = "+
-            type+"," +key+","+value+","+optionalValue+",");
-            Instance instance = (Instance)request.getSession().getAttribute("instance");
-
-            if(key != null && value != null && type != null && optionalValue != null && !key.isEmpty() && !value.isEmpty() && !type.isEmpty()&& !optionalValue.isEmpty() ) {
+            String type = request.getParameter("typeOfKey");
+            String key = request.getParameter("nameOfKey");
+            String value = request.getParameter("valueOfKey");
+            String optionalValue = request.getParameter("optionalValueOfKey");
+            Instance clickedInstance =ServletHelper.getInstanceFromServletContext(getServletContext(),
+                    (String) request.getSession().getAttribute("clickedInstanceHostPort"));
+            if(clickedInstance==null){
+                System.out.println("instance not found!!");
+            }
+            if(key != null && value != null && type != null && optionalValue != null
+                    && !key.isEmpty() && !value.isEmpty() && !type.isEmpty()&& !optionalValue.isEmpty() ) {
                 System.out.println("valid");
-                if (instance.keyExists(key)) {
+                if (clickedInstance.keyExists(key)) {
                     System.out.println("exists");
                     out.write("existsAlready");
                 } else if (type.equals("string") || type.equals("set") || type.equals("list")) {
                     System.out.println("good");
-                    instance.addKey(key, type, value);
+                    clickedInstance.addKey(key, type, value);
                     out.write("success");
                 } else if (type.equals("zset") || type.equals("hash")) {
                     System.out.println("goodie");
-                    instance.addKey(key, type, value, optionalValue);
+                    clickedInstance.addKey(key, type, value, optionalValue);
                     out.write("success");
                 } else{
                     System.out.println(type + "invalid");
