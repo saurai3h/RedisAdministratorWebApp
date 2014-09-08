@@ -25,8 +25,8 @@ public class EditKeyServlet extends HttpServlet {
             String oldName = (String)request.getParameter("keyToEdit");
             String newName = (String)request.getParameter("valueToEdit");
 
-            Instance instance = (Instance)request.getSession().getAttribute("instance");
-
+            Instance instance =ServletHelper.getInstanceFromServletContext(getServletContext(),
+                    (String) request.getSession().getAttribute("clickedInstanceHostPort"));
             if(oldName!=null && newName!=null && !oldName.isEmpty() && !newName.isEmpty()) {
                 instance.renameKey(oldName,newName);
                 out.write("true");

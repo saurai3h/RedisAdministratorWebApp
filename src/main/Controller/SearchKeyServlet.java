@@ -22,9 +22,9 @@ public class SearchKeyServlet extends HttpServlet{
 
         try {
             out = response.getWriter();
-            String key = (String)request.getParameter("keyToSearch");
-
-            Instance instance = (Instance)request.getSession().getAttribute("instance");
+            String key = request.getParameter("keyToSearch");
+            Instance instance =ServletHelper.getInstanceFromServletContext(getServletContext(),
+                    (String) request.getSession().getAttribute("clickedInstanceHostPort"));
 
             if(key != null && !key.isEmpty()) {
                 if (!instance.keyExists(key)) {
