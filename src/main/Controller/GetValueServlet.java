@@ -29,7 +29,10 @@ public class GetValueServlet extends HttpServlet{
                     System.out.println("instance not found!!");
                 }
                 Map<String,String> map = clickedInstance.getJsonValueOfAKey(key);
-                out.write(new Gson().toJson(map));
+                if(map != null)
+                    out.write(new Gson().toJson(map));
+                else
+                    out.write("doesNotExist");
             }
             catch (IOException e) {
                 out.write("false");

@@ -168,6 +168,8 @@ public class Instance {
     }
 
     public Map<String,String> getJsonValueOfAKey(String key){
+
+        if(!keyExists(key)) return null;
         String type = getTypeOfKey(key);
         String JsonOfValue = "";
         Object value;
@@ -179,7 +181,6 @@ public class Instance {
 
         } else if (type.equals("list")) {
             value = jedis.lrange(key,0,-1);
-
 
         } else if (type.equals("string")) {
             value = jedis.get(key);
@@ -195,7 +196,6 @@ public class Instance {
 
         if(!type.equals("string")) {
             JsonOfValue = new Gson().toJson(value);
-            System.out.println(JsonOfValue);
         }
         Map<String,String> map = new HashMap<String, String>();
         map.put("json",JsonOfValue);

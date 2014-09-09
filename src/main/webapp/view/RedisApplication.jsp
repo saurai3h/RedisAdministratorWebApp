@@ -163,6 +163,7 @@
             </div>
         </div>
         <div id="thirdPanel" class="col-lg-5">
+
         </div>
     </div>
 </div>

@@ -27,7 +27,6 @@ public class AddKeyServlet extends HttpServlet {
             String key = request.getParameter("nameOfKey");
             String value = request.getParameter("valueOfKey");
             String optionalValue = request.getParameter("optionalValueOfKey");
-            System.out.println("(type,key,value,optionalValue) = "+type + "," + key +","+value+","+optionalValue);
             Instance clickedInstance =ServletHelper.getInstanceFromServletContext(getServletContext(),
                     (String) request.getSession().getAttribute("clickedInstanceHostPort"));
             if(clickedInstance==null){
@@ -35,15 +34,16 @@ public class AddKeyServlet extends HttpServlet {
             }
             if(key != null && value != null && type != null && optionalValue != null
                     && !key.isEmpty() && !value.isEmpty() && !type.isEmpty()&& !optionalValue.isEmpty() ) {
+                System.out.println("valid");
                 if (clickedInstance.keyExists(key)) {
-                    System.out.println("exists");
+                    //System.out.println("exists");
                     out.write("existsAlready");
                 } else if (type.equals("string") || type.equals("set") || type.equals("list")) {
-                    System.out.println("good");
+                    //System.out.println("good");
                     clickedInstance.addKey(key, type, value);
                     out.write("success");
                 } else if (type.equals("zset") || type.equals("hash")) {
-                    System.out.println("goodie");
+                    //System.out.println("goodie");
                     clickedInstance.addKey(key, type, value, optionalValue);
                     out.write("success");
                 } else{

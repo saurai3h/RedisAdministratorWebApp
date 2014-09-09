@@ -3,6 +3,7 @@ import java.sql.*;
 
 public class Login {
 
+
     private String name,password;
 
     public String getName() {

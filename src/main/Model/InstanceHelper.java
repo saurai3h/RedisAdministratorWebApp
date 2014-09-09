@@ -17,20 +17,22 @@ public class InstanceHelper {
             String sql = "insert into instances (HostName,PortNumber,IsMonitored) VALUES" +
                     "(\"" + hostAndPort.getHost() + "\", \"" +
                     Integer.toString(hostAndPort.getPort()) + "\"," +
-                    Integer.toString(0) + ");";
+                    Integer.toString(0) + ");" ;
             stmt.executeUpdate(sql);
             conn.close();
             stmt.close();
             return true;
 
-        } catch (SQLException e) {
+       } catch (SQLException e) {
             return false;
+
         }
     }
 
     public static boolean delete(HostAndPort hostAndPort) {
 
         try {
+
             Connection conn = SqlInterface.getConnection();
             Statement stmt = conn.createStatement();
             String sql = "delete from instances where HostName = " +

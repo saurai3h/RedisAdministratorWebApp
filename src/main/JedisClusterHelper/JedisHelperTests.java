@@ -22,7 +22,7 @@ public class JedisHelperTests {
     Jedis jedis;
     @Before
     public void setupInstance(){
-        jedis = new Jedis("172.16.137.228",6379);
+        jedis = new Jedis("localhost",7000);
     }
 
     public void setupCluster(){
