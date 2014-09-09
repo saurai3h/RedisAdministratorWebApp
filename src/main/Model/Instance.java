@@ -32,79 +32,30 @@ public class Instance {
     private Monitor monitor;
     private String cursor;
     private int expectedPageSize;
-
+    boolean isMonitored;
     public void resetPageList(){
         cursor = "";
         pages = new LinkedList<Page>();
         searchPage = new Page();
     }
-    public Instance(String host, int port)  {
+    public Instance(String host, int port, boolean isMonitored)  {
         searchPage = new Page();
         expectedPageSize = 15;
         hostAndPort = new HostAndPort(host,port);
         jedis = new Jedis(host,port);
         pages = new LinkedList<Page>();
         cursor = "";
+        this.isMonitored = isMonitored;
+        if(isMonitored)
+            startMonitor(1);
     }    
     public boolean keyExists(String key) {
         return jedis.exists(key);
     }
 
-    public boolean deleteField(String key,String field, String type) {
-
-        if(type.equals("string"))   {
-            if(jedis.del(field)>0)return true;
-            else return false;
-        }
-        else if(type.equals("set")) {
-            if(jedis.srem(key,field)>0)return true;
-            else return false;
-        }
-        else if(type.equals("list"))    {
-            List<String> tempList = jedis.lrange(key,0,-1);
-            tempList.remove(Integer.parseInt(field));
-            jedis.del(key);
-            for(String s : tempList) {
-                jedis.lpush(key, s);
-            }
-            if(jedis.exists(key))return true;
-            else return false;
-        }
-        else if(type.equals("zset"))    {
-            if(jedis.zrem(key,field)>0)return true;
-            else return false;
-        }
-        else if(type.equals("hash"))    {
-            if(jedis.hdel(key,field)>0)return true;
-            else return false;
-        }
-        else return false;
-    }
-
-    public boolean addField(String key,String field,String value,String type)   {
-        if(type.equals("set")) {
-            if(jedis.sadd(key, value)>0)return true;
-            else return false;
-        }
-        else if(type.equals("list"))    {
-            if(jedis.lpush(key,value)>0)return true;
-            else return false;
-        }
-        else if(type.equals("zset"))    {
-            if(jedis.zadd(key,Double.parseDouble(field),value)>0)return true;
-            else return false;
-        }
-        else if(type.equals("hash"))    {
-            if(jedis.hset(key,field,value)>0)return true;
-            else return false;
-        }
-        else return false;
-    }
-
     public void renameKey(String oldKeyName, String newKeyName){
         jedis.rename(oldKeyName,newKeyName);
     }
-
     public void addKey(String key,String type, String value)   {
         if (type.equals("string")) {
             jedis.set(key, value);
@@ -121,7 +72,7 @@ public class Instance {
 
     public void addKey(String key, String type, String value1, String value2)  {
         if (type.equals("zset")) {
-            jedis.zadd(key, Double.parseDouble(value1), value2);
+            jedis.zadd(key, Double.parseDouble(value2), value1);
 
         } else if (type.equals("hash")) {
             jedis.hset(key, value1, value2);
@@ -222,13 +173,8 @@ public class Instance {
         String JsonOfValue = "";
         Object value;
         if (type.equals("zset")) {
-            value = jedis.zrange(key, 0, -1);
-            HashMap<String,Double> map = new HashMap<String, Double>();
-            for (String element:(Set<String>)value){
-                Double score = jedis.zscore(key,element);
-                map.put(element,score);
-            }
-            value = map;
+            value = jedis.zrangeWithScores(key, 0, -1);
+
         } else if (type.equals("hash")) {
             value = jedis.hgetAll(key);
 
@@ -247,9 +193,9 @@ public class Instance {
             return null;
         }
 
-        if(!type.equals("string"))
+        if(!type.equals("string")) {
             JsonOfValue = new Gson().toJson(value);
-
+        }
         Map<String,String> map = new HashMap<String, String>();
         map.put("json",JsonOfValue);
         map.put("type",type);

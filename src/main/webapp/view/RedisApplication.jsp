@@ -71,7 +71,9 @@
                 <ul id="list-header" class="pager">
                     <li class="previous"><a id="prev" href="#">&larr; Older</a></li>
                     <li class="next"><a id="next" href="#">Newer &rarr;</a></li>
-                    <li class="next"><a id="reset-page-list" href="#">Reset &rarr;</a></li>
+                    <li><a id="reset-page-list" href="#">Reset &olarr;</a></li>
+                    <li><a id="start-monitor" href="#">Start Monitor</a></li>
+                    <li><a id="stop-monitor" href="#">Stop Monitor</a></li>
                 </ul>
 
                 <ul id="list-content">
