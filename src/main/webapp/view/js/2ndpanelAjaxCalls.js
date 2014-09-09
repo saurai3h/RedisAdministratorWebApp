@@ -1,5 +1,141 @@
 var typeOfKeys = [];
 
+var populateKeyListFromJson = function(strData){
+
+    $("#list-content").remove();
+    var ul = document.createElement("ul");
+    $(ul).attr("id","list-content");
+    if (strData !== "false") {
+        var jsonData = jQuery.parseJSON(strData);
+        for (var x in jsonData) {
+
+            var li = document.createElement("li");
+            var link = document.createElement("a");
+            var deleteLink = document.createElement("button");
+            var editLink = document.createElement("button");
+            var editInputBox = document.createElement("input");
+            var typeOfKey = document.createElement("span");
+            var expiryTime = document.createElement("span");
+
+            $(link).html(jsonData[x]["keyName"]);
+            $(link).attr("id", jsonData[x]["keyName"]);
+            $(link).attr("href", "#");
+            $(link).css("display","inline-block");
+            $(link).css("width","40%");
+            $(li).append(link);
+
+            $(deleteLink).addClass("btn btn-danger deletingKeys");
+            $(deleteLink).html("Delete");
+            $(deleteLink).css("margin-left","1%");
+            $(deleteLink).attr("id","deleteButton"+":"+jsonData[x]["keyName"]);
+            $(li).append(deleteLink);
+
+            $(editLink).addClass("btn btn-info");
+            $(editLink).html("Edit");
+            $(editLink).css("margin-left","1%");
+            $(editLink).attr("id","editButton"+":"+jsonData[x]["keyName"]);
+            $(editLink).attr("onclick","editOuter()");
+            $(li).append(editLink);
+
+
+            $(editInputBox).css("display","none");
+            $(editInputBox).css("width","15%");
+            $(editInputBox).attr("id","optionalInput:"+jsonData[x]["keyName"]);
+            $(editInputBox).attr("placeholder",jsonData[x]["keyName"]);
+            $(editInputBox).attr("type","text");
+//                                                $(editInputBox).attr("onchange",function(value){this.value = value;});
+            $(li).append(editInputBox);
+
+            $(typeOfKey).html(jsonData[x]["type"]);
+            $(typeOfKey).css("margin-left","1%");
+            $(typeOfKey).css("font-style","italic");
+            $(typeOfKey).css("font-family","cursive");
+            $(typeOfKey).css("text-transform","uppercase");
+            $(typeOfKey).attr("id","typeSpan:"+jsonData[x]["keyName"]);
+            $(li).append(typeOfKey);
+
+            $(expiryTime).html(jsonData[x]["expiryTime"]);
+            $(expiryTime).css("margin-left","3%");
+            $(expiryTime).css("font-family","cursive");
+            $(expiryTime).attr("id","expiryTimeSpan:"+jsonData[x]["expiryTime"]);
+            $(li).append(expiryTime);
+
+            $(ul).append(li);
+        }
+        $("#list-display").append(ul);
+    }
+    else {
+        console.log("No page to display");
+    }
+};
+var ajaxCallForAddKey = function(buttonNo){
+
+    var key = document.getElementById("keyAdd"+buttonNo.toString()).value.toString();
+    var value = document.getElementById("valueAdd"+buttonNo.toString()).value.toString();
+    var optionalInputBox = document.getElementById("optionalValueAdd"+buttonNo.toString());
+    var optionalValue;
+    if(optionalInputBox === null){
+        optionalValue = "dummy";
+    }
+    else{
+        optionalValue= optionalInputBox.value.toString();
+    }
+    var type;
+    if(buttonNo === 1){
+        type = "string";
+    }
+    else if(buttonNo === 2){
+        type = "list";
+    }
+    else if(buttonNo === 3){
+        type = "set";
+    }
+    else if(buttonNo === 4){
+        type = "hash";
+    }
+    else if(buttonNo === 5){
+        type = "zset";
+    }
+
+    $.ajax(
+        {
+            url: "/view/AddKey",
+            type: "POST",
+            data: "typeOfKey="+ type +"&nameOfKey="+key+
+                "&valueOfKey="+value+"&optionalValueOfKey="+optionalValue,
+            success: function (strData) {
+
+                if(strData === "existsAlready") {
+                    alertify.alert("This key already exists.");
+                }
+                else if(strData === "invalidDataStructure") {
+                    alertify.alert("Redis doesn't support this data structure");
+                }
+                else if(strData === "KeyNull")  {
+                    alertify.alert("Redis entries not filled." + buttonNo);
+                }
+                else if(strData === "false")   {
+                    alertify.alert("Sorry! Couldn't add. The server must be down.");
+                }
+                else if(strData === "success"){
+                    alertify.alert("Success!!");
+                }
+                else{
+                    alertify.alert("Some strange error!");
+                }
+            }
+        }
+    );
+    document.getElementById("keyAdd3").value = "";
+    document.getElementById("valueAdd3").value = "";
+};
+var charCodeArrToString = function toBinString (charCodeArr) {
+    var concatenatedString = "";
+    for(var char in charCodeArr){
+        concatenatedString += String.fromCharCode(charCodeArr[char]);
+    }
+    return concatenatedString;
+}
 editOuter = function() {
 
     var key = event.target.id.toString().substring(11);
@@ -80,12 +216,20 @@ $(document).off('click','.btn.btn-danger.deletingKeys').on('click', '.btn.btn-da
                 type: "POST",
                 data: "keyToDelete=" + key,
                 success: function (strData) {
-                    if(strData === "true") {
-                        var link = document.getElementById(key);
-                        $(link).parent().remove();
+                    if(strData === "doesNotExist") {
+                        alertify.alert("The key does not exist!");
+                    }
+                    else if(strData === "keyNull")  {
+                        alertify.alert("Redis entries not filled.")
+                    }
+                    else if(strData === "false")    {
+                        alertify.alert("Sorry! Couldn't delete. The server must be down.");
+                    }
+                    else  if(strData === "success")  {
+                        alertify.alert("Success!!");
                     }
                     else    {
-                        alertify.alert("Sorry, could not delete! The server must be down.")
+                        alertify.alert("Strange Error!! Aliens hacked into your DB!");
                     }
                 }
             }
@@ -155,112 +299,29 @@ $(document).off('click', '#Search6').on('click', '#Search6', function() {
     }
 );
 
-populateKeyListFromJson = function(strData){
 
-    $("#list-content").remove();
-    var ul = document.createElement("ul");
-    $(ul).attr("id","list-content");
-    if (strData !== "false") {
-        var jsonData = jQuery.parseJSON(strData);
-        for (var x in jsonData) {
-
-            var li = document.createElement("li");
-            var link = document.createElement("a");
-            var deleteLink = document.createElement("button");
-            var editLink = document.createElement("button");
-            var editInputBox = document.createElement("input");
-            var typeOfKey = document.createElement("span");
-            var expiryTime = document.createElement("span");
-
-            $(link).html(jsonData[x]["keyName"]);
-            $(link).attr("id", jsonData[x]["keyName"]);
-            $(link).attr("href", "#");
-            $(link).css("display","inline-block");
-            $(link).css("width","40%");
-            $(li).append(link);
-
-            $(deleteLink).addClass("btn btn-danger deletingKeys");
-            $(deleteLink).html("Delete");
-            $(deleteLink).css("margin-left","1%");
-            $(deleteLink).attr("id","deleteButton"+":"+jsonData[x]["keyName"]);
-            $(li).append(deleteLink);
-
-            $(editLink).addClass("btn btn-info editingKeys");
-            $(editLink).html("Edit");
-            $(editLink).css("margin-left","1%");
-            $(editLink).attr("id","editButton"+":"+jsonData[x]["keyName"]);
-            $(editLink).attr("onclick","editOuter()");
-            $(li).append(editLink);
-
-
-            $(editInputBox).css("display","none");
-            $(editInputBox).css("width","15%");
-            $(editInputBox).attr("id","optionalInput:"+jsonData[x]["keyName"]);
-            $(editInputBox).attr("placeholder",jsonData[x]["keyName"]);
-            $(editInputBox).attr("type","text");
-            $(li).append(editInputBox);
-
-            $(typeOfKey).html(jsonData[x]["type"]);
-            $(typeOfKey).css("margin-left","1%");
-            $(typeOfKey).css("font-style","italic");
-            $(typeOfKey).css("font-family","cursive");
-            $(typeOfKey).css("text-transform","uppercase");
-            $(typeOfKey).attr("id","typeSpan:"+jsonData[x]["keyName"]);
-            $(li).append(typeOfKey);
-
-            $(expiryTime).html(jsonData[x]["expiryTime"]);
-            $(expiryTime).css("margin-left","3%");
-            $(expiryTime).css("font-family","cursive");
-            $(expiryTime).attr("id","expiryTimeSpan:"+jsonData[x]["expiryTime"]);
-            $(li).append(expiryTime);
-
-            $(ul).append(li);
-        }
-        $("#list-display").append(ul);
-    }
-    else {
-        console.log("No page to display");
-    }
-};
-
-$(document).off('click', '#prev').on('click', '#prev', function(){
+$(document).off('click', '#reset-page-list').on('click', '#reset-page-list', function(){
 
         $.ajax(
             {
-                url: "/view/Previous",
-                type: "POST",
-                success: function (strData) {
-                    populateKeyListFromJson(strData);}
-            }
-        );
-
-    }
-);
-
-$(document).off('click', '#next').on('click', '#next', function() {
-
-        $.ajax(
-            {
-                url: "/view/Next",
+                url: "/view/resetPageList",
                 type: "POST",
                 success: function (strData) {
                     populateKeyListFromJson(strData);
                 }
             }
         );
-
     }
 );
 
+$(document).off('click', '#prev').on('click', '#prev', function(){
 
-$(document).off('click', '#start-monitor').on('click', '#start-monitor', function(){
-    alertify.alert("starting");
-    $.ajax(
-        {
-            url: "/view/monitor",
+        $.ajax(
+            {
+                url: "/view/Previous",
             type: "POST",
-            data: "shouldStartMonitor="+true
-
+                success: function (strData) {
+                    populateKeyListFromJson(strData);}
         }
     );
 });
@@ -556,10 +617,17 @@ $(document).off('click', 'ul#list-content li a').on('click', "ul#list-content li
                             }
                         }
                         container.setAttribute("id", "value-container");
-                        for (var x in json) {
-                            appendToContainer(x, json[x]);
-                        }
+                    for (var key in json) {
+                        var value = json[key];
+                        console.log("key = "+key);
+                        console.log("value = "+value);
+                        if(type === "zset"){
 
+                            appendToContainer(charCodeArrToString(value["element"]),value["score"]);
+                        }
+                        else
+                            appendToContainer(key,value);
+                    }
 
                         $("#keys-details").append(container);
                     }
@@ -569,7 +637,17 @@ $(document).off('click', 'ul#list-content li a').on('click', "ul#list-content li
     }
 
 );
+$(document).off('click', '#start-monitor').on('click', '#start-monitor', function(){
+    alertify.alert("starting");
+    $.ajax(
+        {
+            url: "/view/monitor",
+            type: "POST",
+            data: "shouldStartMonitor="+true
 
+        }
+    );
+});
 fieldAdder = function(clickedKey,field,value,type) {
     $.ajax(
         {
