@@ -2,7 +2,7 @@ var typeOfKeys = [];
 
 editOuter = function() {
 
-    var key = event.target.id.split(":")[1];
+    var key = event.target.id.toString().substring(11);
     var inputBoxID = "optionalInput:" + key;
 
     var box = document.getElementById(inputBoxID);
@@ -70,7 +70,7 @@ $(document).off('click', '.sidebar-nav a').on('click', '.sidebar-nav a', functio
 
 $(document).off('click','.btn.btn-danger.deletingKeys').on('click', '.btn.btn-danger.deletingKeys',function(){
 
-    var key = event.target.id.split(":")[1];
+    var key = event.target.id.toString().substring(13);
 
     var prompt = confirm("Sure you want to delete this key?");
     if(prompt == true) {
@@ -269,14 +269,19 @@ $(document).off('click', '#stop-monitor').on('click', '#stop-monitor', function(
     );
 });
 
-$(document).off('click', '#reset-page-list').on('click', '#start-monitor', function(){
-    $.ajax(
-        {
-            url: "/view/resetPageList",
-            type: "POST"
-        }
-    );
-});
+$(document).off('click', '#reset-page-list').on('click', '#reset-page-list', function(){
+
+        $.ajax(
+            {
+                url: "/view/resetPageList",
+                type: "POST",
+                success: function (strData) {
+                    populateKeyListFromJson(strData);
+                }
+            }
+        );
+    }
+);
 
 
 $(document).off('click', '#Add1').on('click', '#Add1', function(){
