@@ -161,6 +161,7 @@
             </div>
         </div>
         <div id="thirdPanel" class="col-lg-5">
+
         </div>
     </div>
 </div>
@@ -176,7 +177,6 @@
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <script src="js/1stpanelAjaxCalls.js"></script>
 <script src="js/2ndpanelAjaxCalls.js"></script>
-<script src="js/3rdpanelAjaxCalls.js"></script>
 <script type="text/javascript">
     hostValid = function hostValidator()    {
 

@@ -67,6 +67,18 @@
         <servlet-name>resetPageList</servlet-name>
         <servlet-class>Controller.ResetInstanceServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>addField</servlet-name>
+        <servlet-class>Controller.AddFieldServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>deleteField</servlet-name>
+        <servlet-class>Controller.DeleteFieldServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>editField</servlet-name>
+        <servlet-class>Controller.EditFieldServlet</servlet-class>
+    </servlet>
 
     <servlet-mapping>
         <servlet-name>login</servlet-name>
@@ -127,5 +139,17 @@
     <servlet-mapping>
         <servlet-name>resetPageList</servlet-name>
         <url-pattern>/view/resetPageList</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>editField</servlet-name>
+        <url-pattern>/view/EditField</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>deleteField</servlet-name>
+        <url-pattern>/view/DeleteField</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>addField</servlet-name>
+        <url-pattern>/view/AddField</url-pattern>
     </servlet-mapping>
 </web-app>

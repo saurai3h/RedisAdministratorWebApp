@@ -34,7 +34,7 @@ public class AddKeyServlet extends HttpServlet {
             }
             if(key != null && value != null && type != null && optionalValue != null
                     && !key.isEmpty() && !value.isEmpty() && !type.isEmpty()&& !optionalValue.isEmpty() ) {
-                System.out.println("valid");
+                //System.out.println("valid");
                 if (clickedInstance.keyExists(key)) {
                     //System.out.println("exists");
                     out.write("existsAlready");
