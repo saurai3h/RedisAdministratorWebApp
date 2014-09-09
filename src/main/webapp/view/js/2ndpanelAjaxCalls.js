@@ -326,16 +326,19 @@ $(document).off('click', '#prev').on('click', '#prev', function(){
     );
 });
 
-$(document).off('click', '#stop-monitor').on('click', '#stop-monitor', function(){
-    alertify.alert("stopping");
+
+$(document).off('click', '#next').on('click', '#next', function(){
+
     $.ajax(
         {
-            url: "/view/monitor",
+            url: "/view/Next",
             type: "POST",
-            data: "shouldStartMonitor="+false
+            success: function (strData) {
+                populateKeyListFromJson(strData);}
         }
     );
 });
+
 
 $(document).off('click', '#reset-page-list').on('click', '#reset-page-list', function(){
 
@@ -637,14 +640,24 @@ $(document).off('click', 'ul#list-content li a').on('click', "ul#list-content li
     }
 
 );
-$(document).off('click', '#start-monitor').on('click', '#start-monitor', function(){
+$(document).off('click', '#start-infoSnapshotter').on('click', '#start-infoSnapshotter', function(){
     alertify.alert("starting");
     $.ajax(
         {
-            url: "/view/monitor",
+            url: "/view/infoSnapshotter",
             type: "POST",
             data: "shouldStartMonitor="+true
 
+        }
+    );
+});
+$(document).off('click', '#stop-infoSnapshotter').on('click', '#stop-infoSnapshotter', function(){
+    alertify.alert("stopping");
+    $.ajax(
+        {
+            url: "/view/infoSnapshotter",
+            type: "POST",
+            data: "shouldStartMonitor="+false
         }
     );
 });

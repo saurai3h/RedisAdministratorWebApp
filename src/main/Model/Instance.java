@@ -122,12 +122,12 @@ public class Instance {
         }
     }
 
-    public void addKey(String key, String type, String value1, String value2)  {
+    public void addKey(String key, String type, String hashValueOrZsetElement, String hashFieldOrZsetScore)  {
         if (type.equals("zset")) {
-            jedis.zadd(key, Double.parseDouble(value2), value1);
+            jedis.zadd(key, Double.parseDouble(hashFieldOrZsetScore), hashValueOrZsetElement);
 
         } else if (type.equals("hash")) {
-            jedis.hset(key, value1, value2);
+            jedis.hset(key, hashFieldOrZsetScore, hashValueOrZsetElement);
 
         } else {
             System.out.println("Invalid Data Structure");
@@ -257,6 +257,7 @@ public class Instance {
     public void startMonitor() {
         if(setMonitorBitInDb(true)) {
             infoSnapshotter.startMonitorMode();
+            System.out.println("reached instance");
             this.isMonitored = true;
         }
     }
@@ -291,6 +292,7 @@ public class Instance {
     public void stopMonitor(){
         if(setMonitorBitInDb(false)) {
             infoSnapshotter.stopMonitorMode();
+            System.out.println("reached instance");
             this.isMonitored = false;
         }
     }
