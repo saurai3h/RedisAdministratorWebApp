@@ -2,17 +2,14 @@ package Controller;
 
 import Model.Instance;
 import Model.InstanceHelper;
-import com.google.gson.Gson;
 import redis.clients.jedis.HostAndPort;
-import redis.clients.jedis.exceptions.JedisException;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Map;
 
 /**
  * Created by Saurabh Paliwal on 1/9/14.
@@ -30,8 +27,12 @@ public class AddInstanceServlet extends HttpServlet {
             String port = request.getParameter("addThisPort");
 
             boolean didAdd = InstanceHelper.add(new HostAndPort(host,Integer.parseInt(port)));
-            if(didAdd)
+            if(didAdd) {
                 out.write("true");
+                Map<String, Instance> instanceMap = (Map<String, Instance>) getServletContext().getAttribute("instanceMap");
+                instanceMap.put((host+":"+port),new Instance(host,Integer.parseInt(port),false));
+                getServletContext().setAttribute("instanceMap",instanceMap);
+            }
             else
                 out.write("false");
         }

@@ -170,6 +170,7 @@ populateKeyListFromJson = function(strData){
             var editLink = document.createElement("button");
             var editInputBox = document.createElement("input");
             var typeOfKey = document.createElement("span");
+            var expiryTime = document.createElement("span");
 
             $(link).html(jsonData[x]["keyName"]);
             $(link).attr("id", jsonData[x]["keyName"]);
@@ -206,6 +207,12 @@ populateKeyListFromJson = function(strData){
             $(typeOfKey).css("text-transform","uppercase");
             $(typeOfKey).attr("id","typeSpan:"+jsonData[x]["keyName"]);
             $(li).append(typeOfKey);
+
+            $(expiryTime).html(jsonData[x]["expiryTime"]);
+            $(expiryTime).css("margin-left","3%");
+            $(expiryTime).css("font-family","cursive");
+            $(expiryTime).attr("id","expiryTimeSpan:"+jsonData[x]["expiryTime"]);
+            $(li).append(expiryTime);
 
             $(ul).append(li);
         }
@@ -369,7 +376,13 @@ var ajaxCallForAddKey = function(buttonNo){
     document.getElementById("valueAdd"+buttonNo.toString()).value = "";
     document.getElementById("optionalValueAdd"+buttonNo.toString()).value = "";
 };
-
+var charCodeArrToString = function toBinString (charCodeArr) {
+    var concatenatedString = "";
+    for(var char in charCodeArr){
+        concatenatedString += String.fromCharCode(charCodeArr[char]);
+    }
+    return concatenatedString;
+}
 $(document).off('click', 'ul#list-content li a').on('click', "ul#list-content li a", function(){
 
         var clickedKey = event.target.id.toString();

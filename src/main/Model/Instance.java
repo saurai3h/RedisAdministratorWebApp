@@ -1,13 +1,9 @@
 package Model;
 
 import com.google.gson.Gson;
-import redis.clients.jedis.HostAndPort;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.ScanParams;
-import redis.clients.jedis.ScanResult;
+import redis.clients.jedis.*;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
@@ -15,6 +11,7 @@ import java.util.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.*;
 
 /**
  * Created by Saurabh Paliwal on 27/8/14.
@@ -29,10 +26,11 @@ public class Instance {
     private Jedis jedis;
     private LinkedList<Page> pages;
     private Page searchPage;
-    private Monitor monitor;
+    private InfoSnapshotter infoSnapshotter;
     private String cursor;
     private int expectedPageSize;
     boolean isMonitored;
+    private ScheduledExecutorService executorService;
     public void resetPageList(){
         cursor = "";
         pages = new LinkedList<Page>();
@@ -46,8 +44,11 @@ public class Instance {
         pages = new LinkedList<Page>();
         cursor = "";
         this.isMonitored = isMonitored;
+        infoSnapshotter = new InfoSnapshotter(new HostAndPort("172.16.137.228",7000),this.hostAndPort);
+        executorService = Executors.newSingleThreadScheduledExecutor();
+        executorService.scheduleWithFixedDelay(infoSnapshotter,0,10, TimeUnit.SECONDS);
         if(isMonitored)
-            startMonitor(1);
+            infoSnapshotter.startMonitorMode();
     }    
     public boolean keyExists(String key) {
         return jedis.exists(key);
@@ -253,94 +254,63 @@ public class Instance {
         return map;
     }
 
-    public void startMonitor(double intervalInSeconds){
-        boolean succeeded =false;
-        Connection connection = SqlInterface.getConnection();
-        Statement statement;
-        try {
-            statement = connection.createStatement();
-            String selectQuery = "Select IsMonitored FROM instances WHERE HostName=\""
-                    + this.hostAndPort.getHost()+"\" AND PortNumber="
-                    + Integer.toString(this.hostAndPort.getPort()) + ";";
-            System.out.println(selectQuery);
-            ResultSet resultSet = statement.executeQuery(selectQuery);
-            if(resultSet.wasNull())    {
-                System.out.println("the instance was not found, did anyone else deleted it?");
-            }
-
-            if(resultSet.next()){
-                if(resultSet.getBoolean("IsMonitored")){
-                    System.out.println("already being monitored!!");
-                }
-                else{
-                    succeeded = true;
-                    String query = "UPDATE instances SET IsMonitored=1 " +
-                            "WHERE HostName=\""+ this.hostAndPort.getHost()
-                            +"\" AND PortNumber="+ Integer.toString(this.hostAndPort.getPort()) + ";";
-                    System.out.println(query);
-                    statement.execute(query);
-                    System.out.println("executed");
-                }
-            }
-
-            connection.close();
-            statement.close();
-            resultSet.close();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public void startMonitor() {
+        if(setMonitorBitInDb(true)) {
+            infoSnapshotter.startMonitorMode();
+            this.isMonitored = true;
         }
-        if(succeeded){
-            System.out.println("starting the monitor");
-            monitor = new Monitor(new HostAndPort("172.16.137.228",7000),
-                    this.hostAndPort,intervalInSeconds);
-            Thread t = new Thread(monitor);
-            t.start();
-        }
-
-
-
-
-
     }
 
-    public void stopMonitor(){
-        boolean succeeded = false;
+    private boolean setMonitorBitInDb(boolean newValueOfIsMonitored) {
+        String isMonitored;
+        if(newValueOfIsMonitored)
+            isMonitored = "1";
+        else
+            isMonitored = "0";
+        boolean succeeded =true;
         Connection connection = SqlInterface.getConnection();
         Statement statement;
         try {
             statement = connection.createStatement();
-            String selectQuery = "Select IsMonitored FROM instances WHERE HostName=\""
-                    + this.hostAndPort.getHost()+"\" AND PortNumber="
-                    + Integer.toString(this.hostAndPort.getPort()) + ";";
-            System.out.println(selectQuery);
-            ResultSet resultSet = statement.executeQuery(selectQuery);
-            if(resultSet.wasNull())    {
-                System.out.println("the instance was not found, did anyone else deleted it?");
-            }
-
-            if(resultSet.next()){
-                if(!resultSet.getBoolean("IsMonitored")){
-                    System.out.println("already stopped monitored!!");
-                }
-                else{
-                    String query = "UPDATE instances SET IsMonitored=0 " +
-                            "WHERE HostName=\""+ this.hostAndPort.getHost()
-                            +"\" AND PortNumber="+ Integer.toString(this.hostAndPort.getPort()) + ";";
-                    System.out.println(query);
-                    statement.execute(query);
-                    succeeded = true;
-                }
-            }
+            String query = "UPDATE instances SET IsMonitored=" + isMonitored +
+                    " WHERE HostName=\""+ this.hostAndPort.getHost()
+                    +"\" AND PortNumber="+ Integer.toString(this.hostAndPort.getPort()) + ";";
+            System.out.println(query);
+            statement.execute(query);
             connection.close();
             statement.close();
-            resultSet.close();
         } catch (SQLException e) {
+            succeeded = false;
             e.printStackTrace();
         }
+        return succeeded;
+    }
 
-        if(succeeded)
-            monitor.terminate();
+
+
+    public void stopMonitor(){
+        if(setMonitorBitInDb(false)) {
+            infoSnapshotter.stopMonitorMode();
+            this.isMonitored = false;
+        }
+    }
+
+    public void toggleMonitorMode(){
+        if(isMonitored){
+            isMonitored = false;
+            stopMonitor();
+        }
+        else {
+            isMonitored = true;
+            startMonitor();
+        }
+    }
+
+    public void close(){
+        jedis.close();
+        pages = null;
+        stopMonitor();
+        executorService.shutdown();
     }
 }
 

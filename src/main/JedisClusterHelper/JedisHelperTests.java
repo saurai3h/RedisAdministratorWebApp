@@ -1,6 +1,6 @@
 package JedisClusterHelper;
 
-import Model.Monitor;
+import Model.InfoSnapshotter;
 import org.junit.Before;
 import org.junit.Test;
 import redis.clients.jedis.HostAndPort;
@@ -86,8 +86,8 @@ public class JedisHelperTests {
     public void shouldStoreInfo() {
         HostAndPort instance = new HostAndPort("172.16.137.228",6379);
         HostAndPort infoStore = new HostAndPort("172.16.137.228",7000);
-        Monitor monitor = new Monitor(infoStore,instance,10000);
-        Thread t = new Thread(monitor);
+        InfoSnapshotter infoSnapshotter = new InfoSnapshotter(infoStore,instance);
+        Thread t = new Thread(infoSnapshotter);
         t.run();
 
     }

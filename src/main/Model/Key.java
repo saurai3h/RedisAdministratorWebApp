@@ -34,7 +34,18 @@ public class Key {
         type = jedis.type(keyName);
         Long ttl = jedis.ttl(keyName);
         Date date = new Date(new Date().getTime()+1000*ttl);
-        expiryTime = new SimpleDateFormat("HH:mm:ss").format(date);
+        if(ttl == -1){
+            expiryTime = "expiry time not set";
+        }
+        else if(ttl == -2){
+            expiryTime = "probably key got deleted";
+        }
+        else if(ttl>0) {
+            expiryTime = "Expires at "+ new SimpleDateFormat("HH:mm:ss").format(date);
+        }
+        else {
+            expiryTime = "strange ttl!";
+        }
     }
 
     public Map<String,String> getJsonValueOfAKey(Jedis jedis){

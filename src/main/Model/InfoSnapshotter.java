@@ -6,19 +6,19 @@ import redis.clients.jedis.Jedis;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 /**
  * Created by kartik.k on 9/2/2014.
  */
-public class Monitor extends Thread {
-    private volatile boolean terminateSignalNotReceived;
+public class InfoSnapshotter implements Runnable {
+    private volatile boolean persistStoredInfo;
     HostAndPort monnitoredInstanceHostPort;
     HostAndPort infoStorageHostPort;
-    private double interval;
     Jedis monitoredInstance;
     Jedis infoStorage;
-    public Monitor(HostAndPort infoStorageHostPort,HostAndPort monnitoredInstanceHostPort,
-                   double snapshottingIntervalInSeconds){
+    ExecutorService executorService;
+    public InfoSnapshotter(HostAndPort infoStorageHostPort, HostAndPort monnitoredInstanceHostPort){
         this.infoStorageHostPort = infoStorageHostPort;
         this.monnitoredInstanceHostPort = monnitoredInstanceHostPort;
 
@@ -26,35 +26,31 @@ public class Monitor extends Thread {
                 monnitoredInstanceHostPort.getPort());
         infoStorage = new Jedis(infoStorageHostPort.getHost(),infoStorageHostPort.getPort());
 
-        terminateSignalNotReceived = true;
-        this.interval = snapshottingIntervalInSeconds;
+        persistStoredInfo = false;
     }
     public void run() {
-        System.out.println("starting to run..");
-
-        while (terminateSignalNotReceived) {
-            System.out.println("running..");
-            storeOneInfoSnapshot(monitoredInstance, infoStorage);
-            try {
-                Thread.sleep((long) interval*1000);
-            } catch (InterruptedException e) {
-                System.out.println("what creature woke me up??");
-            }
-        }
+            storeOneInfoSnapshot();
     }
 
-    private synchronized void storeOneInfoSnapshot(Jedis monitoredInstance, Jedis infoStorage) {
+    private synchronized void storeOneInfoSnapshot() {
 
         Map<String, String> map = getInfoAsMap(monitoredInstance);
         Date date = new Date();
-        System.out.println(infoStorage.ping());
-        infoStorage.hmset(monnitoredInstanceHostPort.getHost()+":" +
+
+        String key = monnitoredInstanceHostPort.getHost()+":" +
                 Integer.toString(monnitoredInstanceHostPort.getPort()) +":" +
-                Long.toString(date.getTime()), map);
+                Long.toString(date.getTime());
+        infoStorage.hmset(key, map);
+        if(!persistStoredInfo)
+            infoStorage.expire(key,22);
+        else
+            System.out.println("stored!! " + monnitoredInstanceHostPort.toString());
     }
 
-    public void terminate(){
-        terminateSignalNotReceived = false;
+    public void startMonitorMode(){persistStoredInfo = true;}
+
+    public void stopMonitorMode(){
+        persistStoredInfo = false;
     }
 
     public Map<String,String> getInfoAsMap(Jedis jedis){
