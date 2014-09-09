@@ -53,6 +53,57 @@ public class Instance {
         return jedis.exists(key);
     }
 
+    public boolean deleteField(String key,String field, String type) {
+
+        if(type.equals("string"))   {
+            if(jedis.del(field)>0)return true;
+            else return false;
+        }
+        else if(type.equals("set")) {
+            if(jedis.srem(key,field)>0)return true;
+            else return false;
+        }
+        else if(type.equals("list"))    {
+            List<String> tempList = jedis.lrange(key,0,-1);
+            tempList.remove(Integer.parseInt(field));
+            jedis.del(key);
+            for(String s : tempList) {
+                jedis.lpush(key, s);
+            }
+            if(jedis.exists(key))return true;
+            else return false;
+        }
+        else if(type.equals("zset"))    {
+            if(jedis.zrem(key,field)>0)return true;
+            else return false;
+        }
+        else if(type.equals("hash"))    {
+            if(jedis.hdel(key,field)>0)return true;
+            else return false;
+        }
+        else return false;
+    }
+
+    public boolean addField(String key,String field,String value,String type)   {
+        if(type.equals("set")) {
+            if(jedis.sadd(key, value)>0)return true;
+            else return false;
+        }
+        else if(type.equals("list"))    {
+            if(jedis.lpush(key,value)>0)return true;
+            else return false;
+        }
+        else if(type.equals("zset"))    {
+            if(jedis.zadd(key,Double.parseDouble(field),value)>0)return true;
+            else return false;
+        }
+        else if(type.equals("hash"))    {
+            if(jedis.hset(key,field,value)>0)return true;
+            else return false;
+        }
+        else return false;
+    }
+
     public void renameKey(String oldKeyName, String newKeyName){
         jedis.rename(oldKeyName,newKeyName);
     }
