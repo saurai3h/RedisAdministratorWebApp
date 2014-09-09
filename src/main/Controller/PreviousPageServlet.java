@@ -24,8 +24,6 @@ public class PreviousPageServlet extends HttpServlet {
         try {
             out = response.getWriter();
             try {
-                System.out.println (getServletContext().getAttribute("msg"));
-
                 Instance clickedInstance =ServletHelper.getInstanceFromServletContext(getServletContext(),
                         (String) request.getSession().getAttribute("clickedInstanceHostPort"));
                 Integer curPageIndex = (Integer) request.getSession().getAttribute("CurPageIndex");

@@ -72,8 +72,8 @@
                     <li class="previous"><a id="prev" href="#">&larr; Older</a></li>
                     <li class="next"><a id="next" href="#">Newer &rarr;</a></li>
                     <li><a id="reset-page-list" href="#">Reset &olarr;</a></li>
-                    <li><a id="start-monitor" href="#">Start Monitor</a></li>
-                    <li><a id="stop-monitor" href="#">Stop Monitor</a></li>
+                    <li><a id="start-infoSnapshotter" href="#">Start Monitor</a></li>
+                    <li><a id="stop-infoSnapshotter" href="#">Stop Monitor</a></li>
                 </ul>
 
                 <ul id="list-content">
@@ -87,8 +87,8 @@
         </div>
 
         <%--To be later uncommented--%>
-        <%--<button class="btn btn-default" type="button" id="start-monitor">Start Monitor</button>--%>
-        <%--<button class="btn btn-default" type="button" id="stop-monitor">Stop Monitor</button>--%>
+        <%--<button class="btn btn-default" type="button" id="start-infoSnapshotter">Start InfoSnapshotter</button>--%>
+        <%--<button class="btn btn-default" type="button" id="stop-infoSnapshotter">Stop InfoSnapshotter</button>--%>
 
     </div>
     <div class="list-footer">

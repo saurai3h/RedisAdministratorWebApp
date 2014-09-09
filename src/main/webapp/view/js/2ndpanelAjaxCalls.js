@@ -15,6 +15,7 @@ var populateKeyListFromJson = function(strData){
             var editLink = document.createElement("button");
             var editInputBox = document.createElement("input");
             var typeOfKey = document.createElement("span");
+            var expiryTime = document.createElement("span");
 
             $(link).html(jsonData[x]["keyName"]);
             $(link).attr("id", jsonData[x]["keyName"]);
@@ -52,6 +53,12 @@ var populateKeyListFromJson = function(strData){
             $(typeOfKey).css("text-transform","uppercase");
             $(typeOfKey).attr("id","typeSpan:"+jsonData[x]["keyName"]);
             $(li).append(typeOfKey);
+
+            $(expiryTime).html(jsonData[x]["expiryTime"]);
+            $(expiryTime).css("margin-left","3%");
+            $(expiryTime).css("font-family","cursive");
+            $(expiryTime).attr("id","expiryTimeSpan:"+jsonData[x]["expiryTime"]);
+            $(li).append(expiryTime);
 
             $(ul).append(li);
         }
@@ -122,6 +129,13 @@ var ajaxCallForAddKey = function(buttonNo){
     document.getElementById("keyAdd3").value = "";
     document.getElementById("valueAdd3").value = "";
 };
+var charCodeArrToString = function toBinString (charCodeArr) {
+    var concatenatedString = "";
+    for(var char in charCodeArr){
+        concatenatedString += String.fromCharCode(charCodeArr[char]);
+    }
+    return concatenatedString;
+}
 editOuter = function() {
 
     var key = event.target.id.substring(11);
@@ -190,131 +204,145 @@ $(document).off('click', '.sidebar-nav a').on('click', '.sidebar-nav a', functio
     }
         );
 
-        $(document).off('click','.btn.btn-danger.deletingKeys').on('click', '.btn.btn-danger.deletingKeys',function(){
+$(document).off('click','.btn.btn-danger.deletingKeys').on('click', '.btn.btn-danger.deletingKeys',function(){
 
-            var key = event.target.id.substring(13);
+    var key = event.target.id.substring(13);
 
-            var prompt = confirm("Sure you want to delete this key?");
-            if(prompt == true) {
-                $.ajax(
-                    {
-                        url: "/view/DeleteKey",
-                        type: "POST",
-                        data: "keyToDelete=" + key,
-                        success: function (strData) {
+    var prompt = confirm("Sure you want to delete this key?");
+    if(prompt == true) {
+        $.ajax(
+            {
+                url: "/view/DeleteKey",
+                type: "POST",
+                data: "keyToDelete=" + key,
+                success: function (strData) {
 
-                            if(strData === "doesNotExist") {
-                                alertify.alert("The key does not exist!");
-                            }
-                            else if(strData === "keyNull")  {
-                                alertify.alert("Redis entries not filled.")
-                            }
-                            else if(strData === "false")    {
-                                alertify.alert("Sorry! Couldn't add. The server must be down.");
-                            }
-                            else  if(strData === "success")  {
-                                alertify.alert("Success!!");
-                            }
-                            else{
-                                alertify.alert("Strange Error!! Aliens hacked into your DB!");
-                            }
-                        }
+                    if(strData === "doesNotExist") {
+                        alertify.alert("The key does not exist!");
                     }
-                );
+                    else if(strData === "keyNull")  {
+                        alertify.alert("Redis entries not filled.")
+                    }
+                    else if(strData === "false")    {
+                        alertify.alert("Sorry! Couldn't add. The server must be down.");
+                    }
+                    else  if(strData === "success")  {
+                        alertify.alert("Success!!");
+                    }
+                    else{
+                        alertify.alert("Strange Error!! Aliens hacked into your DB!");
+                    }
+                }
             }
-        });
+        );
+    }
+});
 
-        $(document).off('click', '#Delete6').on('click', '#Delete6', function() {
+$(document).off('click', '#Delete6').on('click', '#Delete6', function() {
 
-                var key = document.getElementById("keyDeleteSearch6").value.toString();
-                $.ajax(
-                    {
-                        url: "/view/DeleteKey",
-                        type: "POST",
-                        data: "keyToDelete="+key,
-                        success: function (strData) {
+        var key = document.getElementById("keyDeleteSearch6").value.toString();
+        $.ajax(
+            {
+                url: "/view/DeleteKey",
+                type: "POST",
+                data: "keyToDelete="+key,
+                success: function (strData) {
 
-                            if(strData === "doesNotExist") {
-                                alertify.alert("The key does not exist!");
-                            }
-                            else if(strData === "keyNull")  {
-                                alertify.alert("Redis entries not filled.")
-                            }
-                            else if(strData === "false")    {
-                                alertify.alert("Sorry! Couldn't add. The server must be down.");
-                            }
-                            else  if(strData === "success")  {
-                                alertify.alert("Success!!");
-                            }
-                            else{
-                                alertify.alert("Strange Error!! Probably aliens hacked into your DB!");
-                            }
-                        }
+                    if(strData === "doesNotExist") {
+                        alertify.alert("The key does not exist!");
                     }
-                );
-                document.getElementById("keyDeleteSearch6").value = "";
+                    else if(strData === "keyNull")  {
+                        alertify.alert("Redis entries not filled.")
+                    }
+                    else if(strData === "false")    {
+                        alertify.alert("Sorry! Couldn't add. The server must be down.");
+                    }
+                    else  if(strData === "success")  {
+                        alertify.alert("Success!!");
+                    }
+                    else{
+                        alertify.alert("Strange Error!! Probably aliens hacked into your DB!");
+                    }
+                }
+            }
+        );
+        document.getElementById("keyDeleteSearch6").value = "";
+    }
+);
+
+$(document).off('click', '#Search6').on('click', '#Search6', function() {
+
+        var key = document.getElementById("keyDeleteSearch6").value.toString();
+
+        $.ajax(
+            {
+                url: "/view/SearchKey",
+                type: "POST",
+                data: "keyToSearch="+key,
+                success: function (strData) {
+
+                    if(strData === "doesNotExist") {
+                        alertify.alert("The key does not exist!");
+                    }
+                    else if(strData === "keyNull")  {
+                        alertify.alert("Redis entries not filled.");
+                    }
+                    else if(strData === "false")   {
+                        alertify.alert("Sorry! Couldn't add. The server must be down.");
+                    }
+                    else    {
+                        populateKeyListFromJson(strData);
+                    }
+                }
+            }
+        );
+        document.getElementById("keyDeleteSearch6").value = "";
+    }
+);
+
+
+$(document).off('click', '#reset-page-list').on('click', '#reset-page-list', function(){
+
+        $.ajax(
+            {
+                url: "/view/resetPageList",
+                type: "POST",
+                success: function (strData) {
+                    populateKeyListFromJson(strData);
+                }
+            }
+        );
+    }
+);
+
+$(document).off('click', '#prev').on('click', '#prev', function(){
+
+        $.ajax(
+            {
+                url: "/view/Previous",
+                type: "POST",
+                success: function (strData) {
+                    populateKeyListFromJson(strData);}
             }
         );
 
-        $(document).off('click', '#Search6').on('click', '#Search6', function() {
+    }
+);
 
-                var key = document.getElementById("keyDeleteSearch6").value.toString();
+$(document).off('click', '#next').on('click', '#next', function() {
 
-                $.ajax(
-                    {
-                        url: "/view/SearchKey",
-                        type: "POST",
-                        data: "keyToSearch="+key,
-                        success: function (strData) {
-
-                            if(strData === "doesNotExist") {
-                                alertify.alert("The key does not exist!");
-                            }
-                            else if(strData === "keyNull")  {
-                                alertify.alert("Redis entries not filled.");
-                            }
-                            else if(strData === "false")   {
-                                alertify.alert("Sorry! Couldn't add. The server must be down.");
-                            }
-                            else    {
-                                populateKeyListFromJson(strData);
-                            }
-                        }
-                    }
-                );
-                document.getElementById("keyDeleteSearch6").value = "";
+        $.ajax(
+            {
+                url: "/view/Next",
+                type: "POST",
+                success: function (strData) {
+                    populateKeyListFromJson(strData);
+                }
             }
         );
 
-
-        $(document).off('click', '#prev').on('click', '#prev', function(){
-
-                $.ajax(
-                    {
-                        url: "/view/Previous",
-                        type: "POST",
-                        success: function (strData) {
-                            populateKeyListFromJson(strData);}
-                    }
-                );
-
-            }
-        );
-
-        $(document).off('click', '#next').on('click', '#next', function() {
-
-                $.ajax(
-                    {
-                        url: "/view/Next",
-                        type: "POST",
-                        success: function (strData) {
-                            populateKeyListFromJson(strData);
-                        }
-                    }
-                );
-
-            }
-        );
+    }
+);
 
 $(document).off('click', 'ul#list-content li a').on('click', "ul#list-content li a", function(){
 
@@ -374,8 +402,16 @@ $(document).off('click', 'ul#list-content li a').on('click', "ul#list-content li
                         }
                     }
                     container.setAttribute("id","value-container");
-                    for (var x in json) {
-                        appendToContainer(x,json[x]);
+                    for (var key in json) {
+                        var value = json[key];
+                        console.log("key = "+key);
+                        console.log("value = "+value);
+                        if(type === "zset"){
+
+                            appendToContainer(charCodeArrToString(value["element"]),value["score"]);
+                        }
+                        else
+                            appendToContainer(key,value);
                     }
 
                     $("#keys-details").append(container);
@@ -383,7 +419,6 @@ $(document).off('click', 'ul#list-content li a').on('click', "ul#list-content li
             }
         );
     }
-
 );
 
 $(document).off('click', '#start-monitor').on('click', '#start-monitor', function(){
@@ -405,18 +440,6 @@ $(document).off('click', '#stop-monitor').on('click', '#stop-monitor', function(
             url: "/view/monitor",
             type: "POST",
             data: "shouldStartMonitor="+false
-        }
-    );
-});
-
-$(document).off('click', '#reset-page-list').on('click', '#reset-page-list', function(){
-
-    $.ajax(
-        {
-            url: "/view/resetPageList",
-            type: "POST",
-            success: function (strData) {
-                populateKeyListFromJson(strData);}
         }
     );
 });

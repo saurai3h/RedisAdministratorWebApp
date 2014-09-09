@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Map;
 
 /**
  * Created by Saurabh Paliwal on 1/9/14.
@@ -26,14 +27,21 @@ public class DeleteInstanceServlet extends HttpServlet {
 
         try {
             out = response.getWriter();
-            String host = (String)request.getParameter("deleteThisHost");
-            String port = (String)request.getParameter("deleteThisPort");
+            String host = request.getParameter("deleteThisHost");
+            String port = request.getParameter("deleteThisPort");
 
 
             boolean didDelete = InstanceHelper.delete(new HostAndPort(host,Integer.parseInt(port)));
 
-            if(didDelete)
+            if(didDelete) {
                 out.write("true");
+                String hostPort = host+":"+port;
+                Map<String, Instance> instanceMap = (Map<String, Instance>) getServletContext().getAttribute("instanceMap");
+                Instance instanceBeingDeleted =  instanceMap.get(hostPort);
+                instanceBeingDeleted.close();
+                instanceMap.remove(hostPort);
+                getServletContext().setAttribute("instanceMap",instanceMap);
+            }
             else
                 out.write("false");
         }

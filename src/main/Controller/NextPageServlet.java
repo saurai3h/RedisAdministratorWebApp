@@ -36,7 +36,6 @@ public class NextPageServlet extends HttpServlet {
                 String listOfKeys = new Gson().toJson(curPage.getKeyList());
                 out.write(listOfKeys);
 
-                System.out.println(curPageIndex);
                 request.getSession().setAttribute("CurPageIndex",curPageIndex);
             }
             catch (JedisException e)   {

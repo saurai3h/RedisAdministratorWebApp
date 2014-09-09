@@ -23,10 +23,10 @@ public class MonitorServlet extends HttpServlet {
                     (String) request.getSession().getAttribute("clickedInstanceHostPort"));
             System.out.println(shouldStartMonitor);
             if(shouldStartMonitor) {
-                clickedInstance.startMonitorIfNotStarted(1);
+                clickedInstance.startMonitor();
             }
             else {
-                clickedInstance.stopMonitorIfStarted();
+                clickedInstance.stopMonitor();
             }
         }
         catch (JedisException e)   {

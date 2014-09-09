@@ -118,7 +118,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>MonitorStartAndStop</servlet-name>
-        <url-pattern>/view/monitor</url-pattern>
+        <url-pattern>/view/infoSnapshotter</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>IntializationServlet</servlet-name>
