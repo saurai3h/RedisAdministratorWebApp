@@ -2,6 +2,7 @@ package Controller;
 
 import Model.Instance;
 import Model.InstanceHelper;
+import Model.Login;
 import redis.clients.jedis.HostAndPort;
 
 import javax.servlet.http.HttpServlet;
@@ -25,8 +26,9 @@ public class AddInstanceServlet extends HttpServlet {
             out = response.getWriter();
             String host = request.getParameter("addThisHost");
             String port = request.getParameter("addThisPort");
-
-            boolean didAdd = InstanceHelper.add(new HostAndPort(host,Integer.parseInt(port)));
+            String userNameOfAdder = request.getParameter("visibleTo");
+            boolean didAdd = InstanceHelper.add(new HostAndPort(host,
+                    Integer.parseInt(port)),userNameOfAdder );
             if(didAdd) {
                 out.write("true");
                 Map<String, Instance> instanceMap = (Map<String, Instance>) getServletContext().getAttribute("instanceMap");
@@ -37,6 +39,7 @@ public class AddInstanceServlet extends HttpServlet {
                 out.write("false");
         }
         catch (IOException e) {
+            System.out.println("weird exception in out.write");
             out.write("false");
         }
     }

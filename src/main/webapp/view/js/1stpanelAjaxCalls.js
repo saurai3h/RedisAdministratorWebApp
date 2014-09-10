@@ -73,11 +73,12 @@ $(document).off('click', ".btn.btn-danger.deletingInstances").on('click', ".btn.
 $(document).off('click', '#addInstance').on('click', '#addInstance', function(){
     var host = document.getElementById("host").value.toString();
     var port = document.getElementById("port").value.toString();
+    var visibleTo = document.getElementById("visibleTo").value.toString();
     $.ajax(
         {
             url: "/view/Add",
             type: "POST",
-            data: "addThisHost="+host+"&addThisPort="+port,
+            data: "addThisHost="+host+"&addThisPort="+port+"&visibleTo="+visibleTo,
             success: function (strData)    {
                 if(strData === "true") {
                     var li = document.createElement("li");
@@ -98,9 +99,12 @@ $(document).off('click', '#addInstance').on('click', '#addInstance', function(){
                     $(li).append(link);
                     $(li).append(deleteLink);
                     $("#sidebar-wrapper").find("ul").append(li);
+                    alertify.alert("New instance was added. However, it is not visible to "+
+                    "anyone else. You might want to make it visible to the relevant users.")
+
                 }
                 else    {
-                    alertify.alert("Cannot add.");
+                    alertify.alert("Cannot add "+strData);
                 }
             }
         }

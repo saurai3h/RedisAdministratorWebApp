@@ -299,7 +299,6 @@ $(document).off('click', '#Search6').on('click', '#Search6', function() {
     }
 );
 
-
 $(document).off('click', '#reset-page-list').on('click', '#reset-page-list', function(){
 
         $.ajax(
@@ -339,22 +338,6 @@ $(document).off('click', '#next').on('click', '#next', function(){
     );
 });
 
-
-$(document).off('click', '#reset-page-list').on('click', '#reset-page-list', function(){
-
-        $.ajax(
-            {
-                url: "/view/resetPageList",
-                type: "POST",
-                success: function (strData) {
-                    populateKeyListFromJson(strData);
-                }
-            }
-        );
-    }
-);
-
-
 $(document).off('click', '#Add1').on('click', '#Add1', function(){
         ajaxCallForAddKey(1);
     }
@@ -378,75 +361,6 @@ $(document).off('click', '#Add5').on('click', '#Add5', function() {
     ajaxCallForAddKey(5);
 });
 
-var ajaxCallForAddKey = function(buttonNo){
-
-    var key = document.getElementById("keyAdd"+buttonNo.toString()).value.toString();
-    var value = document.getElementById("valueAdd"+buttonNo.toString()).value.toString();
-    var optionalInputBox = document.getElementById("optionalValueAdd"+buttonNo.toString());
-    var optionalValue;
-    if(optionalInputBox === null){
-        optionalValue = "dummy";
-    }
-    else{
-        optionalValue= optionalInputBox.value.toString();
-    }
-    var type;
-    if(buttonNo === 1){
-        type = "string";
-    }
-    else if(buttonNo === 2){
-        type = "list";
-    }
-    else if(buttonNo === 3){
-        type = "set";
-    }
-    else if(buttonNo === 4){
-        type = "hash";
-    }
-    else if(buttonNo === 5){
-        type = "zset";
-    }
-
-    $.ajax(
-        {
-            url: "/view/AddKey",
-            type: "POST",
-            data: "typeOfKey="+ type +"&nameOfKey="+key+
-                "&valueOfKey="+value+"&optionalValueOfKey="+optionalValue,
-            success: function (strData) {
-
-                if(strData === "existsAlready") {
-                    alertify.alert("This key already exists.");
-                }
-                else if(strData === "invalidDataStructure") {
-                    alertify.alert("Redis doesn't support this data structure");
-                }
-                else if(strData === "KeyNull")  {
-                    alertify.alert("Redis entries not filled." + buttonNo);
-                }
-                else if(strData === "false")   {
-                    alertify.alert("Sorry! Couldn't add. The server must be down.");
-                }
-                else if(strData === "success"){
-                    alertify.alert("Success!!");
-                }
-                else{
-                    alertify.alert("Some strange error!");
-                }
-            }
-        }
-    );
-    document.getElementById("keyAdd"+buttonNo.toString()).value = "";
-    document.getElementById("valueAdd"+buttonNo.toString()).value = "";
-    document.getElementById("optionalValueAdd"+buttonNo.toString()).value = "";
-};
-var charCodeArrToString = function toBinString (charCodeArr) {
-    var concatenatedString = "";
-    for(var char in charCodeArr){
-        concatenatedString += String.fromCharCode(charCodeArr[char]);
-    }
-    return concatenatedString;
-}
 $(document).off('click', 'ul#list-content li a').on('click', "ul#list-content li a", function(){
 
         var clickedKey = event.target.id.toString();
@@ -661,6 +575,7 @@ $(document).off('click', '#stop-infoSnapshotter').on('click', '#stop-infoSnapsho
         }
     );
 });
+
 fieldAdder = function(clickedKey,field,value,type) {
     $.ajax(
         {

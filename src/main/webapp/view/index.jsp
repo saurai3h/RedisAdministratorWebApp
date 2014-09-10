@@ -39,10 +39,6 @@
                 </form>
 
             </div>
-
-            <%
-                session.setAttribute("hasLoadedLoginSuccessBefore",false);
-            %>
             <div class="modal-footer">
                 <div class="col-md-12"></div>
             </div>
