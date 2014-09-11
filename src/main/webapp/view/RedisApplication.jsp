@@ -38,7 +38,7 @@
 
 <div id="wrapper">
     <div id="sidebar-wrapper">
-        <ul class="sidebar-nav">
+        <ul class="sidebar-nav" id = "listOfInstances">
             <li class="sidebar-brand">
                 <a href="#">
                     Listing Instances

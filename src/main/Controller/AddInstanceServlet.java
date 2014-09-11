@@ -1,9 +1,11 @@
 package Controller;
 
+import Model.Constants;
 import Model.Instance;
 import Model.InstanceHelper;
 import Model.Login;
 import redis.clients.jedis.HostAndPort;
+import sun.rmi.runtime.Log;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -27,20 +29,20 @@ public class AddInstanceServlet extends HttpServlet {
             String host = request.getParameter("addThisHost");
             String port = request.getParameter("addThisPort");
             String userNameOfAdder = request.getParameter("visibleTo");
-            boolean didAdd = InstanceHelper.add(new HostAndPort(host,
-                    Integer.parseInt(port)),userNameOfAdder );
-            if(didAdd) {
-                out.write("true");
+            Login login = (Login) request.getSession().getAttribute("login");
+            String status = InstanceHelper.add(new HostAndPort(host,
+                    Integer.parseInt(port)),userNameOfAdder,login.getName() );
+            if(status.equals(Constants.SUCCESS_STATUS_CODE)) {
                 Map<String, Instance> instanceMap = (Map<String, Instance>) getServletContext().getAttribute("instanceMap");
                 instanceMap.put((host+":"+port),new Instance(host,Integer.parseInt(port),false));
                 getServletContext().setAttribute("instanceMap",instanceMap);
             }
-            else
-                out.write("false");
+
+            out.write(status);
         }
         catch (IOException e) {
             System.out.println("weird exception in out.write");
-            out.write("false");
+            out.write(Constants.SERVLET_ERROR_CODE);
         }
     }
 
