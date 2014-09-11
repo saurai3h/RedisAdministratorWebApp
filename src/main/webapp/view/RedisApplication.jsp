@@ -82,13 +82,11 @@
             </div>
 
             <div id ="keys-details" class="col-lg-5" style="height: 100%;overflow-y: auto">
+                <div id="keys-details-content">
 
+                </div>
             </div>
         </div>
-
-        <%--To be later uncommented--%>
-        <%--<button class="btn btn-default" type="button" id="start-infoSnapshotter">Start InfoSnapshotter</button>--%>
-        <%--<button class="btn btn-default" type="button" id="stop-infoSnapshotter">Stop InfoSnapshotter</button>--%>
 
     </div>
     <div class="list-footer">
@@ -167,7 +165,98 @@
         </div>
     </div>
 </div>
-
+<div class="modal" id="stringModal" tabindex="-1" role="dialog" aria-labelledby="stringLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="stringModalLabel">Edit String</h4>
+            </div>
+            <div class="modal-body">
+                Key : <span id = "stringKey" ></span>
+                Value : <textarea id = "stringValue"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button id = "stringClose" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary finalEditingString">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="setModal" tabindex="-1" role="dialog" aria-labelledby="setLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="setModalLabel">Edit Set</h4>
+            </div>
+            <div class="modal-body">
+                Key : <span id = "setKey"></span>
+                Value : <textarea id = "setValue"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button id = "setClose" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary finalEditingSet">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="listModal" tabindex="-1" role="dialog" aria-labelledby="listLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="listModalLabel">Edit List</h4>
+            </div>
+            <div class="modal-body">
+                Key : <span id = "listKey"></span>
+                Value : <textarea id = "listValue"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button id = "listClose" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary finalEditingList">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="hashModal" tabindex="-1" role="dialog" aria-labelledby="hashLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="hashModalLabel">Edit Hash</h4>
+            </div>
+            <div class="modal-body">
+                Key : <span id = "hashKey"></span>
+                Field : <textarea id = "hashField"></textarea>
+                Value : <textarea id = "hashValue"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button id = "hashClose" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary finalEditingHash">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="zsetModal" tabindex="-1" role="dialog" aria-labelledby="zsetLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="zsetModalLabel">Edit Zset</h4>
+            </div>
+            <div class="modal-body">
+                Key : <span id = "zsetKey"></span>
+                Score : <textarea id = "zsetScore"></textarea>
+                Value : <textarea id = "zsetValue"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button id = "zsetClose" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary finalEditingZset">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
 <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>

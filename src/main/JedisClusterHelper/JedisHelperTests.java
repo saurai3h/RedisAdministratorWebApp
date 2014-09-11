@@ -22,15 +22,15 @@ public class JedisHelperTests {
     Jedis jedis;
     @Before
     public void setupInstance(){
-        jedis = new Jedis("localhost",7000);
+        jedis = new Jedis("localhost",7004);
     }
 
-    public void setupCluster(){
-        Set<HostAndPort> instanceSet = new HashSet<HostAndPort>();
-        for(int portNo = 7000;portNo<=7000;portNo++)
-            instanceSet.add(new HostAndPort("172.16.137.228",portNo));
-        redisCluster = new RedisClusterForRedisAdmin(instanceSet);
-    }
+//    public void setupCluster(){
+//        Set<HostAndPort> instanceSet = new HashSet<HostAndPort>();
+//        for(int portNo = 7000;portNo<=7000;portNo++)
+//            instanceSet.add(new HostAndPort("172.16.137.228",portNo));
+//        redisCluster = new RedisClusterForRedisAdmin(instanceSet);
+//    }
 
 
 

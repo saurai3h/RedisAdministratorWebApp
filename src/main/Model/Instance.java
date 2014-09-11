@@ -2,6 +2,7 @@ package Model;
 
 import com.google.gson.Gson;
 import redis.clients.jedis.*;
+import redis.clients.jedis.exceptions.JedisException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -44,7 +45,7 @@ public class Instance {
         pages = new LinkedList<Page>();
         cursor = "";
         this.isMonitored = isMonitored;
-        infoSnapshotter = new InfoSnapshotter(new HostAndPort("172.16.137.228",7000),this.hostAndPort);
+        infoSnapshotter = new InfoSnapshotter(new HostAndPort("localhost",7000),this.hostAndPort);
         executorService = Executors.newSingleThreadScheduledExecutor();
         executorService.scheduleWithFixedDelay(infoSnapshotter,0,10, TimeUnit.SECONDS);
         if(isMonitored)
@@ -54,23 +55,26 @@ public class Instance {
         return jedis.exists(key);
     }
 
-    public boolean deleteField(String key,String field, String type) {
+    public boolean deleteField(String key,String field, String value, String type) {
 
         if(type.equals("string"))   {
-            if(jedis.del(field)>0)return true;
+            if(jedis.del(key)>0)return true;
             else return false;
         }
         else if(type.equals("set")) {
-            if(jedis.srem(key,field)>0)return true;
+            if(jedis.srem(key,value)>0)return true;
             else return false;
         }
         else if(type.equals("list"))    {
+
             List<String> tempList = jedis.lrange(key,0,-1);
             tempList.remove(Integer.parseInt(field));
             jedis.del(key);
+
             for(String s : tempList) {
-                jedis.lpush(key, s);
+                jedis.rpush(key, s);
             }
+
             if(jedis.exists(key))return true;
             else return false;
         }
@@ -91,18 +95,39 @@ public class Instance {
             else return false;
         }
         else if(type.equals("list"))    {
-            if(jedis.lpush(key,value)>0)return true;
+            if(jedis.rpush(key, value)>0)return true;
             else return false;
         }
         else if(type.equals("zset"))    {
-            if(jedis.zadd(key,Double.parseDouble(field),value)>0)return true;
+            if(jedis.zadd(key,Double.parseDouble(value),field)>0)return true;
             else return false;
         }
         else if(type.equals("hash"))    {
             if(jedis.hset(key,field,value)>0)return true;
             else return false;
         }
+        else if(type.equals("string"))  {
+            try {
+                jedis.set(key, value);
+                return true;
+            }
+            catch (JedisException e)    {
+                return false;
+            }
+        }
         else return false;
+    }
+
+    public void editField(String key,String field,String value,String newField, String newValue, String type)  {
+    int a = 3;
+        if(type.equals("zset")) {
+            deleteField(key, field, value, "zset");
+            addField(key, newField, newValue, "zset");
+        }
+        else {
+            deleteField(key, field, value, type);
+            addField(key, newField, newValue, type);
+        }
     }
 
     public void renameKey(String oldKeyName, String newKeyName){
@@ -127,7 +152,7 @@ public class Instance {
             jedis.zadd(key, Double.parseDouble(value2), value1);
 
         } else if (type.equals("hash")) {
-            jedis.hset(key, value1, value2);
+            jedis.hset(key, value2, value1);
 
         } else {
             System.out.println("Invalid Data Structure");

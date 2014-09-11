@@ -22,6 +22,7 @@ public class DeleteFieldServlet extends HttpServlet {
             out = response.getWriter();
             String key = request.getParameter("clickedKey");
             String field = request.getParameter("key");
+            String value = request.getParameter("value");
             String type = request.getParameter("type");
 
             Instance clickedInstance =ServletHelper.getInstanceFromServletContext(getServletContext(),
@@ -30,7 +31,7 @@ public class DeleteFieldServlet extends HttpServlet {
                 System.out.println("instance not found!!");
             }
 
-            if (clickedInstance.deleteField(key,field,type)) {
+            if (clickedInstance.deleteField(key,field,value,type)) {
                 out.write("success");
             } else {
                 out.write("doesNotExist");

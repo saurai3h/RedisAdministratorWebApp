@@ -34,7 +34,7 @@ public class AddKeyServlet extends HttpServlet {
             }
             if(key != null && value != null && type != null && optionalValue != null
                     && !key.isEmpty() && !value.isEmpty() && !type.isEmpty()&& !optionalValue.isEmpty() ) {
-                System.out.println("valid");
+                //System.out.println("valid");
                 if (clickedInstance.keyExists(key)) {
                     //System.out.println("exists");
                     out.write("existsAlready");
@@ -44,6 +44,15 @@ public class AddKeyServlet extends HttpServlet {
                     out.write("success");
                 } else if (type.equals("zset") || type.equals("hash")) {
                     //System.out.println("goodie");
+                    if(type.equals("zset")) {
+                        try {
+                            Double.parseDouble(value);
+                        }
+                        catch (NumberFormatException e) {
+                            out.write("scoreNotDouble");
+                            return;
+                        }
+                    }
                     clickedInstance.addKey(key, type, value, optionalValue);
                     out.write("success");
                 } else{

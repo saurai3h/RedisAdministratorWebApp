@@ -38,6 +38,15 @@ public class AddFieldServlet extends HttpServlet {
                     out.write("doesNotExist");
                 }
                 else {
+                    if(type.equals("zset")) {
+                        try {
+                            Double.parseDouble(value);
+                        }
+                        catch (NumberFormatException e) {
+                            out.write("scoreNotDouble");
+                            return;
+                        }
+                    }
 
                     if(clickedInstance.addField(clickedKey,field,value,type))
                         out.write("success");
