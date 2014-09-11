@@ -2,6 +2,8 @@ package Controller;
 
 import Model.Instance;
 import Model.InstanceHelper;
+import Model.Login;
+import Model.SqlInterface;
 import com.google.gson.Gson;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.exceptions.JedisException;
@@ -31,19 +33,21 @@ public class DeleteInstanceServlet extends HttpServlet {
             String port = request.getParameter("deleteThisPort");
 
 
-            boolean didDelete = InstanceHelper.delete(new HostAndPort(host,Integer.parseInt(port)));
-
-            if(didDelete) {
-                out.write("true");
-                String hostPort = host+":"+port;
+            Login login = (Login) request.getSession().getAttribute("login");
+            String userName = login.getName();
+            boolean didDelete = InstanceHelper.hideHostPort(
+                    new HostAndPort(host, Integer.parseInt(port)),userName);
+            if(!SqlInterface.isVisibleToAnyUser(new HostAndPort(host,Integer.parseInt(port)))) {
+                SqlInterface.deleteFromInstances(new HostAndPort(host,Integer.parseInt(port)));
+                String hostPort = host + ":" + port;
                 Map<String, Instance> instanceMap = (Map<String, Instance>) getServletContext().getAttribute("instanceMap");
-                Instance instanceBeingDeleted =  instanceMap.get(hostPort);
+                Instance instanceBeingDeleted = instanceMap.get(hostPort);
                 instanceBeingDeleted.close();
                 instanceMap.remove(hostPort);
-                getServletContext().setAttribute("instanceMap",instanceMap);
+                getServletContext().setAttribute("instanceMap", instanceMap);
             }
-            else
-                out.write("false");
+
+                out.write(Boolean.toString(didDelete));
         }
         catch (IOException e) {
             out.write("false");

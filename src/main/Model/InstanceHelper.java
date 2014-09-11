@@ -10,51 +10,53 @@ import java.util.*;
  */
 public class InstanceHelper {
 
-    public static boolean add(HostAndPort hostAndPort) {
-        try {
-            Connection conn = SqlInterface.getConnection();
-            Statement stmt = conn.createStatement();
-            String sql = "insert into instances (HostName,PortNumber,IsMonitored) VALUES" +
-                    "(\"" + hostAndPort.getHost() + "\", \"" +
-                    Integer.toString(hostAndPort.getPort()) + "\"," +
-                    Integer.toString(0) + ");" ;
-            stmt.executeUpdate(sql);
-            conn.close();
-            stmt.close();
-            return true;
 
-       } catch (SQLException e) {
-            return false;
-
+    public static String add(HostAndPort hostAndPort, String addeeUserName, String adderUserName) {
+        boolean success = true;
+        String status;
+        boolean hasPermissionToAdd;
+        if(!SqlInterface.isPresentInInstances(hostAndPort)){
+            success = success && SqlInterface.addToInstances(hostAndPort);
+            hasPermissionToAdd = true;
         }
+        else {
+            ArrayList<HostAndPort> visibleInstances = getAllStoredInstances(adderUserName);
+            hasPermissionToAdd = visibleInstances.contains(hostAndPort);
+        }
+        if(hasPermissionToAdd) {
+            success = success && SqlInterface.addVisibility(addeeUserName, hostAndPort);
+        }
+        if(hasPermissionToAdd && success){
+            status = Constants.SUCCESS_STATUS_CODE;
+        }
+        else if(!success){
+            status = Constants.SQL_ERROR_STATUS_CODE;
+        }
+        else if(!hasPermissionToAdd){
+            status = Constants.PERMISSION_DENIED_STATUS_CODE;
+        }
+        else {
+            status = Constants.UNKNOWN_ERROR;
+        }
+        return status;
+    }
+    public static boolean hideHostPort(HostAndPort hostAndPort,String userName){
+
+            boolean success = SqlInterface.deleteFromVisibleInstances(hostAndPort, userName);
+            return  success;
     }
 
-    public static boolean delete(HostAndPort hostAndPort) {
-
-        try {
-
-            Connection conn = SqlInterface.getConnection();
-            Statement stmt = conn.createStatement();
-            String sql = "delete from instances where HostName = " +
-                    "\"" + hostAndPort.getHost() + "\"" + "and PortNumber = " +
-                    "\"" + Integer.toString(hostAndPort.getPort()) + "\";";
-            stmt.executeUpdate(sql);
-            conn.close();
-            stmt.close();
-            return true;
-        } catch (SQLException e) {
-            return false;
-        }
-    }
-
-    public static ArrayList<HostAndPort> getAllStoredInstances(){
+    public static ArrayList<HostAndPort> getAllStoredInstances(String userName){
         try {
             ArrayList<HostAndPort> listOfInstances = new ArrayList<HostAndPort>();
 
             Connection conn = SqlInterface.getConnection();
-            Statement stmt = conn.createStatement();
-            String sql = "SELECT HostName,PortNumber  FROM instances;";
-            ResultSet rs = stmt.executeQuery(sql);
+            PreparedStatement stmt = conn.prepareStatement(
+                "SELECT visibleinstances.HostName,visibleinstances.PortNumber  FROM users INNER JOIN visibleinstances ON visibleinstances.UserName = users.UserName WHERE users.UserName = ?"
+            );
+            stmt.setString(1,userName);
+            ResultSet rs = stmt.executeQuery();
+
 
             if(rs.wasNull())    {
                 return null;
@@ -74,4 +76,5 @@ public class InstanceHelper {
             return null;
         }
     }
+
 }

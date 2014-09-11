@@ -27,6 +27,7 @@ public class LoginServlet extends HttpServlet {
         boolean status=login.validate();
 
         if(status){
+            request.getSession().setAttribute("login",login);
             RequestDispatcher rd=request.getRequestDispatcher("RedisApplication.jsp");
             rd.forward(request, response);
         }

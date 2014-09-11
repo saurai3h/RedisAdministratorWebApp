@@ -137,7 +137,7 @@ var charCodeArrToString = function toBinString (charCodeArr) {
     }
     return concatenatedString;
 }
-editOuter = function() {;
+editOuter = function() {
 
     var key = event.target.id.toString().substring(11);
     var inputBoxID = "optionalInput:" + key;
@@ -183,7 +183,7 @@ editOuter = function() {;
 };
 
 $(document).off('click', '.sidebar-nav a').on('click', '.sidebar-nav a', function() {
-;
+
         var clicked = event.target;
         var hostPort = clicked.id.toString();
 
@@ -338,7 +338,6 @@ $(document).off('click', '#next').on('click', '#next', function(){
         }
     );
 });
-
 
 $(document).off('click', '#reset-page-list').on('click', '#reset-page-list', function(){
 
@@ -665,19 +664,18 @@ $(document).off('click', '#start-infoSnapshotter').on('click', '#start-infoSnaps
     alertify.alert("starting");
     $.ajax(
         {
-            url: "/view/monitor",
+            url: "/view/infoSnapshotter",
             type: "POST",
             data: "shouldStartMonitor="+true
 
         }
     );
 });
-
 $(document).off('click', '#stop-infoSnapshotter').on('click', '#stop-infoSnapshotter', function(){
     alertify.alert("stopping");
     $.ajax(
         {
-            url: "/view/monitor",
+            url: "/view/infoSnapshotter",
             type: "POST",
             data: "shouldStartMonitor="+false
         }

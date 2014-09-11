@@ -45,7 +45,7 @@ public class Instance {
         pages = new LinkedList<Page>();
         cursor = "";
         this.isMonitored = isMonitored;
-        infoSnapshotter = new InfoSnapshotter(new HostAndPort("localhost",7000),this.hostAndPort);
+        infoSnapshotter = new InfoSnapshotter(new HostAndPort("172.16.137.228",7000),this.hostAndPort);
         executorService = Executors.newSingleThreadScheduledExecutor();
         executorService.scheduleWithFixedDelay(infoSnapshotter,0,10, TimeUnit.SECONDS);
         if(isMonitored)
@@ -119,7 +119,6 @@ public class Instance {
     }
 
     public void editField(String key,String field,String value,String newField, String newValue, String type)  {
-    int a = 3;
         if(type.equals("zset")) {
             deleteField(key, field, value, "zset");
             addField(key, newField, newValue, "zset");
@@ -147,12 +146,12 @@ public class Instance {
         }
     }
 
-    public void addKey(String key, String type, String value1, String value2)  {
+    public void addKey(String key, String type, String hashValueOrZsetElement, String hashFieldOrZsetScore)  {
         if (type.equals("zset")) {
-            jedis.zadd(key, Double.parseDouble(value2), value1);
+            jedis.zadd(key, Double.parseDouble(hashFieldOrZsetScore), hashValueOrZsetElement);
 
         } else if (type.equals("hash")) {
-            jedis.hset(key, value2, value1);
+            jedis.hset(key, hashFieldOrZsetScore, hashValueOrZsetElement);
 
         } else {
             System.out.println("Invalid Data Structure");

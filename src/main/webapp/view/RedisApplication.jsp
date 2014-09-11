@@ -29,19 +29,16 @@
 
 <body  style="width: 100%; height:100%">
 <%
-    if(!(Boolean) session.getAttribute("hasLoadedLoginSuccessBefore")) {
-        Login login = (Login) request.getAttribute("login");
-        session.setAttribute("login", login);
-    }
-    else {
-        out.println(request.getAttribute("message"));
-    }
     Login login = (Login) session.getAttribute("login");
+    if(login == null){
+        RequestDispatcher rd=request.getRequestDispatcher("login-error.jsp");
+        rd.forward(request, response);
+    }
 %>
 
 <div id="wrapper">
     <div id="sidebar-wrapper">
-        <ul class="sidebar-nav">
+        <ul class="sidebar-nav" id = "listOfInstances">
             <li class="sidebar-brand">
                 <a href="#">
                     Listing Instances
@@ -53,6 +50,7 @@
             <div class="input-group">
                 <input type="text" class="form-control" id="host" placeholder="hostname" onchange="return hostValid()">
                 <input type="text" class="form-control" id="port" placeholder="portnumber" onchange="return portValid()">
+                <input type="text" class="form-control" id="visibleTo" placeholder="visible to">
             </div>
             <div class="btn-group" style="left:25%">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">

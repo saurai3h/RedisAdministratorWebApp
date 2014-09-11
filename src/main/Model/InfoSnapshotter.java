@@ -13,17 +13,17 @@ import java.util.concurrent.ExecutorService;
  */
 public class InfoSnapshotter implements Runnable {
     private volatile boolean persistStoredInfo;
-    HostAndPort monnitoredInstanceHostPort;
+    HostAndPort monitoredInstanceHostPort;
     HostAndPort infoStorageHostPort;
     Jedis monitoredInstance;
     Jedis infoStorage;
     ExecutorService executorService;
-    public InfoSnapshotter(HostAndPort infoStorageHostPort, HostAndPort monnitoredInstanceHostPort){
+    public InfoSnapshotter(HostAndPort infoStorageHostPort, HostAndPort monitoredInstanceHostPort){
         this.infoStorageHostPort = infoStorageHostPort;
-        this.monnitoredInstanceHostPort = monnitoredInstanceHostPort;
+        this.monitoredInstanceHostPort = monitoredInstanceHostPort;
 
-        monitoredInstance = new Jedis(monnitoredInstanceHostPort.getHost(),
-                monnitoredInstanceHostPort.getPort());
+        monitoredInstance = new Jedis(monitoredInstanceHostPort.getHost(),
+                monitoredInstanceHostPort.getPort());
         infoStorage = new Jedis(infoStorageHostPort.getHost(),infoStorageHostPort.getPort());
 
         persistStoredInfo = false;
@@ -37,20 +37,27 @@ public class InfoSnapshotter implements Runnable {
         Map<String, String> map = getInfoAsMap(monitoredInstance);
         Date date = new Date();
 
-        String key = monnitoredInstanceHostPort.getHost()+":" +
-                Integer.toString(monnitoredInstanceHostPort.getPort()) +":" +
+        String key = monitoredInstanceHostPort.getHost()+":" +
+                Integer.toString(monitoredInstanceHostPort.getPort()) +":" +
                 Long.toString(date.getTime());
         infoStorage.hmset(key, map);
-        if(!persistStoredInfo)
-            infoStorage.expire(key,22);
-        else
-            System.out.println("stored!! " + monnitoredInstanceHostPort.toString());
+        if(!persistStoredInfo) {
+            infoStorage.expire(key, 22);
+            System.out.println("stored temporarily!! " + monitoredInstanceHostPort.toString());
+        }
+        else {
+            System.out.println("stored permanently!! " + monitoredInstanceHostPort.toString());
+        }
     }
 
-    public void startMonitorMode(){persistStoredInfo = true;}
+    public void startMonitorMode(){
+        persistStoredInfo = true;
+        System.out.println("entering monitor mode");
+    }
 
     public void stopMonitorMode(){
         persistStoredInfo = false;
+        System.out.println("leaving monitor mode");
     }
 
     public Map<String,String> getInfoAsMap(Jedis jedis){

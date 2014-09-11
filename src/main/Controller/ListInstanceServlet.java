@@ -14,10 +14,11 @@ public class ListInstanceServlet extends HttpServlet {
 
         response.setContentType("text/html");
         PrintWriter out= null;
-
+        Login login= (Login) request.getSession().getAttribute("login");
         try {
+            String userName = login.getName();
             out = response.getWriter();
-            String listOfInstances = new Gson().toJson(InstanceHelper.getAllStoredInstances());
+            String listOfInstances = new Gson().toJson(InstanceHelper.getAllStoredInstances(userName));
             out.write(listOfInstances);
         }
         catch (IOException e) {
