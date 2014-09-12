@@ -1,5 +1,7 @@
 
-var splitString = "#$@!&^~%";
+var splitString = "#$@!^~%&$#~!#@#~";
+
+var autoCompleteArray = [];
 
 var populateKeyListFromJson = function(strData){
 
@@ -69,67 +71,6 @@ var populateKeyListFromJson = function(strData){
         console.log("No page to display");
     }
 };
-var ajaxCallForAddKey = function(buttonNo){
-
-    var key = document.getElementById("keyAdd"+buttonNo.toString()).value.toString();
-    var value = document.getElementById("valueAdd"+buttonNo.toString()).value.toString();
-    var optionalInputBox = document.getElementById("optionalValueAdd"+buttonNo.toString());
-    var optionalValue;
-    if(optionalInputBox === null){
-        optionalValue = "dummy";
-    }
-    else{
-        optionalValue= optionalInputBox.value.toString();
-    }
-    var type;
-    if(buttonNo === 1){
-        type = "string";
-    }
-    else if(buttonNo === 2){
-        type = "list";
-    }
-    else if(buttonNo === 3){
-        type = "set";
-    }
-    else if(buttonNo === 4){
-        type = "hash";
-    }
-    else if(buttonNo === 5){
-        type = "zset";
-    }
-
-    $.ajax(
-        {
-            url: "/view/AddKey",
-            type: "POST",
-            data: "typeOfKey="+ type +"&nameOfKey="+key+
-                "&valueOfKey="+value+"&optionalValueOfKey="+optionalValue,
-            success: function (strData) {
-
-                if(strData === "existsAlready") {
-                    alertify.alert("This key already exists.");
-                }
-                else if(strData === "invalidDataStructure") {
-                    alertify.alert("Redis doesn't support this data structure");
-                }
-                else if(strData === "KeyNull")  {
-                    alertify.alert("Redis entries not filled." + buttonNo);
-                }
-                else if(strData === "false")   {
-                    alertify.alert("Sorry! Couldn't add. The server must be down.");
-                }
-                else if(strData === "success"){
-                    alertify.alert("Success!!");
-                }
-                else{
-                    alertify.alert("Some strange error!");
-                }
-            }
-        }
-    );
-    document.getElementById("keyAdd3").value = "";
-    document.getElementById("valueAdd3").value = "";
-};
 var charCodeArrToString = function toBinString (charCodeArr) {
     var concatenatedString = "";
     for(var char in charCodeArr){
@@ -137,7 +78,7 @@ var charCodeArrToString = function toBinString (charCodeArr) {
     }
     return concatenatedString;
 }
-editOuter = function() {
+var editOuter = function() {
 
     var key = event.target.id.toString().substring(11);
     var inputBoxID = "optionalInput:" + key;
@@ -181,8 +122,177 @@ editOuter = function() {
         $(box).hide();
     }
 };
+var ajaxCallForAddKey = function(buttonNo){
+
+    var key = document.getElementById("keyAdd"+buttonNo.toString()).value.toString();
+    var value = document.getElementById("valueAdd"+buttonNo.toString()).value.toString();
+    var optionalInputBox = document.getElementById("optionalValueAdd"+buttonNo.toString());
+    var optionalValue;
+    if(optionalInputBox === null){
+        optionalValue = "dummy";
+    }
+    else{
+        optionalValue= optionalInputBox.value.toString();
+    }
+
+    var type;
+    if(buttonNo === 1){
+        type = "string";
+    }
+    else if(buttonNo === 2){
+        type = "list";
+    }
+    else if(buttonNo === 3){
+        type = "set";
+    }
+    else if(buttonNo === 4){
+        type = "hash";
+    }
+    else if(buttonNo === 5){
+        type = "zset";
+    }
+
+    $.ajax(
+        {
+            url: "/view/AddKey",
+            type: "POST",
+            data: "typeOfKey="+ type +"&nameOfKey="+key+
+                "&valueOfKey="+value+"&optionalValueOfKey="+optionalValue,
+            success: function (strData) {
+
+                if(strData === "existsAlready") {
+                    alertify.alert("This key already exists.");
+                }
+                else if(strData === "invalidDataStructure") {
+                    alertify.alert("Redis doesn't support this data structure");
+                }
+
+                else if(strData === "KeyNull")  {
+                    alertify.alert("Redis entries not filled." + buttonNo);
+                }
+                else if(strData === "scoreNotDouble")   {
+                    alertify.alert("The entry you filled for score should be of Double type.");
+                }
+                else if(strData === "false")   {
+                    alertify.alert("Sorry! Couldn't add. The server must be down.");
+                }
+                else if(strData === "success"){
+                    alertify.alert("Success!!");
+                }
+                else{
+                    alertify.alert("Some strange error!");
+                }
+            }
+        }
+    );
+    document.getElementById("keyAdd"+buttonNo.toString()).value = "";
+    document.getElementById("valueAdd"+buttonNo.toString()).value = "";
+    var optionalValue = document.getElementById("optionalValueAdd"+buttonNo.toString());
+    if(optionalValue !== null)optionalValue.value = "";
+};
+var fieldAdder = function(clickedKey,field,value,type) {
+    $.ajax(
+        {
+            url: "/view/AddField",
+            type: "POST",
+            data: "clickedKey=" + clickedKey +"&field=" + field + "&value=" + value + "&type=" +type,
+            success: function (strData) {
+
+                if(strData === "doesNotExist") {
+                    alertify.alert("The key does not exist anymore");
+                }
+                else if(strData === "existingFieldUpdated")    {
+                    alertify.alert("The key existed already and is updated.");
+                    var keyFromWhichAdded = document.getElementById(clickedKey);
+                    if(keyFromWhichAdded)
+                        keyFromWhichAdded.click();
+                }
+                else if(strData === "scoreNotDouble")   {
+                    alertify.alert("The entry you filled for score should be of Double type.");
+                }
+                else  if(strData === "success")  {
+                    var keyFromWhichAdded = document.getElementById(clickedKey);
+                    if(keyFromWhichAdded)
+                        keyFromWhichAdded.click();
+                }
+                else if(strData === "keyNull") {
+                    alertify.alert("Entries not filled.");
+                }
+                else if(strData === "false")    {
+                    alertify.alert("Field could not be added. The server must be down.")
+                }
+                else{
+                    alertify.alert("Strange Error!! Aliens hacked into your DB!");
+                }
+            }
+        }
+    );
+};
+var deleteField = function(clickedKey,key,value,type)  {
+    $.ajax(
+        {
+            url: "/view/DeleteField",
+            type: "POST",
+            data: "clickedKey="+ clickedKey +"&key="+key + "&value=" + value + "&type=" + type,
+            success: function (strData) {
+
+                if(strData === "doesNotExist") {
+                    alertify.alert("The field does not exist!");
+                }
+                else if(strData === "false")    {
+                    alertify.alert("Sorry! Couldn't delete. The server must be down.");
+                }
+                else  if(strData === "success")  {
+                    var keyFromWhichDeleted = document.getElementById(clickedKey);
+                    if(keyFromWhichDeleted)
+                        keyFromWhichDeleted.click();
+                }
+                else{
+                    alertify.alert("Strange Error!! Aliens hacked into your DB!");
+                }
+            }
+        }
+    );
+};
+var editField = function(clickedKey,key,value,newKey,newValue,type)  {
+
+    $.ajax(
+        {
+            url: "/view/EditField",
+            type: "POST",
+            data: "clickedKey="+ clickedKey +"&key="+ key + "&value=" + value + "&type=" + type + "&newKey=" + newKey + "&newValue=" + newValue,
+            success: function (strData) {
+
+                if(strData === "doesNotExist") {
+                    alertify.alert("The field does not exist!");
+                }
+                else if(strData === "keyNull")  {
+                    alertify.alert("Redis entries not filled.")
+                }
+                else if(strData === "scoreNotDouble")   {
+                    alertify.alert("The entry you filled for score should be of Double type.");
+                }
+                else if(strData === "false")    {
+                    alertify.alert("Sorry! Couldn't edit. The server must be down.");
+                }
+                else  if(strData === "success")  {
+
+                    var keyFromWhichEdited = document.getElementById(clickedKey);
+                    if(keyFromWhichEdited)
+                        keyFromWhichEdited.click();
+                }
+                else{
+                    alertify.alert("Strange Error!! Aliens hacked into your DB!");
+                }
+            }
+        }
+    );
+}
 
 $(document).off('click', '.sidebar-nav a').on('click', '.sidebar-nav a', function() {
+
+        $("#keys-details").hide();
+        $("#thirdPanel").hide();
 
         var clicked = event.target;
         var hostPort = clicked.id.toString();
@@ -192,18 +302,40 @@ $(document).off('click', '.sidebar-nav a').on('click', '.sidebar-nav a', functio
 
         $(clicked).css("color", "#3B0909");
 
-            $.ajax(
-                {
-                    url: "/view/RedisApplication2",
-                    type: "POST",
-                    data: "hostport=" + hostPort,
-                    success: function (strData) {
-                        populateKeyListFromJson(strData);
-                    }
+        $.ajax(
+            {
+                url: "/view/RedisApplication2",
+                type: "POST",
+                data: "hostport=" + hostPort,
+                success: function (strData) {
+                    populateKeyListFromJson(strData);
+
+                    $.ajax(
+                        {
+                            url: "/view/AutoComplete",
+                            type: "POST",
+                            success: function (data) {
+
+                                autoCompleteArray = jQuery.parseJSON(data);
+
+                                $("#keyDeleteSearch6").autocomplete(
+                                    {
+                                        source: function (request,response) {
+                                            var results = $.ui.autocomplete.filter(autoCompleteArray, request.term);
+
+                                            response(results.slice(0, 10));
+                                        },
+                                        minLength: 2
+                                    });
+                            }
+                        }
+                    );
                 }
-            );
-        }
-);
+            }
+        );
+});
+
+
 
 $(document).off('click','.btn.btn-danger.deletingKeys').on('click', '.btn.btn-danger.deletingKeys',function(){
 
@@ -303,12 +435,54 @@ $(document).off('click', '#Search6').on('click', '#Search6', function() {
 
 $(document).off('click', '#reset-page-list').on('click', '#reset-page-list', function(){
 
+        $("#keys-details").hide();
+        $("#thirdPanel").hide();
+
         $.ajax(
             {
                 url: "/view/resetPageList",
                 type: "POST",
                 success: function (strData) {
                     populateKeyListFromJson(strData);
+                    $.ajax(
+                        {
+                            url: "/view/AutoComplete",
+                            type: "POST",
+                            success: function (data) {
+
+                                $.ajax(
+                                    {
+                                        url: "/view/TreeView",
+                                        type: "POST",
+                                        success: function (treeData) {
+
+                                            var allKeys = jQuery.parseJSON(treeData);
+
+                                            for(var key in allKeys) {
+
+                                            }
+                                            $('#treeViewContent').abixTreeList({
+                                                collapsedIconClass  : 'myicon-plus',
+                                                expandedIconClass   : 'myicon-minus'
+                                            });
+                                        }
+                                    }
+                                );
+
+                                autoCompleteArray = jQuery.parseJSON(data);
+
+                                $("#keyDeleteSearch6").autocomplete(
+                                    {
+                                        source: function (request,response) {
+                                            var results = $.ui.autocomplete.filter(autoCompleteArray, request.term);
+
+                                            response(results.slice(0, 10));
+                                        },
+                                        minLength: 2
+                                    });
+                            }
+                        }
+                    );
                 }
             }
         );
@@ -339,21 +513,6 @@ $(document).off('click', '#next').on('click', '#next', function(){
     );
 });
 
-$(document).off('click', '#reset-page-list').on('click', '#reset-page-list', function(){
-
-        $.ajax(
-            {
-                url: "/view/resetPageList",
-                type: "POST",
-                success: function (strData) {
-                    populateKeyListFromJson(strData);
-                }
-            }
-        );
-    }
-);
-
-
 $(document).off('click', '#Add1').on('click', '#Add1', function(){
         ajaxCallForAddKey(1);
     }
@@ -377,83 +536,10 @@ $(document).off('click', '#Add5').on('click', '#Add5', function() {
     ajaxCallForAddKey(5);
 });
 
-var ajaxCallForAddKey = function(buttonNo){
-
-    var key = document.getElementById("keyAdd"+buttonNo.toString()).value.toString();
-    var value = document.getElementById("valueAdd"+buttonNo.toString()).value.toString();
-    var optionalInputBox = document.getElementById("optionalValueAdd"+buttonNo.toString());
-    var optionalValue;
-    if(optionalInputBox === null){
-        optionalValue = "dummy";
-    }
-    else{
-        optionalValue= optionalInputBox.value.toString();
-    }
-    var type;
-    if(buttonNo === 1){
-        type = "string";
-    }
-    else if(buttonNo === 2){
-        type = "list";
-    }
-    else if(buttonNo === 3){
-        type = "set";
-    }
-    else if(buttonNo === 4){
-        type = "hash";
-    }
-    else if(buttonNo === 5){
-        type = "zset";
-    }
-
-    $.ajax(
-        {
-            url: "/view/AddKey",
-            type: "POST",
-            data: "typeOfKey="+ type +"&nameOfKey="+key+
-                "&valueOfKey="+value+"&optionalValueOfKey="+optionalValue,
-            success: function (strData) {
-
-                if(strData === "existsAlready") {
-                    alertify.alert("This key already exists.");
-                }
-                else if(strData === "invalidDataStructure") {
-                    alertify.alert("Redis doesn't support this data structure");
-                }
-
-                else if(strData === "KeyNull")  {
-                    alertify.alert("Redis entries not filled." + buttonNo);
-                }
-                else if(strData === "scoreNotDouble")   {
-                    alertify.alert("The entry you filled for score should be of Double type.");
-                }
-                else if(strData === "false")   {
-                    alertify.alert("Sorry! Couldn't add. The server must be down.");
-                }
-                else if(strData === "success"){
-                    alertify.alert("Success!!");
-                }
-                else{
-                    alertify.alert("Some strange error!");
-                }
-            }
-        }
-    );
-    document.getElementById("keyAdd"+buttonNo.toString()).value = "";
-    document.getElementById("valueAdd"+buttonNo.toString()).value = "";
-    var optionalValue = document.getElementById("optionalValueAdd"+buttonNo.toString());
-    if(optionalValue !== null)optionalValue.value = "";
-};
-
-var charCodeArrToString = function toBinString (charCodeArr) {
-    var concatenatedString = "";
-    for(var char in charCodeArr){
-        concatenatedString += String.fromCharCode(charCodeArr[char]);
-    }
-    return concatenatedString;
-}
-
 $(document).off('click', 'ul#list-content li a').on('click', "ul#list-content li a", function(){
+
+        $("#keys-details").show();
+        $("#thirdPanel").show();
 
         var clickedKey = event.target.id.toString();
         $.ajax(
@@ -682,44 +768,6 @@ $(document).off('click', '#stop-infoSnapshotter').on('click', '#stop-infoSnapsho
     );
 });
 
-fieldAdder = function(clickedKey,field,value,type) {
-    $.ajax(
-        {
-            url: "/view/AddField",
-            type: "POST",
-            data: "clickedKey=" + clickedKey +"&field=" + field + "&value=" + value + "&type=" +type,
-            success: function (strData) {
-
-                if(strData === "doesNotExist") {
-                    alertify.alert("The key does not exist anymore");
-                }
-                else if(strData === "existingFieldUpdated")    {
-                    alertify.alert("The key existed already and is updated.");
-                    var keyFromWhichAdded = document.getElementById(clickedKey);
-                    if(keyFromWhichAdded)
-                        keyFromWhichAdded.click();
-                }
-                else if(strData === "scoreNotDouble")   {
-                    alertify.alert("The entry you filled for score should be of Double type.");
-                }
-                else  if(strData === "success")  {
-                    var keyFromWhichAdded = document.getElementById(clickedKey);
-                    if(keyFromWhichAdded)
-                        keyFromWhichAdded.click();
-                }
-                else if(strData === "keyNull") {
-                    alertify.alert("Entries not filled.");
-                }
-                else if(strData === "false")    {
-                    alertify.alert("Field could not be added. The server must be down.")
-                }
-                else{
-                    alertify.alert("Strange Error!! Aliens hacked into your DB!");
-                }
-            }
-        }
-    );
-};
 
 $(document).off('click', '.addingHashFields').on('click', '.addingHashFields', function() {
 
@@ -764,33 +812,6 @@ $(document).off('click', '.addingZsetFields').on('click', '.addingZsetFields', f
     document.getElementById("zsetScore:"+clickedKey).value = "";
     document.getElementById("zsetValue:"+clickedKey).value = "";
 });
-
-deleteField = function(clickedKey,key,value,type)  {
-    $.ajax(
-        {
-            url: "/view/DeleteField",
-            type: "POST",
-            data: "clickedKey="+ clickedKey +"&key="+key + "&value=" + value + "&type=" + type,
-            success: function (strData) {
-
-                if(strData === "doesNotExist") {
-                    alertify.alert("The field does not exist!");
-                }
-                else if(strData === "false")    {
-                    alertify.alert("Sorry! Couldn't delete. The server must be down.");
-                }
-                else  if(strData === "success")  {
-                    var keyFromWhichDeleted = document.getElementById(clickedKey);
-                    if(keyFromWhichDeleted)
-                        keyFromWhichDeleted.click();
-                }
-                else{
-                    alertify.alert("Strange Error!! Aliens hacked into your DB!");
-                }
-            }
-        }
-    );
-};
 
 $(document).off("click", ".btn.btn-info.editingFields").on("click", ".btn.btn-info.editingFields", function () {
 
@@ -872,37 +893,3 @@ $(document).off("click", ".btn.btn-info.editingFields").on("click", ".btn.btn-in
     }
 });
 
-editField = function(clickedKey,key,value,newKey,newValue,type)  {
-
-    $.ajax(
-        {
-            url: "/view/EditField",
-            type: "POST",
-            data: "clickedKey="+ clickedKey +"&key="+ key + "&value=" + value + "&type=" + type + "&newKey=" + newKey + "&newValue=" + newValue,
-            success: function (strData) {
-
-                if(strData === "doesNotExist") {
-                    alertify.alert("The field does not exist!");
-                }
-                else if(strData === "keyNull")  {
-                    alertify.alert("Redis entries not filled.")
-                }
-                else if(strData === "scoreNotDouble")   {
-                    alertify.alert("The entry you filled for score should be of Double type.");
-                }
-                else if(strData === "false")    {
-                    alertify.alert("Sorry! Couldn't edit. The server must be down.");
-                }
-                else  if(strData === "success")  {
-
-                    var keyFromWhichEdited = document.getElementById(clickedKey);
-                    if(keyFromWhichEdited)
-                        keyFromWhichEdited.click();
-                }
-                else{
-                    alertify.alert("Strange Error!! Aliens hacked into your DB!");
-                }
-            }
-        }
-    );
-}

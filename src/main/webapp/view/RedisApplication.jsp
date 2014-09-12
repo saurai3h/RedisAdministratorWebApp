@@ -17,13 +17,15 @@
     <meta name="author" content="">
 
     <title>Redis Application</title>
-    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/simple-sidebar.css" rel="stylesheet">
-    <link href="css/simple-footer.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="css/alertify.default.css">
-    <link rel="stylesheet" type="text/css" href="css/alertify.core.css">
-    <link rel="stylesheet" type="text/css" href="css/alertify.bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <link type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="http://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" rel="stylesheet">
+    <link type="text/css" href="css/simple-sidebar.css" rel="stylesheet">
+    <link type="text/css" href="css/simple-footer.css" rel="stylesheet">
+    <link type="text/css" href="css/alertify.default.css" rel="stylesheet" >
+    <link type="text/css" href="css/alertify.core.css" rel="stylesheet">
+    <link type="text/css" href="css/alertify.bootstrap.css" rel="stylesheet">
+    <link type="text/css" href="css/styles.css" rel="stylesheet">
+    <link type="text/css" href="css/abixTreeList.css" rel="stylesheet">
 
 </head>
 
@@ -72,6 +74,7 @@
                     <li><a id="reset-page-list" href="#">Reset &olarr;</a></li>
                     <li><a id="start-infoSnapshotter" href="#">Start Monitor</a></li>
                     <li><a id="stop-infoSnapshotter" href="#">Stop Monitor</a></li>
+                    <li><a id = "treeView" data-toggle = "modal" href="#treeViewModal" style = "outline-style:none" >TreeView</a></li>
                 </ul>
 
                 <ul id="list-content">
@@ -149,7 +152,7 @@
             </div>
             <div style="width:30%" id="searchOrDeleteKey" class="col-lg-2">
                 <div class="input-group" style="width:100%">
-                    <input type="text" class="form-control" id="keyDeleteSearch6" placeholder="key">
+                    <input type="text" title = "Search a key you want to be deleted or searched in the redis instance." class="form-control" id="keyDeleteSearch6" placeholder="key">
                 </div>
                 <div class="btn-group">
                     <button style="width: 50%;font-size: 12px;" id="Delete6" type="button" class="btn btn-primary">Delete</button>
@@ -160,6 +163,24 @@
         </div>
         <div id="thirdPanel" class="col-lg-5">
 
+        </div>
+    </div>
+</div>
+<div class="modal" id="treeViewModal" tabindex="-1" role="dialog" aria-labelledby="treeViewLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="treeViewModalLabel">Tree view of keys in this instance.</h4>
+            </div>
+            <div class="modal-body">
+                <div id="treeViewContent">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id = "treeViewClose" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
         </div>
     </div>
 </div>
@@ -260,10 +281,12 @@
 <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
 
-<script src="js/alertify.js"></script>
 <script src="js/alertify.min.js"></script>
+<script src="js/abixTreeList.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
 <script src="js/1stpanelAjaxCalls.js"></script>
 <script src="js/2ndpanelAjaxCalls.js"></script>
 <script type="text/javascript">

@@ -46,7 +46,7 @@ public class AddKeyServlet extends HttpServlet {
                     //System.out.println("goodie");
                     if(type.equals("zset")) {
                         try {
-                            Double.parseDouble(value);
+                            Double.parseDouble(optionalValue);
                         }
                         catch (NumberFormatException e) {
                             out.write("scoreNotDouble");

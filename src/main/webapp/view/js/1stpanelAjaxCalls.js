@@ -62,7 +62,6 @@ var repopulateInstanceList = function(){
 repopulateInstanceList();
 $(document).off('click', ".btn.btn-danger.deletingInstances").on('click', ".btn.btn-danger.deletingInstances", function()
 {
-    var event = event || window.event;
 
     var clickedDelete = event.target.id.split(":");
 
@@ -104,6 +103,9 @@ $(document).off('click', '#addInstance').on('click', '#addInstance', function(){
             }
         }
     );
+    document.getElementById("host").value = "";
+    document.getElementById("port").value = "";
+    document.getElementById("visibleTo").value = "";
 });
 
 $(document).off('click', '#deleteInstance').on('click', '#deleteInstance', function() {
@@ -126,6 +128,7 @@ $(document).off('click', '#deleteInstance').on('click', '#deleteInstance', funct
     );
     document.getElementById("host").value = "";
     document.getElementById("port").value = "";
+    document.getElementById("visibleTo").value = "";
 });
 
 

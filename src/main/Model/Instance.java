@@ -37,6 +37,7 @@ public class Instance {
         pages = new LinkedList<Page>();
         searchPage = new Page();
     }
+
     public Instance(String host, int port, boolean isMonitored)  {
         searchPage = new Page();
         expectedPageSize = 15;
@@ -45,12 +46,14 @@ public class Instance {
         pages = new LinkedList<Page>();
         cursor = "";
         this.isMonitored = isMonitored;
-        infoSnapshotter = new InfoSnapshotter(new HostAndPort("172.16.137.228",7000),this.hostAndPort);
+        infoSnapshotter = new InfoSnapshotter(new HostAndPort("172.16.137.79",7005),this.hostAndPort);
         executorService = Executors.newSingleThreadScheduledExecutor();
         executorService.scheduleWithFixedDelay(infoSnapshotter,0,10, TimeUnit.SECONDS);
         if(isMonitored)
             infoSnapshotter.startMonitorMode();
-    }    
+    }
+
+
     public boolean keyExists(String key) {
         return jedis.exists(key);
     }
@@ -132,6 +135,7 @@ public class Instance {
     public void renameKey(String oldKeyName, String newKeyName){
         jedis.rename(oldKeyName,newKeyName);
     }
+
     public void addKey(String key,String type, String value)   {
         if (type.equals("string")) {
             jedis.set(key, value);
@@ -209,6 +213,24 @@ public class Instance {
         ScanResult<String> scanResult = jedis.scan(cursor,scanParams);
         this.cursor = scanResult.getStringCursor();
         return (scanResult.getResult());
+    }
+
+    public List<String> myScan(long timeInSecondsToRun)    {
+        long t = System.currentTimeMillis();
+        long end = t + timeInSecondsToRun*1000;
+        String myCursor = "0";
+
+        List<String> list = new ArrayList<String>();
+
+        while(System.currentTimeMillis() < end) {
+            ScanResult result = jedis.scan(myCursor);
+            myCursor = result.getStringCursor();
+            list.addAll(result.getResult());
+            if(myCursor.equals("0"))
+                break;
+        }
+
+        return list;
     }
 
     public boolean isAlive()    {

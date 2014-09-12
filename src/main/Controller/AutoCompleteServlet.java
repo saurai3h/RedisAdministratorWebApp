@@ -4,20 +4,17 @@ import Model.Instance;
 import com.google.gson.Gson;
 import redis.clients.jedis.exceptions.JedisException;
 
-import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
- * Created by Saurabh Paliwal on 28/8/14.
+ * Created by Saurabh Paliwal on 11/9/14.
  */
-public class InitialPageServlet extends HttpServlet {
+public class AutoCompleteServlet extends HttpServlet{
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         response.setContentType("text/html");
@@ -25,12 +22,10 @@ public class InitialPageServlet extends HttpServlet {
 
         try {
             out = response.getWriter();
-            String curInstanceHostPort = request.getParameter("hostport");
-            Instance clickedInstance = ServletHelper.getInstanceFromServletContext(getServletContext(),curInstanceHostPort);
-            String listOfKeys = new Gson().toJson(clickedInstance.getPageAtIndex(0).getKeyList());
+            Instance clickedInstance = ServletHelper.getInstanceFromServletContext(getServletContext(),(String) request.getSession().getAttribute("clickedInstanceHostPort"));
+
+            String listOfKeys = new Gson().toJson(clickedInstance.myScan(2));
             out.write(listOfKeys);
-            request.getSession().setAttribute("CurPageIndex",0);
-            request.getSession().setAttribute("clickedInstanceHostPort",curInstanceHostPort);
         }
         catch (JedisException e)   {
             out.write("false");
