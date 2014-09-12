@@ -71,6 +71,9 @@
                     <li class="next"><a id="next" href="#">Newer &rarr;</a></li>
                     <li><a id="reset-page-list" href="#">Reset &olarr;</a></li>
                     <li><a id="start-infoSnapshotter" href="#">Start Monitor</a></li>
+                    <li>
+                        <a id="show-info-button" href="#infoModal" data-toggle="modal">See Info</a>
+                    </li>
                     <li><a id="stop-infoSnapshotter" href="#">Stop Monitor</a></li>
                 </ul>
 
@@ -144,6 +147,9 @@
                         <div class="btn-group">
                             <button style="font-size: 12px" id="Add5" type="button" class="btn btn-primary">Add</button>
                         </div>
+                    </div>
+                    <div class="input-group"  style="width:6%">
+                        <input type="checkbox" class="form-control"  name="vehicle" value="Bike" id="setExpiryCheckbox">
                     </div>
                 </div>
             </div>
@@ -236,7 +242,7 @@
         </div>
     </div>
 </div>
-<div class="modal" id="zsetModal" tabindex="-1" role="dialog" aria-labelledby="zsetLabel" aria-hidden="true">
+<div class="modal" id="zsetModal" tabindex="-1" aria-labelledby="zsetLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -255,6 +261,23 @@
         </div>
     </div>
 </div>
+
+<div class="modal" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="info" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="infoModelHeader">Info</h4>
+            </div>
+            <div class="modal-body" id = "info-body">
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Byeeee!!</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
 <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
@@ -264,6 +287,8 @@
 <script src="js/alertify.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="js/1stpanelAjaxCalls.js"></script>
 <script src="js/2ndpanelAjaxCalls.js"></script>
 <script type="text/javascript">

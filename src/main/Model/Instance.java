@@ -45,7 +45,7 @@ public class Instance {
         pages = new LinkedList<Page>();
         cursor = "";
         this.isMonitored = isMonitored;
-        infoSnapshotter = new InfoSnapshotter(new HostAndPort("172.16.137.228",7000),this.hostAndPort);
+        infoSnapshotter = new InfoSnapshotter(Constants.INFO_STORE,this.hostAndPort);
         executorService = Executors.newSingleThreadScheduledExecutor();
         executorService.scheduleWithFixedDelay(infoSnapshotter,0,10, TimeUnit.SECONDS);
         if(isMonitored)

@@ -48,6 +48,10 @@
         <servlet-class>Controller.DeleteInstanceServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>infoPlotter</servlet-name>
+        <servlet-class>Controller.InfoPanelDataFetcherServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>AddKeys</servlet-name>
         <servlet-class>Controller.AddKeyServlet</servlet-class>
     </servlet>
@@ -151,5 +155,9 @@
     <servlet-mapping>
         <servlet-name>addField</servlet-name>
         <url-pattern>/view/AddField</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>infoPlotter</servlet-name>
+        <url-pattern>/view/infoPlotter</url-pattern>
     </servlet-mapping>
 </web-app>

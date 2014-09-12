@@ -17,7 +17,6 @@ public class InfoSnapshotter implements Runnable {
     HostAndPort infoStorageHostPort;
     Jedis monitoredInstance;
     Jedis infoStorage;
-    ExecutorService executorService;
     public InfoSnapshotter(HostAndPort infoStorageHostPort, HostAndPort monitoredInstanceHostPort){
         this.infoStorageHostPort = infoStorageHostPort;
         this.monitoredInstanceHostPort = monitoredInstanceHostPort;
@@ -32,7 +31,7 @@ public class InfoSnapshotter implements Runnable {
             storeOneInfoSnapshot();
     }
 
-    private synchronized void storeOneInfoSnapshot() {
+    private void storeOneInfoSnapshot() {
 
         Map<String, String> map = getInfoAsMap(monitoredInstance);
         Date date = new Date();
@@ -42,7 +41,7 @@ public class InfoSnapshotter implements Runnable {
                 Long.toString(date.getTime());
         infoStorage.hmset(key, map);
         if(!persistStoredInfo) {
-            infoStorage.expire(key, 22);
+            infoStorage.expire(key, Constants.INFO_SNAPSHOT_EXPIRY_TIME);
             System.out.println("stored temporarily!! " + monitoredInstanceHostPort.toString());
         }
         else {

@@ -14,8 +14,9 @@ public class InstanceHelper {
     public static String add(HostAndPort hostAndPort, String addeeUserName, String adderUserName) {
         boolean success = true;
         String status;
+        boolean wasPresentInInstances = !SqlInterface.isPresentInInstances(hostAndPort);
         boolean hasPermissionToAdd;
-        if(!SqlInterface.isPresentInInstances(hostAndPort)){
+        if(wasPresentInInstances){
             success = success && SqlInterface.addToInstances(hostAndPort);
             hasPermissionToAdd = true;
         }
@@ -27,6 +28,10 @@ public class InstanceHelper {
             success = success && SqlInterface.addVisibility(addeeUserName, hostAndPort);
         }
         if(hasPermissionToAdd && success){
+            if(wasPresentInInstances){
+
+                status = Constants.ALREADY_PRESENT_IN_INSTANCES;
+            }
             status = Constants.SUCCESS_STATUS_CODE;
         }
         else if(!success){

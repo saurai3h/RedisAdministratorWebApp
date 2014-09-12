@@ -127,8 +127,11 @@ var ajaxCallForAddKey = function(buttonNo){
             }
         }
     );
-    document.getElementById("keyAdd3").value = "";
-    document.getElementById("valueAdd3").value = "";
+    document.getElementById("keyAdd" + buttonNo.toString()).value = "";
+    document.getElementById("valueAdd" + buttonNo.toString()).value = "";
+    var optionalValue = document.getElementById("optionalValueAdd"+buttonNo.toString());
+    if(optionalValue !== null)
+        optionalValue.value = ""
 };
 var charCodeArrToString = function toBinString (charCodeArr) {
     var concatenatedString = "";
@@ -300,7 +303,6 @@ $(document).off('click', '#Search6').on('click', '#Search6', function() {
     }
 );
 
-
 $(document).off('click', '#reset-page-list').on('click', '#reset-page-list', function(){
 
         $.ajax(
@@ -320,7 +322,7 @@ $(document).off('click', '#prev').on('click', '#prev', function(){
         $.ajax(
             {
                 url: "/view/Previous",
-                type: "POST",
+            type: "POST",
                 success: function (strData) {
                     populateKeyListFromJson(strData);}
         }
@@ -334,25 +336,11 @@ $(document).off('click', '#next').on('click', '#next', function(){
             url: "/view/Next",
             type: "POST",
             success: function (strData) {
-                populateKeyListFromJson(strData);}
+                populateKeyListFromJson(strData);
+            }
         }
     );
 });
-
-$(document).off('click', '#reset-page-list').on('click', '#reset-page-list', function(){
-
-        $.ajax(
-            {
-                url: "/view/resetPageList",
-                type: "POST",
-                success: function (strData) {
-                    populateKeyListFromJson(strData);
-                }
-            }
-        );
-    }
-);
-
 
 $(document).off('click', '#Add1').on('click', '#Add1', function(){
         ajaxCallForAddKey(1);
@@ -375,6 +363,9 @@ $(document).off('click', '#Add4').on('click', '#Add4',function(){
 
 $(document).off('click', '#Add5').on('click', '#Add5', function() {
     ajaxCallForAddKey(5);
+});
+$(document).off('CheckedChanged','#setExpiryCheckbox').on('CheckedChanged','#setExpiryCheckbox',function(){
+   alertfy.alert("checked!!");
 });
 
 var ajaxCallForAddKey = function(buttonNo){
@@ -467,8 +458,7 @@ $(document).off('click', 'ul#list-content li a').on('click', "ul#list-content li
 
                     if(jsonData === "doesNotExist")
                         alertify.alert("The key does not exist anymore.");
-                    else
-                    {
+                    else {
                         var valueFooter = document.createElement("input");
                         var addFooter = document.createElement("button");
 
@@ -547,7 +537,6 @@ $(document).off('click', 'ul#list-content li a').on('click', "ul#list-content li
                                     e.stopPropagation();
                                     deleteField(clickedKey, key, value, type)
                                 });
-
 
                                 var editCell = document.createElement("button");
                                 $(editCell).addClass("btn btn-info editingFields");
@@ -659,6 +648,7 @@ $(document).off('click', 'ul#list-content li a').on('click', "ul#list-content li
     }
 
 );
+
 
 $(document).off('click', '#start-infoSnapshotter').on('click', '#start-infoSnapshotter', function(){
     alertify.alert("starting");
@@ -791,6 +781,63 @@ deleteField = function(clickedKey,key,value,type)  {
         }
     );
 };
+$(document).off("click","#show-info-button").on("click","#show-info-button",function(){
+    var plot = function(pointArray){
+    $('#info-body').highcharts({
+        chart: {
+            type: 'spline'
+        },
+        series: [{
+            data: mergeArrays(pointArray[0],pointArray[1])
+        },{
+            data: mergeArrays(pointArray[0],pointArray[2])
+        },{
+            data: mergeArrays(pointArray[0],pointArray[3])
+        },{
+            data: mergeArrays(pointArray[0],pointArray[4])
+        }
+        ],
+
+
+        xAxis: [{
+            type: 'datetime'
+        }]
+    });
+}
+    function mergeArrays(arr1,arr2){
+        var mergedArray = new Array();
+        for (index in arr1) {
+            var point = [];
+            point.push(arr1[index]);
+            point.push(arr2[index]);
+            mergedArray.push(point);
+        }
+        console.log(mergedArray);
+        return mergedArray;
+    }
+
+    $.ajax(
+        {
+            url: "/view/infoPlotter",
+            type: "POST",
+            success: function (strData) {
+                var jsonData = jQuery.parseJSON(strData);
+                for(var index in jsonData){
+                    var timeStampArray = jsonData[0];
+                    var noOfKeys = jsonData[1];
+                    var noOfKeysWithExpiry= jsonData[2];
+                    var someArray = jsonData[3];
+                    var connectedClientArray = jsonData[4];
+                }
+                plot(jsonData);
+                console.log(jsonData);
+            }
+        }
+    );
+
+
+
+});
 
 $(document).off("click", ".btn.btn-info.editingFields").on("click", ".btn.btn-info.editingFields", function () {
 

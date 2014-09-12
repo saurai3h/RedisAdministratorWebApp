@@ -62,7 +62,7 @@ var repopulateInstanceList = function(){
 repopulateInstanceList();
 $(document).off('click', ".btn.btn-danger.deletingInstances").on('click', ".btn.btn-danger.deletingInstances", function()
 {
-    var event = event || window.event;
+//    var event = event || window.event;
 
     var clickedDelete = event.target.id.split(":");
 
