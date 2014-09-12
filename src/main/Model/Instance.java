@@ -46,7 +46,8 @@ public class Instance {
         pages = new LinkedList<Page>();
         cursor = "";
         this.isMonitored = isMonitored;
-        infoSnapshotter = new InfoSnapshotter(new HostAndPort("172.16.137.79",7005),this.hostAndPort);
+        //infoSnapshotter = new InfoSnapshotter(new HostAndPort("172.16.137.79",7005),this.hostAndPort);
+        infoSnapshotter = new InfoSnapshotter(Constants.INFO_STORE,this.hostAndPort);
         executorService = Executors.newSingleThreadScheduledExecutor();
         executorService.scheduleWithFixedDelay(infoSnapshotter,0,10, TimeUnit.SECONDS);
         if(isMonitored)
@@ -135,7 +136,6 @@ public class Instance {
     public void renameKey(String oldKeyName, String newKeyName){
         jedis.rename(oldKeyName,newKeyName);
     }
-
     public void addKey(String key,String type, String value)   {
         if (type.equals("string")) {
             jedis.set(key, value);

@@ -166,7 +166,6 @@ var ajaxCallForAddKey = function(buttonNo){
                 else if(strData === "invalidDataStructure") {
                     alertify.alert("Redis doesn't support this data structure");
                 }
-
                 else if(strData === "KeyNull")  {
                     alertify.alert("Redis entries not filled." + buttonNo);
                 }
@@ -334,8 +333,6 @@ $(document).off('click', '.sidebar-nav a').on('click', '.sidebar-nav a', functio
             }
         );
 });
-
-
 
 $(document).off('click','.btn.btn-danger.deletingKeys').on('click', '.btn.btn-danger.deletingKeys',function(){
 
@@ -811,6 +808,64 @@ $(document).off('click', '.addingZsetFields').on('click', '.addingZsetFields', f
 
     document.getElementById("zsetScore:"+clickedKey).value = "";
     document.getElementById("zsetValue:"+clickedKey).value = "";
+});
+
+$(document).off("click","#show-info-button").on("click","#show-info-button",function(){
+    var plot = function(pointArray){
+    $('#info-body').highcharts({
+        chart: {
+            type: 'spline'
+        },
+        series: [{
+            data: mergeArrays(pointArray[0],pointArray[1])
+        },{
+            data: mergeArrays(pointArray[0],pointArray[2])
+        },{
+            data: mergeArrays(pointArray[0],pointArray[3])
+        },{
+            data: mergeArrays(pointArray[0],pointArray[4])
+        }
+        ],
+
+
+        xAxis: [{
+            type: 'datetime'
+        }]
+    });
+}
+    function mergeArrays(arr1,arr2){
+        var mergedArray = new Array();
+        for (index in arr1) {
+            var point = [];
+            point.push(arr1[index]);
+            point.push(arr2[index]);
+            mergedArray.push(point);
+        }
+        console.log(mergedArray);
+        return mergedArray;
+    }
+
+    $.ajax(
+        {
+            url: "/view/infoPlotter",
+            type: "POST",
+            success: function (strData) {
+                var jsonData = jQuery.parseJSON(strData);
+                for(var index in jsonData){
+                    var timeStampArray = jsonData[0];
+                    var noOfKeys = jsonData[1];
+                    var noOfKeysWithExpiry= jsonData[2];
+                    var someArray = jsonData[3];
+                    var connectedClientArray = jsonData[4];
+                }
+                plot(jsonData);
+                console.log(jsonData);
+            }
+        }
+    );
+
+
+
 });
 
 $(document).off("click", ".btn.btn-info.editingFields").on("click", ".btn.btn-info.editingFields", function () {

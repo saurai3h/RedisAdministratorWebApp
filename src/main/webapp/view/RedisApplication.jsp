@@ -73,6 +73,9 @@
                     <li class="next"><a id="next" href="#">Newer &rarr;</a></li>
                     <li><a id="reset-page-list" href="#">Reset &olarr;</a></li>
                     <li><a id="start-infoSnapshotter" href="#">Start Monitor</a></li>
+                    <li>
+                        <a id="show-info-button" href="#infoModal" data-toggle="modal">See Info</a>
+                    </li>
                     <li><a id="stop-infoSnapshotter" href="#">Stop Monitor</a></li>
                     <li><a id = "treeView" data-toggle = "modal" href="#treeViewModal" style = "outline-style:none" >TreeView</a></li>
                 </ul>
@@ -276,6 +279,23 @@
         </div>
     </div>
 </div>
+
+<div class="modal" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="info" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="infoModelHeader">Info</h4>
+            </div>
+            <div class="modal-body" id = "info-body">
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Byeeee!!</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
 <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
@@ -285,6 +305,7 @@
 <script src="js/abixTreeList.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 <script src="http://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
 <script src="js/1stpanelAjaxCalls.js"></script>

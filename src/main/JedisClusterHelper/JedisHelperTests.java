@@ -1,12 +1,14 @@
 package JedisClusterHelper;
 
 import Model.InfoSnapshotter;
+import Model.Login;
 import org.junit.Before;
 import org.junit.Test;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.Jedis;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,7 +24,7 @@ public class JedisHelperTests {
     Jedis jedis;
     @Before
     public void setupInstance(){
-        jedis = new Jedis("localhost",7004);
+        jedis = new Jedis("172.16.137.228",6379);
     }
 
 //    public void setupCluster(){
@@ -94,11 +96,11 @@ public class JedisHelperTests {
 
     @Test
     public void shouldAllowAddingIntegersToRedisInstance(){
-        int noOfValues = 1000;
-        int noOfDataStructsOfEachType = 3;
+        int noOfValues = 1000000;
+        int noOfDataStructsOfEachType = 11;
         for(int i = 0;i<noOfValues;i++){
             String value = "value" + Integer.toString(i);
-            String key = "key" + Integer.toString(i);
+            String key = "anotherKey" + Integer.toString(i);
             String dataStructSuffix = Integer.toString(noOfDataStructsOfEachType);
             switch (i%5){
                 case 0:
@@ -121,6 +123,14 @@ public class JedisHelperTests {
             }
         }
 
+    }
+
+    @Test
+    public void printTimeTakenByKeyStar(){
+        Long startTime = System.currentTimeMillis();
+        Set<String> setOfAllKeys = jedis.keys("*");
+        long endTime = System.currentTimeMillis();
+        System.out.println(Long.toString(endTime - startTime) + " miliSecs for "+Integer.toString(setOfAllKeys.size())+ " keys.");
     }
 
 }
