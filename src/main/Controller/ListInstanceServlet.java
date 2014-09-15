@@ -1,5 +1,4 @@
 package Controller;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,14 +10,14 @@ import com.google.gson.Gson;
 public class ListInstanceServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-
+        ServletHelper.redirectIfLoginInvalid(request,response);
         response.setContentType("text/html");
         PrintWriter out= null;
         Login login= (Login) request.getSession().getAttribute("login");
         try {
             String userName = login.getName();
             out = response.getWriter();
-            String listOfInstances = new Gson().toJson(InstanceHelper.getAllStoredInstances(userName));
+            String listOfInstances = new Gson().toJson(InstanceHelper.getAllVisibleInstances(userName));
             out.write(listOfInstances);
         }
         catch (IOException e) {

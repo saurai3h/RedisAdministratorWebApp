@@ -1,18 +1,12 @@
 package Controller;
 
 import Model.Constants;
-import Model.Instance;
-import Model.InstanceHelper;
-import Model.Login;
 import com.google.gson.Gson;
-import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.Jedis;
 
-import javax.jms.Session;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
 
@@ -22,6 +16,7 @@ import java.util.*;
 public class InfoPanelDataFetcherServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+        ServletHelper.redirectIfLoginInvalid(request,response);
         String hostPort = (String) request.getSession().getAttribute("clickedInstanceHostPort") + ":";
         response.setContentType("text/html");
         PrintWriter out = null;

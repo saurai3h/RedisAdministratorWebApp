@@ -31,6 +31,18 @@
 
 <body  style="width: 100%; height:100%">
 <%
+    response.setHeader("Cache-Control", "no-cache");
+
+//Forces caches to obtain a new copy of the page from the origin server
+    response.setHeader("Cache-Control", "no-store");
+
+//Directs caches not to store the page under any circumstance
+    response.setDateHeader("Expires", 0);
+
+//Causes the proxy cache to see the page as "stale"
+    response.setHeader("Pragma", "no-cache");
+//HTTP 1.0 backward enter code here
+
     Login login = (Login) session.getAttribute("login");
     if(login == null){
         RequestDispatcher rd=request.getRequestDispatcher("login-error.jsp");
@@ -41,9 +53,9 @@
 <div id="wrapper">
     <div id="sidebar-wrapper">
         <ul class="sidebar-nav" id = "listOfInstances">
-            <li class="sidebar-brand">
+            <li  class="next">
                 <a href="#">
-                    Listing Instances
+                    Logout
                 </a>
             </li>
         </ul>
@@ -264,7 +276,6 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                 <h4 class="modal-title" id="zsetModalLabel">Edit Zset</h4>
             </div>
             <div class="modal-body">
@@ -286,7 +297,7 @@
             <div class="modal-header">
                 <h4 class="modal-title" id="infoModelHeader">Info</h4>
             </div>
-            <div class="modal-body" id = "info-body">
+            <div class="modal-body" style="overflow-y:scroll; height:400px"  id = "info-body">
             </div>
             <div class="modal-footer">
                 <button class="btn" data-dismiss="modal" aria-hidden="true">Byeeee!!</button>
@@ -305,9 +316,9 @@
 <script src="js/abixTreeList.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-<script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 <script src="http://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="js/1stpanelAjaxCalls.js"></script>
 <script src="js/2ndpanelAjaxCalls.js"></script>
 <script type="text/javascript">

@@ -14,7 +14,7 @@ public final class Constants {
     public static final String SERVLET_ERROR_CODE = "servlet error";
     public static final HostAndPort INFO_STORE = new HostAndPort("172.16.137.228",7000);
     public static final int INFO_SNAPSHOT_EXPIRY_TIME = 120;
-    static final String ALREADY_PRESENT_IN_INSTANCES = "anotherViewerAdded";
+    public static final String ALREADY_PRESENT_IN_INSTANCES = "anotherViewerAdded";
 
 
 

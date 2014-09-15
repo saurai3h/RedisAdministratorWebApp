@@ -12,10 +12,12 @@ var repopulateInstanceList = function(){
     $(listOfInstances).attr("class","sidebar-nav");
     var header = document.createElement("li");
     $(header).attr("class","sidebar-brand");
-    var link = document.createElement("a");
-    $(link).attr("href","#");
-    $(link).html("Listing Instances");
-    $(header).append(link);
+    var logout = document.createElement("button");
+    $(logout).attr("type","button");
+    $(logout).attr("class","btn btn-warning btn-lg");
+    $(logout).attr("id","logout-button");
+    $(logout).html("Logout");
+    $(header).append(logout);
     $(listOfInstances).append(header);
     var sidebarWrapper = $("#sidebar-wrapper");
     sidebarWrapper.append(listOfInstances);
@@ -86,6 +88,16 @@ $(document).off('click', ".btn.btn-danger.deletingInstances").on('click', ".btn.
             }
         );
     }
+});
+
+$(document).off('click', '#logout-button').on('click', '#logout-button', function(){
+    $.ajax(
+        {
+            url: "/view/logout",
+            type: "POST"
+        }
+    );
+    window.location = "/view/index.jsp";
 });
 
 $(document).off('click', '#addInstance').on('click', '#addInstance', function(){

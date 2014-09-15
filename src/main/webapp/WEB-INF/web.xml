@@ -88,8 +88,17 @@
         <servlet-class>Controller.AutoCompleteServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>infoSnapShotAtTimeStamp</servlet-name>
+        <servlet-class>Controller.getInfoAtTimestampServlet</servlet-class>
+
+    </servlet>
+    <servlet>
         <servlet-name>treeview</servlet-name>
         <servlet-class>Controller.TreeViewServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>logout</servlet-name>
+        <servlet-class>Controller.LogoutServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
@@ -175,5 +184,13 @@
     <servlet-mapping>
         <servlet-name>treeview</servlet-name>
         <url-pattern>/view/TreeView</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>infoSnapShotAtTimeStamp</servlet-name>
+        <url-pattern>/view/infoAtTime</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>logout</servlet-name>
+        <url-pattern>/view/logout</url-pattern>
     </servlet-mapping>
 </web-app>

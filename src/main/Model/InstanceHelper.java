@@ -14,25 +14,28 @@ public class InstanceHelper {
     public static String add(HostAndPort hostAndPort, String addeeUserName, String adderUserName) {
         boolean success = true;
         String status;
-        boolean wasPresentInInstances = !SqlInterface.isPresentInInstances(hostAndPort);
+        boolean isPresentInInstances = SqlInterface.isPresentInInstances(hostAndPort);
         boolean hasPermissionToAdd;
-        if(wasPresentInInstances){
+        if(!isPresentInInstances){
             success = success && SqlInterface.addToInstances(hostAndPort);
+            success = success && SqlInterface.addVisibility(adderUserName, hostAndPort);
             hasPermissionToAdd = true;
         }
         else {
-            ArrayList<HostAndPort> visibleInstances = getAllStoredInstances(adderUserName);
+            ArrayList<HostAndPort> visibleInstances = getAllVisibleInstances(adderUserName);
             hasPermissionToAdd = visibleInstances.contains(hostAndPort);
         }
         if(hasPermissionToAdd) {
             success = success && SqlInterface.addVisibility(addeeUserName, hostAndPort);
         }
         if(hasPermissionToAdd && success){
-            if(wasPresentInInstances){
+            if(isPresentInInstances){
 
                 status = Constants.ALREADY_PRESENT_IN_INSTANCES;
             }
-            status = Constants.SUCCESS_STATUS_CODE;
+            else {
+                status = Constants.SUCCESS_STATUS_CODE;
+            }
         }
         else if(!success){
             status = Constants.SQL_ERROR_STATUS_CODE;
@@ -51,7 +54,7 @@ public class InstanceHelper {
             return  success;
     }
 
-    public static ArrayList<HostAndPort> getAllStoredInstances(String userName){
+    public static ArrayList<HostAndPort> getAllVisibleInstances(String userName){
         try {
             ArrayList<HostAndPort> listOfInstances = new ArrayList<HostAndPort>();
 

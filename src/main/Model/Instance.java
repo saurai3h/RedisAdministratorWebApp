@@ -118,6 +118,7 @@ public class Instance {
             catch (JedisException e)    {
                 return false;
             }
+
         }
         else return false;
     }

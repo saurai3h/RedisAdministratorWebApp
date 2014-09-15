@@ -17,7 +17,7 @@ import java.io.PrintWriter;
 public class ResetInstanceServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-
+        ServletHelper.redirectIfLoginInvalid(request,response);
         response.setContentType("text/html");
         PrintWriter out= null;
 

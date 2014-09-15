@@ -16,6 +16,8 @@ public class AddNewClusterServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        ServletHelper.redirectIfLoginInvalid(request,response);
+
         response.setContentType("text/html");
 
         String address=request.getParameter("Host Address");
