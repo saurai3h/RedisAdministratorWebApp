@@ -945,9 +945,15 @@ $(document).off("click","#show-info-button").on("click","#show-info-button",func
             type: "POST",
             data: "field=timeStamp",
             success: function (strData) {
-                console.log(strData);
                 timeStampArray = jQuery.parseJSON(strData);
-                console.log(timeStampArray);
+                fromDate = Date.parse($('#fromDatePicker').data("DateTimePicker").getDate());
+                toDate = Date.parse($('#toDatePicker').data("DateTimePicker").getDate());
+                for(var timestampIndex in timeStampArray){
+                    while(timeStampArray[timestampIndex]<fromDate){
+
+                    }
+                }
+
                 var listItems = $("#chart-tab-contents .tab-pane");
                 var list = document.getElementById("chart-tab-contents");
                 listItems.each(function(index, element) {

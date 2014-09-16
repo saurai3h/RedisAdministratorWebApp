@@ -26,6 +26,8 @@
     <link type="text/css" href="css/alertify.bootstrap.css" rel="stylesheet">
     <link type="text/css" href="css/styles.css" rel="stylesheet">
     <link type="text/css" href="css/jquery.bonsai.css" rel="stylesheet">
+    <link type="text/css"
+          href="https://rawgit.com/Eonasdan/bootstrap-datetimepicker/master/build/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 
 </head>
 
@@ -273,12 +275,36 @@
 </div>
 
 <div class="modal" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="info" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
+    <div class="modal-dialog" style = "width: 50%;height: 100%">
+        <div class="modal-content" style="width: 100%;height: 100%">
             <div class="modal-header">
                 <h4 class="modal-title" id="infoModelHeader">Info</h4>
             </div>
             <div class="modal-body" style="overflow-y:scroll; height:400px"  id = "info-body">
+
+                        <div class='col-sm-12'>
+                            <div class="form-group">
+                                <div class='input-group date' id="fromDatePicker">
+                                    <input type='text' class="form-control" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class='col-sm-12'>
+                            <div class="form-group">
+                                <div class='input-group date' id="toDatePicker">
+                                    <input type='text' class="form-control" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+
                 <ul id = "chartTabList" class="nav nav-tabs" role="tablist">
                     <li><a style = "font-size: 12px;" href="#no_of_keys_chart" data-toggle="tab">No. of Keys</a></li>
                     <li><a style = "font-size: 12px;" href="#connected_clients_chart" data-toggle="tab">No. of clients</a></li>
@@ -291,7 +317,7 @@
                     <div class="tab-pane" id="connected_clients_chart"></div>
                     <div class="tab-pane" id="used_memory_chart"></div>
                     <div class="tab-pane" id="no_of_expirable_keys_chart"></div>
-                    <div class="tab-pane" id="used_cpu_chart"></div>
+                    <div class="tab-pane" id="used_cpu_user_chart"></div>
                 </div>
             </div>
         </div>
@@ -320,8 +346,6 @@
 <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
 <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
-
-
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
@@ -330,6 +354,8 @@
 <script src="js/alertify.min.js"></script>
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="js/jquery.bonsai.js"></script>
+<script src = "http://eonasdan.github.io/bootstrap-datetimepicker/scripts/moment.js"></script>
+<script src = "https://rawgit.com/Eonasdan/bootstrap-datetimepicker/master/src/js/bootstrap-datetimepicker.js"></script>
 <script src="js/1stpanelAjaxCalls.js"></script>
 <script src="js/2ndpanelAjaxCalls.js"></script>
 <script type="text/javascript">
@@ -375,6 +401,14 @@
         }
     }
 
+</script>
+<script type="text/javascript">
+    $(function () {
+        $('#fromDatePicker').datetimepicker();
+        $('#toDatePicker').datetimepicker();
+        var elem = document.getElementsByClassName("bootstrap-datetimepicker-widget");
+        $(elem).attr("style","margin-left:-62%");
+    });
 </script>
 </body>
 

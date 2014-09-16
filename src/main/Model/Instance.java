@@ -43,6 +43,7 @@ public class Instance {
     }
 
     public Instance(String host, int port, boolean isMonitored)  {
+
         searchPage = new Page();
         expectedPageSize = 15;
         hostAndPort = new HostAndPort(host,port);
