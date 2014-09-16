@@ -16,7 +16,7 @@ public final class Constants {
     public static final HostAndPort INFO_STORE = new HostAndPort(HOST,7000);
 
     public static final int INFO_SNAPSHOT_EXPIRY_TIME = 120;
-    static final String ALREADY_PRESENT_IN_INSTANCES = "anotherViewerAdded";
+    public static final String ALREADY_PRESENT_IN_INSTANCES = "anotherViewerAdded";
 
 
 

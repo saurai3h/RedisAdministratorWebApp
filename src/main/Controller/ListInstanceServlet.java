@@ -14,7 +14,7 @@ import redis.clients.jedis.HostAndPort;
 public class ListInstanceServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-
+        ServletHelper.redirectIfLoginInvalid(request,response);
         response.setContentType("text/html");
         PrintWriter out= null;
         Login login= (Login) request.getSession().getAttribute("login");

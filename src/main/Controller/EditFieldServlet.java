@@ -18,7 +18,7 @@ public class EditFieldServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+        ServletHelper.redirectIfLoginInvalid(request,response);
         response.setContentType("text/html");
         PrintWriter out= null;
 

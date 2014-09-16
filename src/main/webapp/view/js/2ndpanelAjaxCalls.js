@@ -862,16 +862,64 @@ $(document).off("click","#show-info-button").on("click","#show-info-button",func
 
         $('#info-body').highcharts({
         chart: {
-            type: 'spline'
+            type: 'area'
         },
         series: [{
-            data: mergeArrays(pointArray[0],pointArray[1])
-        },{
-            data: mergeArrays(pointArray[0],pointArray[2])
-        },{
-            data: mergeArrays(pointArray[0],pointArray[3])
-        },{
-            data: mergeArrays(pointArray[0],pointArray[4])
+            data: mergeArrays(pointArray[0],pointArray[1]),
+            point: {
+                events: {
+                    click: function() {
+                        x = this;
+                        var timeStamp = this.x; // prachand bakchodi, dont know how it works
+                        $.ajax(
+                            {
+                                url: "/view/infoAtTime",
+                                type: "POST",
+                                data: "timeStamp="+timeStamp,
+                                success: function (strData) {
+                                    var jsonData = jQuery.parseJSON(strData);
+                                    container = $("#singleInfoSnapshot");
+                                    if(container!==null){
+                                        container.remove();
+                                    }
+                                    container = document.createElement("table");
+                                    $(container).addClass("table table-responsive");
+                                    $(container).attr("border", "1");
+                                    $(container).css("overflow-y", "scroll");
+                                    $(container).css("float", "right");
+                                    $(container).css("margin-left", "5%");
+                                    $(container).css("width", "25%");
+                                    $(container).css("height", "25%");
+
+                                    $(container).attr("id","singleInfoSnapshot");
+                                    var tr = document.createElement("tr");
+                                    var keyHead = document.createElement("th");
+                                    var valueHead = document.createElement("th");
+                                    $(keyHead).html("Field");
+                                    $(valueHead).html("Value");
+                                    $(tr).append(keyHead);
+                                    $(tr).append(valueHead);
+                                    $(container).append(tr);
+                                    for(var field in jsonData){
+                                        tr = document.createElement("tr");
+                                        var keyCell = document.createElement("td");
+                                        $(keyCell).css("width", "30%");
+                                        $(keyCell).html(field);
+                                        var valueCell = document.createElement("td");
+                                        $(valueCell).css("width", "30%");
+                                        $(valueCell).html(jsonData[field]);
+                                        $(tr).append(keyCell);
+                                        $(tr).append(valueCell);
+                                        $(container).append(tr);
+                                    }
+                                    $("#info-body").append(container);
+                                }
+
+                            }
+                        );
+                    }
+                }
+            }
         }
         ],
 

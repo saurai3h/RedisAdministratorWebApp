@@ -32,19 +32,14 @@ public class InfoSnapshotter implements Runnable {
     }
 
     private void storeOneInfoSnapshot() {
+        if (persistStoredInfo) {
+            Map<String, String> map = getInfoAsMap(monitoredInstance);
+            Date date = new Date();
 
-        Map<String, String> map = getInfoAsMap(monitoredInstance);
-        Date date = new Date();
-
-        String key = monitoredInstanceHostPort.getHost()+":" +
-                Integer.toString(monitoredInstanceHostPort.getPort()) +":" +
-                Long.toString(date.getTime());
-        infoStorage.hmset(key, map);
-        if(!persistStoredInfo) {
-            infoStorage.expire(key, Constants.INFO_SNAPSHOT_EXPIRY_TIME);
-            System.out.println("stored temporarily!! " + monitoredInstanceHostPort.toString());
-        }
-        else {
+            String key = monitoredInstanceHostPort.getHost()+":" +
+                    Integer.toString(monitoredInstanceHostPort.getPort()) +":" +
+                    Long.toString(date.getTime()+ 330*60*1000);
+            infoStorage.hmset(key, map);
             System.out.println("stored permanently!! " + monitoredInstanceHostPort.toString());
         }
     }

@@ -20,6 +20,9 @@ public class Login {
     }
 
     public boolean validate(){
+        if(name == null || password == null){
+            return false;
+        }
         try {
             Connection conn = SqlInterface.getConnection();
             Statement stmt = conn.createStatement();

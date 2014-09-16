@@ -27,11 +27,22 @@
     <link type="text/css" href="css/styles.css" rel="stylesheet">
     <link type="text/css" href="css/jquery.bonsai.css" rel="stylesheet">
 
-
 </head>
 
 <body  style="width: 100%; height:100%">
 <%
+    response.setHeader("Cache-Control", "no-cache");
+
+//Forces caches to obtain a new copy of the page from the origin server
+    response.setHeader("Cache-Control", "no-store");
+
+//Directs caches not to store the page under any circumstance
+    response.setDateHeader("Expires", 0);
+
+//Causes the proxy cache to see the page as "stale"
+    response.setHeader("Pragma", "no-cache");
+//HTTP 1.0 backward enter code here
+
     Login login = (Login) session.getAttribute("login");
     if(login == null){
         RequestDispatcher rd=request.getRequestDispatcher("login-error.jsp");
@@ -42,9 +53,9 @@
 <div id="wrapper">
     <div id="sidebar-wrapper">
         <ul class="sidebar-nav" id = "listOfInstances">
-            <li class="sidebar-brand">
+            <li  class="next">
                 <a href="#">
-                    Listing Instances
+                    Logout
                 </a>
             </li>
         </ul>
@@ -307,12 +318,13 @@
 <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
 
-<script src="js/alertify.min.js"></script>
+
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 <script src="http://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="js/alertify.min.js"></script>
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="js/jquery.bonsai.js"></script>
 <script src="js/1stpanelAjaxCalls.js"></script>
