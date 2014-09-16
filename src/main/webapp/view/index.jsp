@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html style="width: 100%; height: 100%">
 <head lang="en">
     <meta charset="UTF-8">
     <meta name="generator" content="Bootply" />
@@ -14,9 +14,9 @@
 
 </head>
 
-<body>
-
-<div id="loginModal" class="modal show" tabindex="-1" role="dialog" aria-hidden="true">
+<body style="width: 100%; height: 100%">
+<div style="width: 100%; height: 100%" >
+<div id="loginModal" style="height:100%" class="col-lg-7" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content" style="position: relative; top: 100px">
 
@@ -47,6 +47,37 @@
     </div>
 </div>
 
+<div id="signUpModal" style="height:100%" class="col-lg-5" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="position: relative; top: 100px">
+
+            <div class="modal-header">
+                <h1 class="text-center">Signup</h1>
+            </div>
+
+            <div class="modal-body">
+
+                <form name = "signupForm" class="form col-md-12 center-block"  method="POST" action="Sign.up">
+                    <div class="form-group">
+                        <input type="text" class="form-control input-lg" placeholder="Username" name = "User">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control input-lg" placeholder="Password" name = "Pass">
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary btn-lg btn-block" type="submit">Sign Up</button>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <div class="col-md-12"></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
 <!-- script references -->
 
 <script type="text/javascript">

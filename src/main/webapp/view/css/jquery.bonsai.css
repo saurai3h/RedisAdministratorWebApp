@@ -10,15 +10,17 @@
     padding-left: 1.3em; /* padding for the thumb */
 }
 li .thumb {
-    margin: -1px 0 0 -1em;  /* negative margin into the padding of the li */
+    margin: -10px 0 0 -18px;  /* negative margin into the padding of the li */
     position: absolute;
     cursor: pointer;
 }
 li.has-children > .thumb:after {
-    content: '\2192';
+    content: '\2b';
+    font-size: 30px;
 }
 li.expanded > .thumb:after {
-    content: '\2190';
+    content: '\2212';
+    font-size: 30px;
 }
 li.collapsed > ol.bonsai {
 	height: 0;

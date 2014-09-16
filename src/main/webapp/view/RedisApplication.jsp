@@ -47,11 +47,7 @@
 <div id="wrapper">
     <div id="sidebar-wrapper">
         <ul class="sidebar-nav" id = "listOfInstances">
-            <li  class="next">
-                <a href="#">
-                    Logout
-                </a>
-            </li>
+
         </ul>
     </div>
     <div class="sidebar-footer">

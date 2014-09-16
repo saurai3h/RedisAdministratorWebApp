@@ -40,18 +40,18 @@ public class InfoSnapshotter implements Runnable {
                     Integer.toString(monitoredInstanceHostPort.getPort()) +":" +
                     Long.toString(date.getTime()+ 330*60*1000);
             infoStorage.hmset(key, map);
-            System.out.println("stored permanently!! " + monitoredInstanceHostPort.toString());
+            //System.out.println("stored permanently!! " + monitoredInstanceHostPort.toString());
         }
     }
 
     public void startMonitorMode(){
         persistStoredInfo = true;
-        System.out.println("entering monitor mode");
+        //System.out.println("entering monitor mode");
     }
 
     public void stopMonitorMode(){
         persistStoredInfo = false;
-        System.out.println("leaving monitor mode");
+        //System.out.println("leaving monitor mode");
     }
 
     public Map<String,String> getInfoAsMap(Jedis jedis){
@@ -65,7 +65,7 @@ public class InfoSnapshotter implements Runnable {
             for(String keyValuePair:keyValuePairsInInfo){
                 String[] keyValueArray = keyValuePair.split(":");
                 if(keyValueArray.length > 2){
-                    System.out.println("key-value pair expected, got more than 2 things");
+                    //System.out.println("key-value pair expected, got more than 2 things");
                     return null;
                 }
                 if(keyValueArray.length == 2){
@@ -74,7 +74,7 @@ public class InfoSnapshotter implements Runnable {
 //                    System.out.println(sectionName.trim() +":" +keyValueArray[0] + " == " + keyValueArray[1]);
                 }
                 if(keyValueArray.length < 1){
-                    System.out.println("key-value pair expected, got an empty array");
+                    //System.out.println("key-value pair expected, got an empty array");
                 }
             }
         }
