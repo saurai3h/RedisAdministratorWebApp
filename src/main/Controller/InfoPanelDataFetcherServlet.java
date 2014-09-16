@@ -1,11 +1,7 @@
 package Controller;
 
 import Model.Constants;
-import Model.Instance;
-import Model.InstanceHelper;
-import Model.Login;
 import com.google.gson.Gson;
-import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.Jedis;
 
 import javax.servlet.http.HttpServlet;
@@ -40,12 +36,12 @@ public class InfoPanelDataFetcherServlet extends HttpServlet {
                         Long timeStamp = Long.parseLong(relevantSnapshotKey.replaceAll(hostPort, ""));
                         fieldDataPoints[timeStampNo] = timeStamp;
                     }
-                    else if(fieldToBePlotted.equals("dbKeys")){
+                    else if(fieldToBePlotted.equals("no_of_keys")){
                         String dbInfo = jedis.hget(relevantSnapshotKey,"db0");
                         String noOfKeysAsString = parseDbFieldOfInfo(dbInfo).get("keys");
                         fieldDataPoints[timeStampNo] = Long.parseLong(noOfKeysAsString);
                     }
-                    else if(fieldToBePlotted.equals("dbExpires")){
+                    else if(fieldToBePlotted.equals("no_of_expirable_keys")){
                         String dbInfo = jedis.hget(relevantSnapshotKey,"db0");
                         String noOfKeysAsString = parseDbFieldOfInfo(dbInfo).get("expires");
                         fieldDataPoints[timeStampNo] = Long.parseLong(noOfKeysAsString);
@@ -59,7 +55,7 @@ public class InfoPanelDataFetcherServlet extends HttpServlet {
             String connectedClientInfoJson = new Gson().toJson(fieldDataPoints);
             out.write(connectedClientInfoJson);
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 

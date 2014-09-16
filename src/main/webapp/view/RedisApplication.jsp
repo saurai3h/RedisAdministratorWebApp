@@ -31,17 +31,9 @@
 
 <body  style="width: 100%; height:100%">
 <%
-    response.setHeader("Cache-Control", "no-cache");
-
-//Forces caches to obtain a new copy of the page from the origin server
-    response.setHeader("Cache-Control", "no-store");
-
-//Directs caches not to store the page under any circumstance
-    response.setDateHeader("Expires", 0);
-
-//Causes the proxy cache to see the page as "stale"
+    response.setHeader("Cache-Control", "no-cache,no-store,must-revalidate");
     response.setHeader("Pragma", "no-cache");
-//HTTP 1.0 backward enter code here
+    response.setDateHeader("Expires", 0);
 
     Login login = (Login) session.getAttribute("login");
     if(login == null){
@@ -288,18 +280,18 @@
             </div>
             <div class="modal-body" style="overflow-y:scroll; height:400px"  id = "info-body">
                 <ul id = "chartTabList" class="nav nav-tabs" role="tablist">
-                    <li><a style = "font-size: 12px;" href="#no-of-keys-chart" data-toggle="tab">String</a></li>
-                    <li><a style = "font-size: 12px;" href="#no-of-clients-chart" data-toggle="tab">List</a></li>
-                    <li><a style = "font-size: 12px;" href="#memory-used-chart" data-toggle="tab">Set</a></li>
-                    <li><a style = "font-size: 12px;" href="#expirable-keys-chart" data-toggle="tab">Hash</a></li>
-                    <li><a style = "font-size: 12px;" href="#CPU-used-chart" data-toggle="tab">SortSet</a></li>
+                    <li><a style = "font-size: 12px;" href="#no_of_keys_chart" data-toggle="tab">No. of Keys</a></li>
+                    <li><a style = "font-size: 12px;" href="#connected_clients_chart" data-toggle="tab">No. of clients</a></li>
+                    <li><a style = "font-size: 12px;" href="#used_memory_chart" data-toggle="tab">Memory Used</a></li>
+                    <li><a style = "font-size: 12px;" href="#no_of_expirable_keys_chart" data-toggle="tab">Expirable Keys</a></li>
+                    <li><a style = "font-size: 12px;" href="#used_cpu_user_chart" data-toggle="tab">CPU Used</a></li>
                 </ul>
-                <div class="tab-content">
-                    <div class="tab-pane" id="no-of-keys-chart"> </div>
-                    <div class="tab-pane" id="no-of-clients-chart"></div>
-                    <div class="tab-pane" id="memory-used-chart"></div>
-                    <div class="tab-pane" id="expirable-keys-chart"></div>
-                    <div class="tab-pane" id="CPU-used-chart"></div>
+                <div class="tab-content" id = "chart-tab-contents">
+                    <div class="tab-pane" id="no_of_keys_chart"> </div>
+                    <div class="tab-pane" id="connected_clients_chart"></div>
+                    <div class="tab-pane" id="used_memory_chart"></div>
+                    <div class="tab-pane" id="no_of_expirable_keys_chart"></div>
+                    <div class="tab-pane" id="used_cpu_chart"></div>
                 </div>
             </div>
         </div>

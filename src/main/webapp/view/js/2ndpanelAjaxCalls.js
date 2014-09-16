@@ -856,12 +856,13 @@ $(document).off('click', '.addingZsetFields').on('click', '.addingZsetFields', f
 });
 
 $(document).off("click","#show-info-button").on("click","#show-info-button",function(){
-    var plot = function(pointArray){
-    $('#info-body').highcharts({
+    function plot(xArray,yArray,seriesName){
+    $('#'+seriesName+"_chart").highcharts({
         chart: {
             type: 'area'
         },
         series: [{
+            name:seriesName,
             data: mergeArrays(xArray,yArray),
             point: {
                 events: {
@@ -925,7 +926,7 @@ $(document).off("click","#show-info-button").on("click","#show-info-button",func
             type: 'datetime'
         }]
     });
-}
+};
     function mergeArrays(arr1,arr2){
         var mergedArray = new Array();
         for (index in arr1) {
@@ -936,25 +937,38 @@ $(document).off("click","#show-info-button").on("click","#show-info-button",func
         }
         return mergedArray;
     }
-    var fetchOneSeriesOfDataPoints = function(field) {
-        var infoField = [];
-        $.ajax(
-            {
-                url: "/view/infoPlotter",
-                type: "POST",
-                data: "field="+field,
-                success: function (strData) {
-                    infoField = jQuery.parseJSON(strData);
-                }
-            });
-        return infoField;
-    }
-    var timeStampArray = fetchOneSeriesOfDataPoints("timeStamp");
-    $("#chartTabList").each()(function() {
-        var id = $(this).attr("id");
-        var fieldToBePlotted = id.substr(0,id.size-"-chart".size());
-        plot(timeStampArray,fetchOneSeriesOfDataPoints(fieldToBePlotted));
-    });
+
+    var timeStampArray;
+    $.ajax(
+        {
+            url: "/view/infoPlotter",
+            type: "POST",
+            data: "field=timeStamp",
+            success: function (strData) {
+                console.log(strData);
+                timeStampArray = jQuery.parseJSON(strData);
+                console.log(timeStampArray);
+                var listItems = $("#chart-tab-contents .tab-pane");
+                var list = document.getElementById("chart-tab-contents");
+                listItems.each(function(index, element) {
+                    var id = $(element).attr("id");
+                    var fieldToBePlotted = id.slice(0,-6);
+                    $.ajax(
+                        {
+                            url: "/view/infoPlotter",
+                            type: "POST",
+                            data: "field="+fieldToBePlotted,
+                            success: function (strData) {
+
+                                var dataReceived = jQuery.parseJSON(strData);
+                                plot(timeStampArray,dataReceived,fieldToBePlotted);
+                            }
+                        });
+                });
+            }
+        });
+
+
 
 });
 

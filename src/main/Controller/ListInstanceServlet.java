@@ -22,7 +22,7 @@ public class ListInstanceServlet extends HttpServlet {
             String userName = login.getName();
             out = response.getWriter();
 
-            ArrayList<HostAndPort> listOfHostAndPorts = InstanceHelper.getAllStoredInstances(userName);
+            ArrayList<HostAndPort> listOfHostAndPorts = InstanceHelper.getAllVisibleInstances(userName);
             ArrayList<Boolean> listOfMonitored = InstanceHelper.getIsMonitored(listOfHostAndPorts);
             ArrayList<InstanceWrapper> instances = new ArrayList<InstanceWrapper>();
 
