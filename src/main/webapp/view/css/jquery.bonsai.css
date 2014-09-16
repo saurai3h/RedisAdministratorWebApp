@@ -15,10 +15,10 @@ li .thumb {
     cursor: pointer;
 }
 li.has-children > .thumb:after {
-    content: '\2192';
+    content: "\2b";
 }
 li.expanded > .thumb:after {
-    content: '\2190';
+    content: "2212";
 }
 li.collapsed > ol.bonsai {
 	height: 0;
