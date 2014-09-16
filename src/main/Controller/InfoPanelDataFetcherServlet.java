@@ -36,23 +36,29 @@ public class InfoPanelDataFetcherServlet extends HttpServlet {
 
             for (String relevantSnapshotKey : relevantInfoSnapshotSortedList) {
                 Long timeStamp = Long.parseLong(relevantSnapshotKey.replaceAll(hostPort, ""));
-                    if(fieldToBePlotted.equals("timeStamp")){
-                        fieldDataPoints[timeStampNo] = timeStamp;
-                    }
-                    else if(fieldToBePlotted.equals("no_of_keys")){
-                        String dbInfo = jedis.hget(relevantSnapshotKey,"db0");
-                        String noOfKeysAsString = parseDbFieldOfInfo(dbInfo).get("keys");
-                        fieldDataPoints[timeStampNo] = Long.parseLong(noOfKeysAsString);
-                    }
-                    else if(fieldToBePlotted.equals("no_of_expirable_keys")){
-                        String dbInfo = jedis.hget(relevantSnapshotKey,"db0");
-                        String noOfKeysAsString = parseDbFieldOfInfo(dbInfo).get("expires");
-                        fieldDataPoints[timeStampNo] = Long.parseLong(noOfKeysAsString);
-                    }
-                    else {
-                        Long fieldSingleDataPoint = Long.parseLong(jedis.hget(relevantSnapshotKey,fieldToBePlotted));
-                        fieldDataPoints[timeStampNo] = fieldSingleDataPoint;
-                    }
+                if(timeStamp<fromTimeStamp){
+                    continue;
+                }
+                else if(timeStamp>toTimeStamp){
+                    break;
+                };
+                if(fieldToBePlotted.equals("timeStamp")){
+                    fieldDataPoints[timeStampNo] = timeStamp;
+                }
+                else if(fieldToBePlotted.equals("no_of_keys")){
+                    String dbInfo = jedis.hget(relevantSnapshotKey,"db0");
+                    String noOfKeysAsString = parseDbFieldOfInfo(dbInfo).get("keys");
+                    fieldDataPoints[timeStampNo] = Long.parseLong(noOfKeysAsString);
+                }
+                else if(fieldToBePlotted.equals("no_of_expirable_keys")){
+                    String dbInfo = jedis.hget(relevantSnapshotKey,"db0");
+                    String noOfKeysAsString = parseDbFieldOfInfo(dbInfo).get("expires");
+                    fieldDataPoints[timeStampNo] = Long.parseLong(noOfKeysAsString);
+                }
+                else {
+                    Long fieldSingleDataPoint = Long.parseLong(jedis.hget(relevantSnapshotKey,fieldToBePlotted));
+                    fieldDataPoints[timeStampNo] = fieldSingleDataPoint;
+                }
                 timeStampNo++;
             }
             String connectedClientInfoJson = new Gson().toJson(fieldDataPoints);
