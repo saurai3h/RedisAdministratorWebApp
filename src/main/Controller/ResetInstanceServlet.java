@@ -35,7 +35,7 @@ public class ResetInstanceServlet extends HttpServlet {
                 }
                 String listOfKeys = new Gson().toJson(curPage.getKeyList());
                 out.write(listOfKeys);
-                System.out.println(listOfKeys);
+                //System.out.println(listOfKeys);
             }
             catch (JedisException e)   {
                 out.write("false");

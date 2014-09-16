@@ -1,6 +1,7 @@
 package Controller;
 
 import Model.Instance;
+import Model.MakeTree;
 import com.google.gson.Gson;
 import redis.clients.jedis.exceptions.JedisException;
 
@@ -9,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Set;
 
 /**
  * Created by Saurabh Paliwal on 12/9/14.
@@ -23,7 +25,8 @@ public class TreeViewServlet extends HttpServlet {
         try {
             out = response.getWriter();
             Instance clickedInstance = ServletHelper.getInstanceFromServletContext(getServletContext(),(String) request.getSession().getAttribute("clickedInstanceHostPort"));
-
+            Set<String> keys = clickedInstance.allKeys();
+            out.write(new Gson().toJson(MakeTree.makeTree(keys)));
         }
         catch (JedisException e)   {
             out.write("false");

@@ -1,5 +1,6 @@
 package Model;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import redis.clients.jedis.HostAndPort;
 
 import java.sql.*;
@@ -78,6 +79,47 @@ public class InstanceHelper {
         } catch (SQLException e) {
             e.printStackTrace();
 
+            return null;
+        }
+    }
+
+    public static ArrayList<Boolean> getIsMonitored(ArrayList<HostAndPort> listOfHostAndPort){
+        try {
+            ArrayList<Boolean> isMonitoredList = new ArrayList<Boolean>();
+
+            Connection conn = SqlInterface.getConnection();
+
+            for(HostAndPort hostAndPort : listOfHostAndPort) {
+                String host = hostAndPort.getHost();
+                String port = String.valueOf(hostAndPort.getPort());
+
+                PreparedStatement stmt = conn.prepareStatement(
+                        "SELECT IsMonitored from instances where HostName = ? and PortNumber = ?"
+                );
+                stmt.setString(1, host);
+                stmt.setString(2, port);
+
+                ResultSet rs = stmt.executeQuery();
+                if (rs.wasNull()) {
+                    isMonitoredList.add(false);
+                }
+                while (rs.next()) {
+                    Boolean isMonitoring;
+                    if(rs.getString("IsMonitored").equals("1"))
+                        isMonitoring = true;
+                    else
+                        isMonitoring = false;
+
+                    isMonitoredList.add(isMonitoring);
+                }
+                stmt.close();
+                rs.close();
+            }
+            conn.close();
+            return isMonitoredList;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
             return null;
         }
     }

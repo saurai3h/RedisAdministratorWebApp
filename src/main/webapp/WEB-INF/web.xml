@@ -4,6 +4,11 @@
 
 <web-app>
 
+    <error-page>
+        <error-code>404</error-code>
+        <location>/view/404.jsp</location>
+    </error-page>
+
     <display-name>Archetype Created Web Application</display-name>
 
     <servlet>

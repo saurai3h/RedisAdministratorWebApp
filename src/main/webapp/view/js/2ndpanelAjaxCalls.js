@@ -68,7 +68,7 @@ var populateKeyListFromJson = function(strData){
         $("#list-display").append(ul);
     }
     else {
-        console.log("No page to display");
+        $("#treeViewContent").empty();
     }
 };
 var charCodeArrToString = function toBinString (charCodeArr) {
@@ -126,6 +126,8 @@ var ajaxCallForAddKey = function(buttonNo){
 
     var key = document.getElementById("keyAdd"+buttonNo.toString()).value.toString();
     var value = document.getElementById("valueAdd"+buttonNo.toString()).value.toString();
+    var expiry = document.getElementById("expiryAdd"+buttonNo.toString()).value.toString();
+
     var optionalInputBox = document.getElementById("optionalValueAdd"+buttonNo.toString());
     var optionalValue;
     if(optionalInputBox === null){
@@ -157,7 +159,7 @@ var ajaxCallForAddKey = function(buttonNo){
             url: "/view/AddKey",
             type: "POST",
             data: "typeOfKey="+ type +"&nameOfKey="+key+
-                "&valueOfKey="+value+"&optionalValueOfKey="+optionalValue,
+                "&valueOfKey="+value+"&optionalValueOfKey="+optionalValue+"&expiryOfKey="+expiry,
             success: function (strData) {
 
                 if(strData === "existsAlready") {
@@ -167,10 +169,13 @@ var ajaxCallForAddKey = function(buttonNo){
                     alertify.alert("Redis doesn't support this data structure");
                 }
                 else if(strData === "KeyNull")  {
-                    alertify.alert("Redis entries not filled." + buttonNo);
+                    alertify.alert("Redis entries not filled.");
                 }
                 else if(strData === "scoreNotDouble")   {
                     alertify.alert("The entry you filled for score should be of Double type.");
+                }
+                else if(strData === "expiryInvalid")    {
+                    alertify.alert("The expiry added is invalid. Please enter non-negative(except -1) values.");
                 }
                 else if(strData === "false")   {
                     alertify.alert("Sorry! Couldn't add. The server must be down.");
@@ -186,6 +191,7 @@ var ajaxCallForAddKey = function(buttonNo){
     );
     document.getElementById("keyAdd"+buttonNo.toString()).value = "";
     document.getElementById("valueAdd"+buttonNo.toString()).value = "";
+    document.getElementById("expiryAdd"+buttonNo.toString()).value = "";
     var optionalValue = document.getElementById("optionalValueAdd"+buttonNo.toString());
     if(optionalValue !== null)optionalValue.value = "";
 };
@@ -262,6 +268,8 @@ var editField = function(clickedKey,key,value,newKey,newValue,type)  {
             data: "clickedKey="+ clickedKey +"&key="+ key + "&value=" + value + "&type=" + type + "&newKey=" + newKey + "&newValue=" + newValue,
             success: function (strData) {
 
+                console.log(strData);
+
                 if(strData === "doesNotExist") {
                     alertify.alert("The field does not exist!");
                 }
@@ -292,6 +300,7 @@ $(document).off('click', '.sidebar-nav a').on('click', '.sidebar-nav a', functio
 
         $("#keys-details").hide();
         $("#thirdPanel").hide();
+        $("#list-header").show();
 
         var clicked = event.target;
         var hostPort = clicked.id.toString();
@@ -307,29 +316,29 @@ $(document).off('click', '.sidebar-nav a').on('click', '.sidebar-nav a', functio
                 type: "POST",
                 data: "hostport=" + hostPort,
                 success: function (strData) {
-                    populateKeyListFromJson(strData);
+                        populateKeyListFromJson(strData);
 
-                    $.ajax(
-                        {
-                            url: "/view/AutoComplete",
-                            type: "POST",
-                            success: function (data) {
+                        $.ajax(
+                            {
+                                url: "/view/AutoComplete",
+                                type: "POST",
+                                success: function (data) {
 
-                                autoCompleteArray = jQuery.parseJSON(data);
+                                    autoCompleteArray = jQuery.parseJSON(data);
 
-                                $("#keyDeleteSearch6").autocomplete(
-                                    {
-                                        source: function (request,response) {
-                                            var results = $.ui.autocomplete.filter(autoCompleteArray, request.term);
+                                    $("#keyDeleteSearch6").autocomplete(
+                                        {
+                                            source: function (request, response) {
+                                                var results = $.ui.autocomplete.filter(autoCompleteArray, request.term);
 
-                                            response(results.slice(0, 10));
-                                        },
-                                        minLength: 2
-                                    });
+                                                response(results.slice(0, 10));
+                                            },
+                                            minLength: 2
+                                        });
+                                }
                             }
-                        }
-                    );
-                }
+                        );
+                    }
             }
         );
 });
@@ -447,25 +456,6 @@ $(document).off('click', '#reset-page-list').on('click', '#reset-page-list', fun
                             type: "POST",
                             success: function (data) {
 
-                                $.ajax(
-                                    {
-                                        url: "/view/TreeView",
-                                        type: "POST",
-                                        success: function (treeData) {
-
-                                            var allKeys = jQuery.parseJSON(treeData);
-
-                                            for(var key in allKeys) {
-
-                                            }
-                                            $('#treeViewContent').abixTreeList({
-                                                collapsedIconClass  : 'myicon-plus',
-                                                expandedIconClass   : 'myicon-minus'
-                                            });
-                                        }
-                                    }
-                                );
-
                                 autoCompleteArray = jQuery.parseJSON(data);
 
                                 $("#keyDeleteSearch6").autocomplete(
@@ -485,6 +475,55 @@ $(document).off('click', '#reset-page-list').on('click', '#reset-page-list', fun
         );
     }
 );
+
+recursePopulate = function(root,li)    {
+
+    li.innerHTML = root["label"];
+
+    var ulInner = document.createElement("ul");
+
+    var isLeaf = 1;
+
+    for(var child in root["children"])  {
+
+        isLeaf = 0;
+        var liInner = document.createElement("li");
+
+        liInner.innerHTML = root["children"][child]["label"];
+
+        recursePopulate(root["children"][child],liInner);
+        $(ulInner).append(liInner);
+    }
+
+    if(isLeaf === 0)
+        $(li).append(ulInner);
+};
+
+$(document).off('click', '#treeView').on('click', '#treeView', function(){
+
+        $.ajax(
+            {
+                url: "/view/TreeView",
+                type: "POST",
+                success: function (treeData) {
+                    $("#treeViewContent").empty();
+                    var everything = jQuery.parseJSON(treeData);
+
+                    var li = document.createElement("li");
+
+                    recursePopulate(everything,li);
+
+                    $("#treeViewContent").append(li);
+
+                    $("#treeViewContent").bonsai();
+
+                }
+            }
+        );
+
+    }
+);
+
 
 $(document).off('click', '#prev').on('click', '#prev', function(){
 
@@ -744,23 +783,31 @@ $(document).off('click', 'ul#list-content li a').on('click', "ul#list-content li
 );
 
 $(document).off('click', '#start-infoSnapshotter').on('click', '#start-infoSnapshotter', function(){
-    alertify.alert("starting");
     $.ajax(
         {
             url: "/view/infoSnapshotter",
             type: "POST",
-            data: "shouldStartMonitor="+true
+            data: "shouldStartMonitor="+true,
+            success : function(strData)
+            {
+                var monitorImage = document.getElementById(strData + ":monitorImage");
+                $(monitorImage).show();
+            }
 
         }
     );
 });
 $(document).off('click', '#stop-infoSnapshotter').on('click', '#stop-infoSnapshotter', function(){
-    alertify.alert("stopping");
     $.ajax(
         {
             url: "/view/infoSnapshotter",
             type: "POST",
-            data: "shouldStartMonitor="+false
+            data: "shouldStartMonitor="+false,
+            success : function(strData)
+            {
+                var monitorImage = document.getElementById(strData + ":monitorImage");
+                $(monitorImage).hide();
+            }
         }
     );
 });
@@ -812,7 +859,8 @@ $(document).off('click', '.addingZsetFields').on('click', '.addingZsetFields', f
 
 $(document).off("click","#show-info-button").on("click","#show-info-button",function(){
     var plot = function(pointArray){
-    $('#info-body').highcharts({
+
+        $('#info-body').highcharts({
         chart: {
             type: 'spline'
         },
@@ -841,7 +889,6 @@ $(document).off("click","#show-info-button").on("click","#show-info-button",func
             point.push(arr2[index]);
             mergedArray.push(point);
         }
-        console.log(mergedArray);
         return mergedArray;
     }
 
@@ -859,7 +906,6 @@ $(document).off("click","#show-info-button").on("click","#show-info-button",func
                     var connectedClientArray = jsonData[4];
                 }
                 plot(jsonData);
-                console.log(jsonData);
             }
         }
     );
