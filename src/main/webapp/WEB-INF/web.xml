@@ -55,6 +55,7 @@
         <servlet-name>infoPlotter</servlet-name>
         <servlet-class>Controller.InfoPanelDataFetcherServlet</servlet-class>
     </servlet>
+    <!--sad,sad thing-->
     <servlet>
         <servlet-name>AddKeys</servlet-name>
         <servlet-class>Controller.AddKeyServlet</servlet-class>
