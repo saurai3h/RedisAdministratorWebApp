@@ -22,29 +22,36 @@ public class InfoPanelDataFetcherServlet extends HttpServlet {
         PrintWriter out = null;
         try {
             out = response.getWriter();
+            String fieldToBePlotted = request.getParameter("field");
 
             Jedis jedis = new Jedis(Constants.INFO_STORE.getHost(), Constants.INFO_STORE.getPort());
             ArrayList<String> relevantInfoSnapshotSortedList = new ArrayList<String>(jedis.keys(hostPort + "*"));
             Collections.sort(relevantInfoSnapshotSortedList);
-            Long[][] connectedClientInfo = new Long[5][relevantInfoSnapshotSortedList.size()];
+            Long[] fieldDataPoints = new Long[relevantInfoSnapshotSortedList.size()];
             int timeStampNo = 0;
 
             for (String relevantSnapshotKey : relevantInfoSnapshotSortedList) {
-                Map<String, String> infoSnapshot = jedis.hgetAll(relevantSnapshotKey);
-                Long timeStamp = Long.parseLong(relevantSnapshotKey.replaceAll(hostPort, ""));
-                connectedClientInfo[0][timeStampNo] = timeStamp;
-                int seriesToBeSentCounter = 1;
-                Long connectedClients = Long.parseLong(infoSnapshot.get("connected_clients"));
-                connectedClientInfo[1][timeStampNo] = connectedClients;
-                Long memoryUsed = Long.parseLong(infoSnapshot.get("used_memory"));
-                connectedClientInfo[2][timeStampNo] = memoryUsed;
-                String db0Keys = infoSnapshot.get("db0");
-                Map<String,Long> db0Map = parseDbFieldOfInfo(db0Keys);
-                connectedClientInfo[3][timeStampNo] = db0Map.get("keys");
-                connectedClientInfo[4][timeStampNo] = db0Map.get("expires");
+                    if(fieldToBePlotted.equals("timeStamp")){
+                        Long timeStamp = Long.parseLong(relevantSnapshotKey.replaceAll(hostPort, ""));
+                        fieldDataPoints[timeStampNo] = timeStamp;
+                    }
+                    else if(fieldToBePlotted.equals("dbKeys")){
+                        String dbInfo = jedis.hget(relevantSnapshotKey,"db0");
+                        String noOfKeysAsString = parseDbFieldOfInfo(dbInfo).get("keys");
+                        fieldDataPoints[timeStampNo] = Long.parseLong(noOfKeysAsString);
+                    }
+                    else if(fieldToBePlotted.equals("dbExpires")){
+                        String dbInfo = jedis.hget(relevantSnapshotKey,"db0");
+                        String noOfKeysAsString = parseDbFieldOfInfo(dbInfo).get("expires");
+                        fieldDataPoints[timeStampNo] = Long.parseLong(noOfKeysAsString);
+                    }
+                    else {
+                        Long fieldSingleDataPoint = Long.parseLong(jedis.hget(relevantSnapshotKey,fieldToBePlotted));
+                        fieldDataPoints[timeStampNo] = fieldSingleDataPoint;
+                    }
                 timeStampNo++;
             }
-            String connectedClientInfoJson = new Gson().toJson(connectedClientInfo);
+            String connectedClientInfoJson = new Gson().toJson(fieldDataPoints);
             out.write(connectedClientInfoJson);
 
         } catch (Exception e) {
@@ -57,9 +64,9 @@ public class InfoPanelDataFetcherServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp){
         doPost(req, resp);
     }
-    private Map<String,Long> parseDbFieldOfInfo(String valueOfDbFiled){
+    private Map<String,String> parseDbFieldOfInfo(String valueOfDbFiled){
         String[] valueAfterSplitting = valueOfDbFiled.split(",");
-        Map<String,Long> mapAtDbField = new HashMap<String, Long>();
+        Map<String,String> mapAtDbField = new HashMap<String, String>();
         try {
             for(String keyValPair:valueAfterSplitting){
                 if(!keyValPair.contains("=")){
@@ -67,8 +74,7 @@ public class InfoPanelDataFetcherServlet extends HttpServlet {
                 }
                 String subField = keyValPair.split("=")[0];
                 String valueAtSubField = keyValPair.split("=")[1];
-                Long valueOfTypeLong = Long.parseLong(valueAtSubField);
-                mapAtDbField.put(subField,valueOfTypeLong);
+                mapAtDbField.put(subField,valueAtSubField);
             }
             return mapAtDbField;
         }

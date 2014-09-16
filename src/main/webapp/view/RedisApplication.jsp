@@ -298,9 +298,20 @@
                 <h4 class="modal-title" id="infoModelHeader">Info</h4>
             </div>
             <div class="modal-body" style="overflow-y:scroll; height:400px"  id = "info-body">
-            </div>
-            <div class="modal-footer">
-                <button class="btn" data-dismiss="modal" aria-hidden="true">Byeeee!!</button>
+                <ul id = "chartTabList" class="nav nav-tabs" role="tablist">
+                    <li><a style = "font-size: 12px;" href="#no-of-keys-chart" data-toggle="tab">String</a></li>
+                    <li><a style = "font-size: 12px;" href="#no-of-clients-chart" data-toggle="tab">List</a></li>
+                    <li><a style = "font-size: 12px;" href="#memory-used-chart" data-toggle="tab">Set</a></li>
+                    <li><a style = "font-size: 12px;" href="#expirable-keys-chart" data-toggle="tab">Hash</a></li>
+                    <li><a style = "font-size: 12px;" href="#CPU-used-chart" data-toggle="tab">SortSet</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane" id="no-of-keys-chart"> </div>
+                    <div class="tab-pane" id="no-of-clients-chart"></div>
+                    <div class="tab-pane" id="memory-used-chart"></div>
+                    <div class="tab-pane" id="expirable-keys-chart"></div>
+                    <div class="tab-pane" id="CPU-used-chart"></div>
+                </div>
             </div>
         </div>
     </div>

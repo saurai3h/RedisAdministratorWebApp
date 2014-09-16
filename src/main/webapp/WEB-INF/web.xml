@@ -90,7 +90,6 @@
     <servlet>
         <servlet-name>infoSnapShotAtTimeStamp</servlet-name>
         <servlet-class>Controller.getInfoAtTimestampServlet</servlet-class>
-
     </servlet>
     <servlet>
         <servlet-name>treeview</servlet-name>
@@ -100,6 +99,8 @@
         <servlet-name>logout</servlet-name>
         <servlet-class>Controller.LogoutServlet</servlet-class>
     </servlet>
+
+
 
     <servlet-mapping>
         <servlet-name>login</servlet-name>

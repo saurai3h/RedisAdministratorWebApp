@@ -811,13 +811,13 @@ $(document).off('click', '.addingZsetFields').on('click', '.addingZsetFields', f
 });
 
 $(document).off("click","#show-info-button").on("click","#show-info-button",function(){
-    var plot = function(pointArray){
-    $('#info-body').highcharts({
+    var plot = function(xArray,yArray){
+    $('#chart-container').highcharts({
         chart: {
             type: 'area'
         },
         series: [{
-            data: mergeArrays(pointArray[0],pointArray[1]),
+            data: mergeArrays(xArray,yArray),
             point: {
                 events: {
                     click: function() {
@@ -881,7 +881,7 @@ $(document).off("click","#show-info-button").on("click","#show-info-button",func
         }]
     });
 }
-    function mergeArrays(arr1,arr2){
+    var mergeArrays = function (arr1,arr2){
         var mergedArray = new Array();
         for (index in arr1) {
             var point = [];
@@ -892,27 +892,25 @@ $(document).off("click","#show-info-button").on("click","#show-info-button",func
         console.log(mergedArray);
         return mergedArray;
     }
-
-    $.ajax(
-        {
-            url: "/view/infoPlotter",
-            type: "POST",
-            success: function (strData) {
-                var jsonData = jQuery.parseJSON(strData);
-                for(var index in jsonData){
-                    var timeStampArray = jsonData[0];
-                    var noOfKeys = jsonData[1];
-                    var noOfKeysWithExpiry= jsonData[2];
-                    var someArray = jsonData[3];
-                    var connectedClientArray = jsonData[4];
+    var fetchOneSeriesOfDataPoints = function(field) {
+        var infoField = [];
+        $.ajax(
+            {
+                url: "/view/infoPlotter",
+                type: "POST",
+                data: "field="+field,
+                success: function (strData) {
+                    infoField = jQuery.parseJSON(strData);
                 }
-                plot(jsonData);
-                console.log(jsonData);
-            }
-        }
-    );
-
-
+            });
+        return infoField;
+    }
+    var timeStampArray = fetchOneSeriesOfDataPoints("timeStamp");
+    $("#chartTabList").each()(function() {
+        var id = $(this).attr("id");
+        var fieldToBePlotted = id.substr(0,id.size-"-chart".size());
+        plot(timeStampArray,fetchOneSeriesOfDataPoints(fieldToBePlotted));
+    });
 
 });
 
