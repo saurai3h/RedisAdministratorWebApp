@@ -1,6 +1,7 @@
 package Controller;
 
 import Model.Constants;
+import Model.Login;
 import com.google.gson.Gson;
 import redis.clients.jedis.Jedis;
 
@@ -24,6 +25,8 @@ public class InfoPanelDataFetcherServlet extends HttpServlet {
         try {
             out = response.getWriter();
             String fieldToBePlotted = request.getParameter("field");
+            Long fromTimeStamp = Long.parseLong(request.getParameter("from"));
+            Long toTimeStamp = Long.parseLong(request.getParameter("to"));
 
             Jedis jedis = new Jedis(Constants.INFO_STORE.getHost(), Constants.INFO_STORE.getPort());
             ArrayList<String> relevantInfoSnapshotSortedList = new ArrayList<String>(jedis.keys(hostPort + "*"));
@@ -32,8 +35,8 @@ public class InfoPanelDataFetcherServlet extends HttpServlet {
             int timeStampNo = 0;
 
             for (String relevantSnapshotKey : relevantInfoSnapshotSortedList) {
+                Long timeStamp = Long.parseLong(relevantSnapshotKey.replaceAll(hostPort, ""));
                     if(fieldToBePlotted.equals("timeStamp")){
-                        Long timeStamp = Long.parseLong(relevantSnapshotKey.replaceAll(hostPort, ""));
                         fieldDataPoints[timeStampNo] = timeStamp;
                     }
                     else if(fieldToBePlotted.equals("no_of_keys")){

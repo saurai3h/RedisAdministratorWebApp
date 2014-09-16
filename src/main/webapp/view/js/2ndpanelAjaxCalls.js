@@ -936,23 +936,21 @@ $(document).off("click","#show-info-button").on("click","#show-info-button",func
             mergedArray.push(point);
         }
         return mergedArray;
-    }
+    };
+    fromDate = Date.parse($('#fromDatePicker').data("DateTimePicker").getDate());
+    toDate = Date.parse($('#toDatePicker').data("DateTimePicker").getDate());
 
+    alert(fromDate);
+    alert(toDate);
     var timeStampArray;
     $.ajax(
         {
             url: "/view/infoPlotter",
             type: "POST",
-            data: "field=timeStamp",
+            data: "field=timeStamp&from="+fromDate.toString()+"&to="+toDate.toString(),
             success: function (strData) {
                 timeStampArray = jQuery.parseJSON(strData);
-                fromDate = Date.parse($('#fromDatePicker').data("DateTimePicker").getDate());
-                toDate = Date.parse($('#toDatePicker').data("DateTimePicker").getDate());
-                for(var timestampIndex in timeStampArray){
-                    while(timeStampArray[timestampIndex]<fromDate){
 
-                    }
-                }
 
                 var listItems = $("#chart-tab-contents .tab-pane");
                 var list = document.getElementById("chart-tab-contents");
@@ -963,7 +961,7 @@ $(document).off("click","#show-info-button").on("click","#show-info-button",func
                         {
                             url: "/view/infoPlotter",
                             type: "POST",
-                            data: "field="+fieldToBePlotted,
+                            data: "field="+fieldToBePlotted+"&from="+fromDate.toString()+"&to="+toDate.toString(),
                             success: function (strData) {
 
                                 var dataReceived = jQuery.parseJSON(strData);
