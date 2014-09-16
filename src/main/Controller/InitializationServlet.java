@@ -45,10 +45,10 @@ public class InitializationServlet extends HttpServlet{
             int port = Integer.parseInt(hostAndPort.split(":")[1]);
             Instance instance = new Instance(host,port,hostAndPortMonitorMap.get(hostAndPort));
             instanceMap.put(hostAndPort,instance);
-            System.out.println(host+"--"+Integer.toString(port));
+            //System.out.println(host+"--"+Integer.toString(port));
         }
         getServletContext().setAttribute("instanceMap",instanceMap);
-        System.out.println("initialization completed.");
+        //System.out.println("initialization completed.");
     }
 
 

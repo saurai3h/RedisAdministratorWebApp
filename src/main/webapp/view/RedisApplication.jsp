@@ -25,7 +25,7 @@
     <link type="text/css" href="css/alertify.core.css" rel="stylesheet">
     <link type="text/css" href="css/alertify.bootstrap.css" rel="stylesheet">
     <link type="text/css" href="css/styles.css" rel="stylesheet">
-    <link type="text/css" href="css/abixTreeList.css" rel="stylesheet">
+    <link type="text/css" href="css/jquery.bonsai.css" rel="stylesheet">
 
 </head>
 
@@ -80,7 +80,7 @@
     <div id="page-content-wrapper">
         <div class="container-fluid" style="width:100%;height:100%">
             <div id = "list-display" class="col-lg-7" style="height:100%;overflow-y:auto">
-                <ul id="list-header" class="pager">
+                <ul id="list-header" class="pager" style="display:none">
                     <li class="previous"><a id="prev" href="#">&larr; Older</a></li>
                     <li class="next"><a id="next" href="#">Newer &rarr;</a></li>
                     <li><a id="reset-page-list" href="#">Reset &olarr;</a></li>
@@ -120,6 +120,7 @@
                         <div class="input-group">
                             <input type="text" class="form-control" id="keyAdd1" placeholder="key">
                             <input type="text" class="form-control" id="valueAdd1" placeholder="value">
+                            <input type="text" class="form-control" id="expiryAdd1" placeholder="enter expiry in seconds(-1 if not interested).">
                         </div>
                         <div class="btn-group">
                             <button style="font-size: 12px" id="Add1" type="button" class="btn btn-primary">Add</button>
@@ -129,6 +130,7 @@
                         <div class="input-group">
                             <input type="text" class="form-control" id="keyAdd2" placeholder="key">
                             <input type="text" class="form-control" id="valueAdd2" placeholder="value">
+                            <input type="text" class="form-control" id="expiryAdd2" placeholder="enter expiry in seconds(-1 if not interested).">
                         </div>
                         <div class="btn-group">
                             <button style="font-size: 12px" id="Add2" type="button" class="btn btn-primary">Add</button>
@@ -138,6 +140,7 @@
                         <div class="input-group">
                             <input type="text" class="form-control" id="keyAdd3" placeholder="key">
                             <input type="text" class="form-control" id="valueAdd3" placeholder="value">
+                            <input type="text" class="form-control" id="expiryAdd3" placeholder="enter expiry in seconds(-1 if not interested).">
                         </div>
                         <div class="btn-group">
                             <button style="font-size: 12px" id="Add3" type="button" class="btn btn-primary">Add</button>
@@ -148,6 +151,7 @@
                             <input type="text" class="form-control" id="keyAdd4" placeholder="key">
                             <input type="text" class="form-control" id="optionalValueAdd4" placeholder="field">
                             <input type="text" class="form-control" id="valueAdd4" placeholder="value">
+                            <input type="text" class="form-control" id="expiryAdd4" placeholder="enter expiry in seconds(-1 if not interested).">
                         </div>
                         <div class="btn-group">
                             <button style="font-size: 12px" id="Add4" type="button" class="btn btn-primary">Add</button>
@@ -158,6 +162,7 @@
                             <input type="text" class="form-control" id="keyAdd5" placeholder="key">
                             <input type="text" class="form-control" id="optionalValueAdd5" placeholder="score">
                             <input type="text" class="form-control" id="valueAdd5" placeholder="value">
+                            <input type="text" class="form-control" id="expiryAdd5" placeholder="enter expiry in seconds(-1 if not interested).">
                         </div>
                         <div class="btn-group">
                             <button style="font-size: 12px" id="Add5" type="button" class="btn btn-primary">Add</button>
@@ -181,24 +186,7 @@
         </div>
     </div>
 </div>
-<div class="modal" id="treeViewModal" tabindex="-1" role="dialog" aria-labelledby="treeViewLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="treeViewModalLabel">Tree view of keys in this instance.</h4>
-            </div>
-            <div class="modal-body">
-                <div id="treeViewContent">
 
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button id = "treeViewClose" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
 <div class="modal" id="stringModal" tabindex="-1" role="dialog" aria-labelledby="stringLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -207,7 +195,7 @@
                 <h4 class="modal-title" id="stringModalLabel">Edit String</h4>
             </div>
             <div class="modal-body">
-                Key : <span id = "stringKey" ></span>
+                Key : <span id = "stringKey" ></span> <br>
                 Value : <textarea id = "stringValue"></textarea>
             </div>
             <div class="modal-footer">
@@ -225,7 +213,7 @@
                 <h4 class="modal-title" id="setModalLabel">Edit Set</h4>
             </div>
             <div class="modal-body">
-                Key : <span id = "setKey"></span>
+                Key : <span id = "setKey"></span> <br>
                 Value : <textarea id = "setValue"></textarea>
             </div>
             <div class="modal-footer">
@@ -243,7 +231,7 @@
                 <h4 class="modal-title" id="listModalLabel">Edit List</h4>
             </div>
             <div class="modal-body">
-                Key : <span id = "listKey"></span>
+                Key : <span id = "listKey"></span> <br>
                 Value : <textarea id = "listValue"></textarea>
             </div>
             <div class="modal-footer">
@@ -261,8 +249,8 @@
                 <h4 class="modal-title" id="hashModalLabel">Edit Hash</h4>
             </div>
             <div class="modal-body">
-                Key : <span id = "hashKey"></span>
-                Field : <textarea id = "hashField"></textarea>
+                Key : <span id = "hashKey"></span> <br>
+                Field : <textarea id = "hashField"></textarea><br>
                 Value : <textarea id = "hashValue"></textarea>
             </div>
             <div class="modal-footer">
@@ -276,11 +264,12 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                 <h4 class="modal-title" id="zsetModalLabel">Edit Zset</h4>
             </div>
             <div class="modal-body">
-                Key : <span id = "zsetKey"></span>
-                Score : <textarea id = "zsetScore"></textarea>
+                Key : <span id = "zsetKey"></span> <br>
+                Score : <textarea id = "zsetScore"></textarea><br>
                 Value : <textarea id = "zsetValue"></textarea>
             </div>
             <div class="modal-footer">
@@ -316,20 +305,39 @@
         </div>
     </div>
 </div>
+<div class="modal" id="treeViewModal" tabindex="-1" role="dialog" aria-labelledby="treeViewLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="treeViewModalLabel">Tree view of keys in this instance.</h4>
+            </div>
+            <div class="modal-body">
+                <ul id="treeViewContent">
 
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button id = "treeViewClose" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
 <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
 
-<script src="js/alertify.min.js"></script>
-<script src="js/abixTreeList.min.js"></script>
+
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
-<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 <script src="http://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="js/alertify.min.js"></script>
 <script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="js/jquery.bonsai.js"></script>
 <script src="js/1stpanelAjaxCalls.js"></script>
 <script src="js/2ndpanelAjaxCalls.js"></script>
 <script type="text/javascript">

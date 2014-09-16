@@ -40,6 +40,8 @@ var repopulateInstanceList = function(){
                         var li = document.createElement("li");
                         var link = document.createElement("a");
                         var deleteLink = document.createElement("button");
+                        var monitorLink = document.createElement("img");
+
                         $(link).html(arr[x]);
                         $(link).attr("id",arr[x]);
                         $(link).attr("href","#");
@@ -48,11 +50,22 @@ var repopulateInstanceList = function(){
                         $(link).css("width","65%");
                         $(link).css("text-decoration","none");
 
+                        $(monitorLink).attr("src","css/24DC.gif");
+                        $(monitorLink).attr("style","width:10%;height:10%;margin-left:-10%;");
+                        $(monitorLink).attr("id",arr[x]+":monitorImage");
+
+                        if(jsonData[x].isMonitor === true)
+                            $(monitorLink).show();
+                        else
+                            $(monitorLink).hide();
+
                         $(deleteLink).addClass("btn btn-danger deletingInstances");
                         $(deleteLink).html("Delete");
                         $(deleteLink).css("margin-left","5%");
                         $(deleteLink).attr("id",arr[x]+":deleteButton");
+
                         $(li).append(link);
+                        $(li).append(monitorLink);
                         $(li).append(deleteLink);
                         $("#sidebar-wrapper").find("ul").append(li);
                     }

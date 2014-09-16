@@ -2,6 +2,7 @@ package Controller;
 
 import Model.Instance;
 import com.google.gson.Gson;
+import com.mysql.jdbc.StringUtils;
 import redis.clients.jedis.HostAndPort;
 
 import javax.servlet.http.HttpServlet;
@@ -29,20 +30,40 @@ public class AddKeyServlet extends HttpServlet {
             String key = request.getParameter("nameOfKey");
             String value = request.getParameter("valueOfKey");
             String optionalValue = request.getParameter("optionalValueOfKey");
+            String expiry = request.getParameter("expiryOfKey");
+
             Instance clickedInstance =ServletHelper.getInstanceFromServletContext(getServletContext(),
                     (String) request.getSession().getAttribute("clickedInstanceHostPort"));
             if(clickedInstance==null){
                 System.out.println("instance not found!!");
             }
-            if(key != null && value != null && type != null && optionalValue != null
-                    && !key.isEmpty() && !value.isEmpty() && !type.isEmpty()&& !optionalValue.isEmpty() ) {
-                //System.out.println("valid");
+            if(expiry!= null && key != null && value != null && type != null && optionalValue != null
+
+                    && !expiry.isEmpty() && !key.isEmpty() && !value.isEmpty() && !type.isEmpty()&& !optionalValue.isEmpty() ) {
+
+                try {
+                    int val = Integer.parseInt(expiry);
+
+                    if(!(val >=0 || val == -1))
+                    {
+                        out.write("expiryInvalid");
+                        return;
+                    }
+
+                }
+                catch(NumberFormatException e)    {
+                    out.write("expiryInvalid");
+                    return;
+                }
+
                 if (clickedInstance.keyExists(key)) {
                     //System.out.println("exists");
                     out.write("existsAlready");
-                } else if (type.equals("string") || type.equals("set") || type.equals("list")) {
+                    return;
+                }
+                else if (type.equals("string") || type.equals("set") || type.equals("list")) {
                     //System.out.println("good");
-                    clickedInstance.addKey(key, type, value);
+                    clickedInstance.addKey(key, type, value, expiry);
                     out.write("success");
                 } else if (type.equals("zset") || type.equals("hash")) {
                     //System.out.println("goodie");
@@ -55,16 +76,16 @@ public class AddKeyServlet extends HttpServlet {
                             return;
                         }
                     }
-                    clickedInstance.addKey(key, type, value, optionalValue);
+                    clickedInstance.addKey(key, type, value, optionalValue, expiry);
                     out.write("success");
                 } else{
-                    System.out.println(type + "invalid");
+                    //System.out.println(type + "invalid");
                     out.write("invalidDataStructure");
                 }
 
             }
             else{
-                System.out.println("null");
+                //System.out.println("null");
                 out.write("KeyNull");
             }
 

@@ -38,6 +38,10 @@ public class Instance {
         searchPage = new Page();
     }
 
+    public boolean isMonitored(){
+        return isMonitored;
+    }
+
     public Instance(String host, int port, boolean isMonitored)  {
         searchPage = new Page();
         expectedPageSize = 15;
@@ -137,29 +141,40 @@ public class Instance {
     public void renameKey(String oldKeyName, String newKeyName){
         jedis.rename(oldKeyName,newKeyName);
     }
-    public void addKey(String key,String type, String value)   {
+
+    public void addKey(String key,String type, String value, String expiry)   {
         if (type.equals("string")) {
             jedis.set(key, value);
+            if(!expiry.equals("-1"))
+                jedis.expire(key,Integer.parseInt(expiry));
 
         } else if (type.equals("set")) {
             jedis.sadd(key, value);
+            if(!expiry.equals("-1"))
+                jedis.expire(key,Integer.parseInt(expiry));
 
         } else if (type.equals("list")) {
             jedis.lpush(key, value);
+            if(!expiry.equals("-1"))
+                jedis.expire(key,Integer.parseInt(expiry));
         } else {
-            System.out.println("Invalid Data Structure");
+            //System.out.println("Invalid Data Structure");
         }
     }
 
-    public void addKey(String key, String type, String hashValueOrZsetElement, String hashFieldOrZsetScore)  {
+    public void addKey(String key, String type, String hashValueOrZsetElement, String hashFieldOrZsetScore, String expiry)  {
         if (type.equals("zset")) {
             jedis.zadd(key, Double.parseDouble(hashFieldOrZsetScore), hashValueOrZsetElement);
+            if(!expiry.equals("-1"))
+                jedis.expire(key,Integer.parseInt(expiry));
 
         } else if (type.equals("hash")) {
             jedis.hset(key, hashFieldOrZsetScore, hashValueOrZsetElement);
+            if(!expiry.equals("-1"))
+                jedis.expire(key,Integer.parseInt(expiry));
 
         } else {
-            System.out.println("Invalid Data Structure");
+           //System.out.println("Invalid Data Structure");
         }
     }
 
@@ -232,6 +247,10 @@ public class Instance {
         }
 
         return list;
+    }
+
+    public Set<String> allKeys()   {
+        return jedis.keys("*");
     }
 
     public boolean isAlive()    {
@@ -322,7 +341,7 @@ public class Instance {
             String query = "UPDATE instances SET IsMonitored=" + isMonitored +
                     " WHERE HostName=\""+ this.hostAndPort.getHost()
                     +"\" AND PortNumber="+ Integer.toString(this.hostAndPort.getPort()) + ";";
-            System.out.println(query);
+            //System.out.println(query);
             statement.execute(query);
             connection.close();
             statement.close();
