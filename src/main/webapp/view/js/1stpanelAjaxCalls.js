@@ -15,6 +15,7 @@ var repopulateInstanceList = function(){
     var logout = document.createElement("button");
     $(logout).attr("type","button");
     $(logout).attr("class","btn btn-warning btn-lg");
+    $(logout).attr("style","margin-left:25%");
     $(logout).attr("id","logout-button");
     $(logout).html("Logout");
     $(header).append(logout);
@@ -27,6 +28,8 @@ var repopulateInstanceList = function(){
             url: "/view/RedisApplication",
             type: "POST",
             success: function( strData ){
+
+                //console.log(strData);
 
                 if(strData !== "false") {
 
@@ -70,6 +73,9 @@ var repopulateInstanceList = function(){
                         $("#sidebar-wrapper").find("ul").append(li);
                     }
                 }
+            },
+            error : function(err)  {
+                console.log(err);
             }
         }
     );

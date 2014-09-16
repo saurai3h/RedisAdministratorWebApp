@@ -17,9 +17,9 @@ import java.util.Map;
  */
 public class ServletHelper {
     public static void redirectIfLoginInvalid(HttpServletRequest request,HttpServletResponse response){
-        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
-        response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
-        response.setDateHeader("Expires", 0); // Proxies.
+//        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
+//        response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
+//        response.setDateHeader("Expires", 0); // Proxies.
         boolean loginInvalid = false;
         try {
             Login login = (Login) request.getSession().getAttribute("login");
@@ -50,7 +50,7 @@ public class ServletHelper {
 
         Map<String,Instance> instanceMap = (HashMap<String, Instance>)servletContext.getAttribute("instanceMap");
         if(instanceMap==null){
-            System.out.println("instance map not found");
+            //System.out.println("instance map not found");
         }
         return instanceMap.get(curInstanceHostPort);
     }

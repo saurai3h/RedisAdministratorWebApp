@@ -31,20 +31,12 @@
 
 <body  style="width: 100%; height:100%">
 <%
-    response.setHeader("Cache-Control", "no-cache");
-
-//Forces caches to obtain a new copy of the page from the origin server
-    response.setHeader("Cache-Control", "no-store");
-
-//Directs caches not to store the page under any circumstance
-    response.setDateHeader("Expires", 0);
-
-//Causes the proxy cache to see the page as "stale"
-    response.setHeader("Pragma", "no-cache");
-//HTTP 1.0 backward enter code here
-
     Login login = (Login) session.getAttribute("login");
     if(login == null){
+        RequestDispatcher rd=request.getRequestDispatcher("login-error.jsp");
+        rd.forward(request, response);
+    }
+    else if(!login.validate())   {
         RequestDispatcher rd=request.getRequestDispatcher("login-error.jsp");
         rd.forward(request, response);
     }
@@ -53,11 +45,7 @@
 <div id="wrapper">
     <div id="sidebar-wrapper">
         <ul class="sidebar-nav" id = "listOfInstances">
-            <li  class="next">
-                <a href="#">
-                    Logout
-                </a>
-            </li>
+
         </ul>
     </div>
     <div class="sidebar-footer">

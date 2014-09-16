@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -26,8 +27,11 @@ public class LogoutServlet extends HttpServlet {
 
         response.setContentType("text/html");
         PrintWriter out= null;
-        Login login = (Login) request.getSession().getAttribute("login");
-        request.getSession().invalidate();
+        HttpSession session = request.getSession();
+
+        Login login = (Login) session.getAttribute("login");
+        session.invalidate();
+
         Map<String, Instance> instanceMap = (Map<String, Instance>) getServletContext().getAttribute("instanceMap");
         List<HostAndPort> visibleInstances = InstanceHelper.getAllVisibleInstances(login.getName());
         for (HostAndPort visibleHostPort:visibleInstances){
@@ -38,8 +42,12 @@ public class LogoutServlet extends HttpServlet {
         }
 
         try {
-            response.sendRedirect("http://localhost:8080/view/index.jsp");
+            RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
+            rd.forward(request,response);
+
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ServletException e) {
             e.printStackTrace();
         }
     }
