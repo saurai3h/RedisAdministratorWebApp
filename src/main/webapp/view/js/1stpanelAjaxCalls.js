@@ -62,8 +62,7 @@ var repopulateInstanceList = function(){
                         else
                             $(monitorLink).hide();
 
-                        $(deleteLink).addClass("btn btn-danger deletingInstances");
-                        $(deleteLink).html("Delete");
+                        $(deleteLink).addClass("glyphicon glyphicon-floppy-remove deletingInstances");
                         $(deleteLink).css("margin-left","5%");
                         $(deleteLink).attr("id",arr[x]+":deleteButton");
 
@@ -81,7 +80,7 @@ var repopulateInstanceList = function(){
     );
 }
 repopulateInstanceList();
-$(document).off('click', ".btn.btn-danger.deletingInstances").on('click', ".btn.btn-danger.deletingInstances", function()
+$(document).off('click', ".glyphicon.glyphicon-floppy-remove.deletingInstances").on('click', ".glyphicon.glyphicon-floppy-remove.deletingInstances", function()
 {
 
     var clickedDelete = event.target.id.split(":");

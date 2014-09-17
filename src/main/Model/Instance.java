@@ -98,6 +98,10 @@ public class Instance {
         else return false;
     }
 
+    public Map<String, String> getCurrentInfo(){
+        return InfoSnapshotter.getInfoAsMap(jedis);
+    }
+
     public boolean addField(String key,String field,String value,String type)   {
         if(type.equals("set")) {
             if(jedis.sadd(key, value)>0)return true;
@@ -260,6 +264,8 @@ public class Instance {
     }
 
     public Page getPageAtIndex(int zeroBasedIndex)    {
+
+        if(!isAlive())return null;
         while(pages.size()<=zeroBasedIndex && fetchOneMorePage()){
         }
         if(pages.size()<=zeroBasedIndex){

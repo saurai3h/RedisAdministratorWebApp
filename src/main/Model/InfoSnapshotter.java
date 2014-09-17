@@ -54,7 +54,7 @@ public class InfoSnapshotter implements Runnable {
         //System.out.println("leaving monitor mode");
     }
 
-    public Map<String,String> getInfoAsMap(Jedis jedis){
+    public static Map<String,String> getInfoAsMap(Jedis jedis){
         String infoOutput = jedis.info();
         String[] sections = infoOutput.split("\n#");
         Map<String,String> sectionMap = new HashMap<String, String>();

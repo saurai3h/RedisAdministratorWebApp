@@ -55,7 +55,6 @@
         <servlet-name>infoPlotter</servlet-name>
         <servlet-class>Controller.InfoPanelDataFetcherServlet</servlet-class>
     </servlet>
-    <!--sad,sad thing-->
     <servlet>
         <servlet-name>AddKeys</servlet-name>
         <servlet-class>Controller.AddKeyServlet</servlet-class>
@@ -103,6 +102,10 @@
     <servlet>
         <servlet-name>logout</servlet-name>
         <servlet-class>Controller.LogoutServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>getCurrentInfo</servlet-name>
+        <servlet-class>Controller.GetCurrentInfoServlet</servlet-class>
     </servlet>
 
 
@@ -201,6 +204,10 @@
     <servlet-mapping>
         <servlet-name>logout</servlet-name>
         <url-pattern>/view/logout</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getCurrentInfo</servlet-name>
+        <url-pattern>/view/getCurrentInfo</url-pattern>
     </servlet-mapping>
 
     <error-page>

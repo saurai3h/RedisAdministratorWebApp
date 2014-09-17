@@ -76,8 +76,9 @@
                     <li><a id="reset-page-list" href="#">Reset &olarr;</a></li>
                     <li><a id="start-infoSnapshotter" href="#">Start Monitor</a></li>
                     <li>
-                        <a id="show-info-button" href="#infoModal" data-toggle="modal">See Info</a>
+                        <a id="show-info-button" href="#infoModal" data-toggle="modal">See Historical Graphs</a>
                     </li>
+                    <li><a id="show-current-info"href="#curInfoModal" data-toggle="modal">See Info</a></li>
                     <li><a id="stop-infoSnapshotter" href="#">Stop Monitor</a></li>
                     <li><a id = "treeView" data-toggle = "modal" href="#treeViewModal" style = "outline-style:none" >TreeView</a></li>
                 </ul>
@@ -277,7 +278,6 @@
                 <h4 class="modal-title" id="infoModelHeader">Info</h4>
             </div>
             <div class="modal-body" style="overflow-y:scroll; height:400px"  id = "info-body">
-
                         <div class='col-sm-12'>
                             <div class="form-group">
                                 <div class='input-group date' id="fromDatePicker">
@@ -288,7 +288,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class='col-sm-12'>
                             <div class="form-group">
                                 <div class='input-group date' id="toDatePicker">
@@ -299,6 +298,9 @@
                                 </div>
                             </div>
                         </div>
+                <div class="btn-group">
+                    <button style="font-size: 12px" id="goButtonForCharts" type="button" class="btn btn-success">Go!</button>
+                </div>
 
 
 
@@ -320,6 +322,16 @@
         </div>
     </div>
 </div>
+<div class="modal" id="curInfoModal" tabindex="-1" role="dialog" aria-labelledby="currentInfo" aria-hidden="true">
+    <div class="modal-dialog" style = "width: 50%;height: 100%">
+        <div class="modal-content" style="width: 100%;height: 100%">
+            <div class="modal-header">
+                <h4 class="modal-title" id="curInfoModelHeader">Info at This Momemnt</h4>
+            </div>
+            <div class="modal-body" style="overflow-y:scroll; height:400px"  id = "current-info-body">
+                </div>
+            </div>/div>
+</div></div>
 <div class="modal" id="treeViewModal" tabindex="-1" role="dialog" aria-labelledby="treeViewLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

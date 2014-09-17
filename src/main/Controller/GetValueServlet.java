@@ -1,5 +1,6 @@
 package Controller;
 
+import Model.Constants;
 import Model.Instance;
 import Model.Key;
 import com.google.gson.Gson;
@@ -23,17 +24,20 @@ public class GetValueServlet extends HttpServlet{
             PrintWriter out= null;
             try {
                 out = response.getWriter();
-                String key  = request.getParameter("key");
-                Instance clickedInstance =ServletHelper.getInstanceFromServletContext(getServletContext(),
+                String key = request.getParameter("key");
+                Instance clickedInstance = ServletHelper.getInstanceFromServletContext(getServletContext(),
                         (String) request.getSession().getAttribute("clickedInstanceHostPort"));
-                if(clickedInstance==null){
-                    System.out.println("instance not found!!");
+                if (clickedInstance == null) {
+                    out.write(Constants.INSTANCE_NOT_FOUND_STATUS_CODE);
                 }
-                Map<String,String> map = clickedInstance.getJsonValueOfAKey(key);
-                if(map != null)
-                    out.write(new Gson().toJson(map));
-                else
-                    out.write("doesNotExist");
+                else {
+
+                    Map<String, String> map = clickedInstance.getJsonValueOfAKey(key);
+                    if (map != null)
+                        out.write(new Gson().toJson(map));
+                    else
+                        out.write("doesNotExist");
+            }
             }
             catch (IOException e) {
                 out.write("false");

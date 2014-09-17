@@ -35,7 +35,7 @@ public class Key {
         Long ttl = jedis.ttl(keyName);
         Date date = new Date(new Date().getTime()+1000*ttl);
         if(ttl == -1){
-            expiryTime = "expiry time not set";
+            expiryTime = "no expiry";
         }
         else if(ttl == -2){
             expiryTime = "probably key got deleted";

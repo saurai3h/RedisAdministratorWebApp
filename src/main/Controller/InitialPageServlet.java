@@ -1,6 +1,7 @@
 package Controller;
 
 import Model.Instance;
+import Model.Page;
 import com.google.gson.Gson;
 import redis.clients.jedis.exceptions.JedisException;
 
@@ -24,20 +25,28 @@ public class InitialPageServlet extends HttpServlet {
         response.setContentType("text/html");
         PrintWriter out= null;
 
+        String curInstanceHostPort = request.getParameter("hostport");
+
         try {
             out = response.getWriter();
-            String curInstanceHostPort = request.getParameter("hostport");
             Instance clickedInstance = ServletHelper.getInstanceFromServletContext(getServletContext(),curInstanceHostPort);
-            String listOfKeys = new Gson().toJson(clickedInstance.getPageAtIndex(0).getKeyList());
-            out.write(listOfKeys);
-            request.getSession().setAttribute("CurPageIndex",0);
-            request.getSession().setAttribute("clickedInstanceHostPort",curInstanceHostPort);
+            Page firstPage = clickedInstance.getPageAtIndex(0);
+            if(firstPage!=null) {
+                String listOfKeys = new Gson().toJson(firstPage.getKeyList());
+                out.write(listOfKeys);
+            }
+            else out.write("false");
         }
         catch (JedisException e)   {
             out.write("false");
         }
         catch (IOException e) {
             out.write("false");
+        }
+        finally {
+
+            request.getSession().setAttribute("CurPageIndex", 0);
+            request.getSession().setAttribute("clickedInstanceHostPort", curInstanceHostPort);
         }
     }
 

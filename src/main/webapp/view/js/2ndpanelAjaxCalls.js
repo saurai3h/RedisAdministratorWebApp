@@ -24,18 +24,14 @@ var populateKeyListFromJson = function(strData){
             $(link).attr("id", jsonData[x]["keyName"]);
             $(link).attr("href", "#");
             $(link).css("display","inline-block");
-            $(link).css("width","40%");
+            $(link).css("width","50%");
             $(li).append(link);
 
-            $(deleteLink).addClass("btn btn-danger deletingKeys");
-            $(deleteLink).html("Delete");
-            $(deleteLink).css("margin-left","1%");
+            $(deleteLink).addClass("glyphicon glyphicon-floppy-remove deletingKeys");
             $(deleteLink).attr("id","deleteButton"+":"+jsonData[x]["keyName"]);
             $(li).append(deleteLink);
 
-            $(editLink).addClass("btn btn-info");
-            $(editLink).html("Edit");
-            $(editLink).css("margin-left","1%");
+            $(editLink).addClass("glyphicon glyphicon-edit");
             $(editLink).attr("id","editButton"+":"+jsonData[x]["keyName"]);
             $(editLink).attr("onclick","editOuter()");
             $(li).append(editLink);
@@ -299,6 +295,7 @@ $(document).off('click', '.sidebar-nav a').on('click', '.sidebar-nav a', functio
         $("#keys-details").hide();
         $("#thirdPanel").hide();
         $("#list-header").show();
+        $("#currentInfoSnapshot").remove();
 
         var clicked = event.target;
         var hostPort = clicked.id.toString();
@@ -341,7 +338,7 @@ $(document).off('click', '.sidebar-nav a').on('click', '.sidebar-nav a', functio
         );
 });
 
-$(document).off('click','.btn.btn-danger.deletingKeys').on('click', '.btn.btn-danger.deletingKeys',function(){
+$(document).off('click','.glyphicon.glyphicon-floppy-remove.deletingKeys').on('click', '.glyphicon.glyphicon-floppy-remove.deletingKeys',function(){
 
     var key = event.target.id.toString().substring(13);
 
@@ -611,7 +608,7 @@ $(document).off('click', 'ul#list-content li a').on('click', "ul#list-content li
                             container = document.createElement("table");
                             $(container).addClass("table table-responsive");
                             $(container).attr("border", "1");
-                            $(container).attr("style", "width:100%;margin-left:5%;margin-top:5%;margin-bottom:5%;");
+                            $(container).attr("style", "width:100%;margin-top:5%;");
                             var tr = document.createElement("tr");
                             var keyHead = document.createElement("th");
                             var valueHead = document.createElement("th");
@@ -660,9 +657,7 @@ $(document).off('click', 'ul#list-content li a').on('click', "ul#list-content li
                                 $(valueCell).css("width", "30%");
 
                                 var deleteCell = document.createElement("button");
-                                $(deleteCell).addClass("btn btn-danger deletingFields");
-                                $(deleteCell).html("Delete");
-                                $(deleteCell).css("width", "40%");
+                                $(deleteCell).addClass("glyphicon glyphicon-floppy-remove deletingFields");
                                 $(deleteCell).click(function (e) {
                                     e.stopPropagation();
                                     deleteField(clickedKey, key, value, type)
@@ -670,9 +665,7 @@ $(document).off('click', 'ul#list-content li a').on('click', "ul#list-content li
 
 
                                 var editCell = document.createElement("button");
-                                $(editCell).addClass("btn btn-info editingFields");
-                                $(editCell).html("Edit");
-                                $(editCell).css("width", "40%");
+                                $(editCell).addClass("glyphicon glyphicon-edit editingFields");
                                 $(editCell).attr("data-toggle","modal");
                                 $(editCell).attr("id",clickedKey+splitString+key+splitString+value+splitString+type);
 
@@ -720,14 +713,10 @@ $(document).off('click', 'ul#list-content li a').on('click', "ul#list-content li
                                 $(text).attr("id", value);
 
                                 var deleteCell = document.createElement("button");
-                                $(deleteCell).addClass("btn btn-danger deletingFields");
-                                $(deleteCell).html("Delete");
-                                $(deleteCell).css("width", "15%");
+                                $(deleteCell).addClass("glyphicon glyphicon-floppy-remove deletingFields");
 
                                 var editCell = document.createElement("button");
-                                $(editCell).addClass("btn btn-info editingFields");
-                                $(editCell).html("Edit");
-                                $(editCell).css("width", "15%");
+                                $(editCell).addClass("glyphicon glyphicon-edit editingFields");
                                 $(editCell).attr("data-toggle","modal");
                                 $(editCell).attr("id",clickedKey+splitString+key+splitString+value+splitString+type);
 
@@ -855,10 +844,63 @@ $(document).off('click', '.addingZsetFields').on('click', '.addingZsetFields', f
     document.getElementById("zsetValue:"+clickedKey).value = "";
 });
 
-$(document).off("click","#show-info-button").on("click","#show-info-button",function(){
+$(document).off("click","#show-current-info").on("click","#show-current-info",function(){
+    container = $("#currentInfoSnapshot");
+
+        container.remove();
+
+        $.ajax(
+            {
+                url: "/view/getCurrentInfo",
+                type: "POST",
+                success: function (strData) {
+                    var jsonData = jQuery.parseJSON(strData);
+
+                    console.log(jsonData);
+
+                    container = document.createElement("table");
+                    $(container).addClass("table table-responsive");
+                    $(container).attr("border", "1");
+                    $(container).css("overflow-y", "scroll");
+                    $(container).css("float", "right");
+                    $(container).css("margin-left", "5%");
+                    $(container).css("width", "25%");
+                    $(container).css("height", "25%");
+
+                    $(container).attr("id","currentInfoSnapshot");
+                    var tr = document.createElement("tr");
+                    var keyHead = document.createElement("th");
+                    var valueHead = document.createElement("th");
+                    $(keyHead).html("Field");
+                    $(valueHead).html("Value");
+                    $(tr).append(keyHead);
+                    $(tr).append(valueHead);
+                    $(container).append(tr);
+                    for(var field in jsonData){
+                        tr = document.createElement("tr");
+                        var keyCell = document.createElement("td");
+                        $(keyCell).css("width", "30%");
+                        $(keyCell).html(field);
+                        var valueCell = document.createElement("td");
+                        $(valueCell).css("width", "30%");
+                        $(valueCell).html(jsonData[field]);
+                        $(tr).append(keyCell);
+                        $(tr).append(valueCell);
+                        $(container).append(tr);
+                    }
+                    $("#current-info-body").append(container);
+                }
+
+            }
+        );
+    });
+
+$(document).off("click","#show-graph-button").on("click","#show-graph-button",function(){
     function plot(xArray,yArray,seriesName){
     $('#'+seriesName+"_chart").highcharts({
         chart: {
+
+            zoomType: 'x',
             type: 'area'
         },
         series: [{
@@ -939,9 +981,6 @@ $(document).off("click","#show-info-button").on("click","#show-info-button",func
     };
     fromDate = Date.parse($('#fromDatePicker').data("DateTimePicker").getDate());
     toDate = Date.parse($('#toDatePicker').data("DateTimePicker").getDate());
-
-    alert(fromDate);
-    alert(toDate);
     var timeStampArray;
     $.ajax(
         {
@@ -953,7 +992,7 @@ $(document).off("click","#show-info-button").on("click","#show-info-button",func
 
 
                 var listItems = $("#chart-tab-contents .tab-pane");
-                var list = document.getElementById("chart-tab-contents");
+
                 listItems.each(function(index, element) {
                     var id = $(element).attr("id");
                     var fieldToBePlotted = id.slice(0,-6);
@@ -963,7 +1002,6 @@ $(document).off("click","#show-info-button").on("click","#show-info-button",func
                             type: "POST",
                             data: "field="+fieldToBePlotted+"&from="+fromDate.toString()+"&to="+toDate.toString(),
                             success: function (strData) {
-
                                 var dataReceived = jQuery.parseJSON(strData);
                                 plot(timeStampArray,dataReceived,fieldToBePlotted);
                             }
@@ -976,7 +1014,7 @@ $(document).off("click","#show-info-button").on("click","#show-info-button",func
 
 });
 
-$(document).off("click", ".btn.btn-info.editingFields").on("click", ".btn.btn-info.editingFields", function () {
+$(document).off("click", ".glyphicon.glyphicon-edit.editingFields").on("click", ".glyphicon.glyphicon-edit.editingFields", function () {
 
     var myVar = $(this).attr("id").split(splitString);
     var clickedKey = myVar[0];
@@ -1056,3 +1094,21 @@ $(document).off("click", ".btn.btn-info.editingFields").on("click", ".btn.btn-in
     }
 });
 
+$('#curInfoModal').on('hidden.bs.modal', function () {
+    container = $("#currentInfoSnapshot");
+    if(container!==null) {
+        $(container).remove();
+    }
+});
+
+$('#infoModal').on('hidden.bs.modal', function () {
+    container = $("#singleInfoSnapshot");
+    if(container!==null) {
+        $(container).remove();
+    }
+    var listItems = $("#chart-tab-contents .tab-pane");
+
+    listItems.each(function(index, element) {
+        $(element).empty();
+    });
+});

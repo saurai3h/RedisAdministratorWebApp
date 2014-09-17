@@ -31,7 +31,7 @@ public class InfoPanelDataFetcherServlet extends HttpServlet {
             Jedis jedis = new Jedis(Constants.INFO_STORE.getHost(), Constants.INFO_STORE.getPort());
             ArrayList<String> relevantInfoSnapshotSortedList = new ArrayList<String>(jedis.keys(hostPort + "*"));
             Collections.sort(relevantInfoSnapshotSortedList);
-            Long[] fieldDataPoints = new Long[relevantInfoSnapshotSortedList.size()];
+            ArrayList<Long> fieldDataPoints = new ArrayList<Long>();
             int timeStampNo = 0;
 
             for (String relevantSnapshotKey : relevantInfoSnapshotSortedList) {
@@ -39,25 +39,25 @@ public class InfoPanelDataFetcherServlet extends HttpServlet {
                 if(timeStamp<fromTimeStamp){
                     continue;
                 }
-                else if(timeStamp>toTimeStamp){
+                if(timeStamp>toTimeStamp){
                     break;
-                };
+                }
                 if(fieldToBePlotted.equals("timeStamp")){
-                    fieldDataPoints[timeStampNo] = timeStamp;
+                    fieldDataPoints.add(timeStamp);
                 }
                 else if(fieldToBePlotted.equals("no_of_keys")){
                     String dbInfo = jedis.hget(relevantSnapshotKey,"db0");
                     String noOfKeysAsString = parseDbFieldOfInfo(dbInfo).get("keys");
-                    fieldDataPoints[timeStampNo] = Long.parseLong(noOfKeysAsString);
+                    fieldDataPoints.add( Long.parseLong(noOfKeysAsString));
                 }
                 else if(fieldToBePlotted.equals("no_of_expirable_keys")){
                     String dbInfo = jedis.hget(relevantSnapshotKey,"db0");
                     String noOfKeysAsString = parseDbFieldOfInfo(dbInfo).get("expires");
-                    fieldDataPoints[timeStampNo] = Long.parseLong(noOfKeysAsString);
+                    fieldDataPoints.add( Long.parseLong(noOfKeysAsString));
                 }
                 else {
                     Long fieldSingleDataPoint = Long.parseLong(jedis.hget(relevantSnapshotKey,fieldToBePlotted));
-                    fieldDataPoints[timeStampNo] = fieldSingleDataPoint;
+                    fieldDataPoints.add(fieldSingleDataPoint);
                 }
                 timeStampNo++;
             }

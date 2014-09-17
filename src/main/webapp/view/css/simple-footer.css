@@ -2,17 +2,17 @@
 .sidebar-footer {
     position: fixed;
     margin-left: 0;
-    width: 20%;
+    width: 25%;
     height: 30%;
     overflow-y: auto;
     top:75%;
 }
 
 .list-footer {
-    width : 80%;
+    width : 75%;
     height : 30%;
     position:absolute;
     bottom:0;
-    margin-left:20%;
+    left:25%;
     overflow-y: auto;
 }

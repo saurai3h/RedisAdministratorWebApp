@@ -17,8 +17,8 @@
 <body style="width: 100%; height: 100%">
 <div style="width: 100%; height: 100%" >
 <div id="loginModal" style="height:100%" class="col-lg-7" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content" style="position: relative; top: 100px">
+    <div class="modal-dialog" style="width: 100%;height: 100%;bottom:20%">
+        <div class="modal-content" style="position: absolute; top: 40%;left: 25%">
 
             <div class="modal-header">
                 <h1 class="text-center">Redis Administrator Login</h1>
@@ -48,8 +48,8 @@
 </div>
 
 <div id="signUpModal" style="height:100%" class="col-lg-5" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content" style="position: relative; top: 100px">
+    <div class="modal-dialog" style="width: 100%;height: 100%;bottom:20%">
+        <div class="modal-content" style="position: absolute; top: 40%;left: 25%">
 
             <div class="modal-header">
                 <h1 class="text-center">Signup</h1>
